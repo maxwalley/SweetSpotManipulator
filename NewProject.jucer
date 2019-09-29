@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="mtAZFz" name="NewProject" projectType="guiapp" jucerVersion="5.4.3">
+  <MAINGROUP id="VZQjYu" name="NewProject">
+    <GROUP id="{2C9811E5-CF9E-B1AD-AAE3-BF71A40E0ACA}" name="Source">
+      <GROUP id="{3CE708F4-5EBF-6122-8F18-4FA98E3C3F16}" name="libfreenect">
+        <GROUP id="{879B0283-0A25-F4C6-4553-44A50A6AC23B}" name="include">
+          <GROUP id="{14A3128F-4929-7D10-B5F4-524F03CC8CAB}" name="libfreenect">
+            <FILE id="TJMedg" name="libfreenect.h" compile="0" resource="0" file="Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect.h"/>
+            <FILE id="QlfxNu" name="libfreenect.hpp" compile="0" resource="0" file="Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect.hpp"/>
+            <FILE id="ov9T3P" name="libfreenect_audio.h" compile="0" resource="0"
+                  file="Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect_audio.h"/>
+            <FILE id="VduGl0" name="libfreenect_registration.h" compile="0" resource="0"
+                  file="Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect_registration.h"/>
+            <FILE id="zPYHSl" name="libfreenect_sync.h" compile="0" resource="0"
+                  file="Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect_sync.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{BB2501BC-E436-934F-78B7-5D23925AD98F}" name="lib">
+          <GROUP id="{AB032CDB-5F78-5D4E-61E1-5345729C894B}" name="fakenect">
+            <FILE id="QL5aAC" name="libfakenect.0.5.5.dylib" compile="0" resource="1"
+                  file="Builds/MacOSX/Dependencies/libfreenect/lib/fakenect/libfakenect.0.5.5.dylib"/>
+            <FILE id="fvC5tY" name="libfakenect.0.5.dylib" compile="0" resource="1"
+                  file="Builds/MacOSX/Dependencies/libfreenect/lib/fakenect/libfakenect.0.5.dylib"/>
+            <FILE id="tGkn0m" name="libfakenect.dylib" compile="0" resource="1"
+                  file="Builds/MacOSX/Dependencies/libfreenect/lib/fakenect/libfakenect.dylib"/>
+          </GROUP>
+          <GROUP id="{6C2CE9CF-47DC-4EDE-4578-A4DA08368554}" name="OpenNI2-FreenectDriver">
+            <FILE id="Ihror0" name="libFreenectDriver.0.5.5.dylib" compile="0"
+                  resource="1" file="Builds/MacOSX/Dependencies/libfreenect/lib/OpenNI2-FreenectDriver/libFreenectDriver.0.5.5.dylib"/>
+            <FILE id="EpMiPY" name="libFreenectDriver.0.5.dylib" compile="0" resource="1"
+                  file="Builds/MacOSX/Dependencies/libfreenect/lib/OpenNI2-FreenectDriver/libFreenectDriver.0.5.dylib"/>
+            <FILE id="asHU6b" name="libFreenectDriver.dylib" compile="0" resource="1"
+                  file="Builds/MacOSX/Dependencies/libfreenect/lib/OpenNI2-FreenectDriver/libFreenectDriver.dylib"/>
+          </GROUP>
+          <GROUP id="{79BF6130-26C1-BC23-C356-FF47E73EB7E8}" name="pkgconfig">
+            <FILE id="MXSylJ" name="libfreenect.pc" compile="0" resource="1" file="Builds/MacOSX/Dependencies/libfreenect/lib/pkgconfig/libfreenect.pc"/>
+          </GROUP>
+          <FILE id="h8pVOC" name="libfreenect.0.5.5.dylib" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect.0.5.5.dylib"/>
+          <FILE id="clgGh3" name="libfreenect.0.5.dylib" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect.0.5.dylib"/>
+          <FILE id="IYLw5Y" name="libfreenect.a" compile="0" resource="1" file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect.a"/>
+          <FILE id="wCcMaN" name="libfreenect.dylib" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect.dylib"/>
+          <FILE id="bOwv4y" name="libfreenect_sync.0.5.5.dylib" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect_sync.0.5.5.dylib"/>
+          <FILE id="qpur9a" name="libfreenect_sync.0.5.dylib" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect_sync.0.5.dylib"/>
+          <FILE id="waOhWl" name="libfreenect_sync.a" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect_sync.a"/>
+          <FILE id="JajfYo" name="libfreenect_sync.dylib" compile="0" resource="1"
+                file="Builds/MacOSX/Dependencies/libfreenect/lib/libfreenect_sync.dylib"/>
+        </GROUP>
+      </GROUP>
+      <FILE id="I38xvW" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="Cnk0Q5" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="o0DNbO" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="OJ0YnC" name="Kinect.h" compile="0" resource="0" file="Source/Kinect.h"/>
+      <FILE id="ybXXGt" name="Kinect.cpp" compile="1" resource="0" file="Source/Kinect.cpp"/>
+      <FILE id="S3ZysV" name="Callbacks.cpp" compile="1" resource="0" file="Source/Callbacks.cpp"/>
+      <FILE id="AHZuTu" name="Callbacks.hpp" compile="0" resource="0" file="Source/Callbacks.hpp"/>
+    </GROUP>
+    <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
+      <FILE id="krBxEY" name="LightButtonArray.cpp" compile="1" resource="0"
+            file="Source/LightButtonArray.cpp"/>
+      <FILE id="ECyIs0" name="LightButtonArray.h" compile="0" resource="0"
+            file="Source/LightButtonArray.h"/>
+      <FILE id="v4KRBn" name="LightButton.cpp" compile="1" resource="0" file="Source/LightButton.cpp"/>
+      <FILE id="iDEihM" name="LightButton.h" compile="0" resource="0" file="Source/LightButton.h"/>
+      <FILE id="yK0UFZ" name="MuteButton.h" compile="0" resource="0" file="Source/MuteButton.h"/>
+      <FILE id="qSRmq6" name="MuteButton.cpp" compile="1" resource="0" file="Source/MuteButton.cpp"/>
+      <FILE id="IHV0kZ" name="ChannelLabel.h" compile="0" resource="0" file="Source/ChannelLabel.h"/>
+      <FILE id="m3E2He" name="ChannelLabel.cpp" compile="1" resource="0"
+            file="Source/ChannelLabel.cpp"/>
+      <FILE id="SbTjbv" name="ChannelSlider.h" compile="0" resource="0" file="Source/ChannelSlider.h"/>
+      <FILE id="LGgpQf" name="ChannelSlider.cpp" compile="1" resource="0"
+            file="Source/ChannelSlider.cpp"/>
+      <FILE id="cUNEU7" name="Channel.h" compile="0" resource="0" file="Source/Channel.h"/>
+      <FILE id="CFMU8m" name="Channel.cpp" compile="1" resource="0" file="Source/Channel.cpp"/>
+      <FILE id="O5NEUz" name="ChannelArray.h" compile="0" resource="0" file="Source/ChannelArray.h"/>
+      <FILE id="ElNMZC" name="ChannelArray.cpp" compile="1" resource="0"
+            file="Source/ChannelArray.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="usb-1.0.0&#10;freenect_sync.0.5.5&#10;freenect">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="${PROJECT_DIR}/Dependencies/libfreenect/include/libfreenect&#10;${PROJECT_DIR}/Dependencies/libusb/include/libusb-1.0/libusb.h"
+                       libraryPath="${PROJECT_DIR}/Dependencies/libfreenect/lib&#10;${PROJECT_DIR}/Dependencies/libusb/lib"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <OSX/>
+  </LIVE_SETTINGS>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+</JUCERPROJECT>
