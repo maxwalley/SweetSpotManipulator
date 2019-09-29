@@ -79,10 +79,10 @@ void closeRawDataFiles()
 void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
     uint16_t depthArray[640][480];
+    uint8_t shortDepthArray[640][480];
     int overallCount = 0;
     
     fprintf(RawDepthDatatxt, "Depth Data Received at %u\n", timestamp);
-    //fprintf(RawDepthDatatxt, "Size of data: %lu\n", sizeof(&data));
     
     uint16_t* castedData = static_cast<uint16_t*>(data);
     fprintf(RawDepthDatatxt, "Data: %hu\n", *castedData);
@@ -92,7 +92,10 @@ void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
         for(int yCount = 0; yCount < 480; yCount++)
         {
             depthArray[xCount][yCount] = *(castedData + overallCount);
-            fprintf(RawDepthDatatxt, "%hu\n", depthArray[xCount][yCount]);
+            //fprintf(RawDepthDatatxt, "Data as 16bit = %hu\n", depthArray[xCount][yCount]);
+            
+            shortDepthArray[xCount][yCount] = depthArray[xCount][yCount];
+            //fprintf(RawDepthDatatxt, "Data as 8bit = %u\n", shortDepthArray[xCount][yCount]);
             overallCount++;
         }
     }

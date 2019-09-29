@@ -72,14 +72,14 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     printf("Block Size is %d\n", samplesPerBlockExpected);
     // You can use this function to initialise any resources you might need,
     // but be careful - it will be called on the audio thread, not the GUI thread.
-    //kin.InitandMove();
+    kin.InitandMove();
     // For more details, see the help for AudioProcessor::prepareToPlay()
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    //kin.RunVidandDepth();
-    //kin.checkLed(Lights.selectedLed);
+    kin.RunVidandDepth();
+    kin.checkLed(Lights.selectedLed);
     
     for(int count1 = 1; count1 <= 440; count1++)
     {
@@ -154,7 +154,7 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
     AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Close App?", "Are you sure you want to close this app?", "Continue", "Cancel", nullptr, nullptr);
     
-    //kin.End();
+    kin.End();
     // For more details, see the help for AudioProcessor::releaseResources()
 }
 
