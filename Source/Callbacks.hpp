@@ -12,11 +12,13 @@
 #include <../Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect.h>
 #include <stdio.h>
 
-void DepthCallback(freenect_device*, void* data, uint32_t timestamp);
-void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp);
-void LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg);
+#pragma once
+
 
 void openRawDataFiles();
 void closeRawDataFiles();
+void DepthCallback(freenect_device*, void* data, uint32_t timestamp);
+void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp);
+void LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg);
 
 #endif /* Callbacks_hpp */

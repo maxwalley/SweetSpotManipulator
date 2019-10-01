@@ -78,8 +78,17 @@ void closeRawDataFiles()
 
 void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
+// maybe as part of some extention we could do this
+// set up a pointer to the EXTERNAL depthArray - only when the timestamp is the special value
+//    static uint16_t* depthArray = nullptr;
+//    if( timestamp = -1111 )
+//    {
+//        depthArray = static_cast<uint16_t*>data;
+//    }
+//
+    
     uint16_t depthArray[640][480];
-    uint8_t shortDepthArray[640][480];
+    //uint8_t shortDepthArray[640][480];
     
     fprintf(RawDepthDatatxt, "Depth Data Received at %u\n", timestamp);
     
@@ -93,7 +102,9 @@ void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
             depthArray[xCount][yCount] = *castedData;
             fprintf(RawDepthDatatxt, "%d\n", depthArray[xCount][yCount]);
             
-            shortDepthArray[xCount][yCount] = depthArray[xCount][yCount];
+            //shortDepthArray[xCount][yCount] = depthArray[xCount][yCount];
+            //fprintf(RawDepthDatatxt, "%d\n", shortDepthArray[xCount][yCount]);
+            
             castedData++;
         }
     }
@@ -107,9 +118,4 @@ void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp)
     //DataInfo* VidPtr = static_cast<DataInfo*>(data);
 
     //fprintf(RawVidDatatxt, "%d\n", VidPtr->data);
-}
-
-void LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg)
-{
-    fprintf(Logtxt, "%c\n", &msg);
 }

@@ -7,8 +7,6 @@
 
   ==============================================================================
 */
-
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "Kinect.h"
 
 //==============================================================================
@@ -21,21 +19,9 @@ Kinect::~Kinect()
 {
 }
 
-void Kinect::paint (Graphics& g)
-{
-    
-}
-
-void Kinect::resized()
-{
-    
-}
-
 void Kinect::InitandMove()
 {
     freenect_init(&ctx, NULL);
-    //freenect_select_subdevices(ctx, CamFlag);
-    //freenect_select_subdevices(ctx, MotFlag);
     numDev = freenect_num_devices(ctx);
     
     if(numDev >= 1)
@@ -98,12 +84,17 @@ void Kinect::InitandMove()
         printf("Depth Height is: %d\n", DepthMode.height);
         printf("Bits Per Pixel of Depth Frame is: %d\n", DepthMode.data_bits_per_pixel);
         
-        openRawDataFiles();
+        Cb.openRawDataFiles();
         
-        freenect_set_depth_callback(dev, DepthCallback);
-        freenect_set_video_callback(dev, VideoCallback);
+        
+        // maybe as part of some extention - we could do this
+        //uint16_t depthArray[640][480];
+        //DepthCallback(0, depthArray, -1111); // tell our callback where our external DepthArray is
+        
+        freenect_set_depth_callback(dev, depthCbPtr);
+        //freenect_set_video_callback(dev, VideoCallback);
         freenect_set_log_level(ctx, loglvl);
-        freenect_set_log_callback(ctx, LogCallback);
+        //freenect_set_log_callback(ctx, *LogCallback);
         
         if(freenect_start_depth(dev) == 0)
         {
@@ -133,7 +124,7 @@ void Kinect::InitandMove()
     }
 }
 
-void Kinect::RunVidandDepth()
+void Kinect::RunVidandDepth() const
 {
     if(freenect_process_events(ctx) != 0)
     {
@@ -145,7 +136,7 @@ void Kinect::RunVidandDepth()
     }
 }
 
-void Kinect::End()
+void Kinect::End() const
 {
     if(freenect_stop_depth(dev) == 0)
     {
@@ -172,4 +163,9 @@ void Kinect::End()
 void Kinect::checkLed(freenect_led_options ledState)
 {
     freenect_set_led(dev, ledState);
+}
+
+void Kinect::LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg)
+{
+    fprintf(Logtxt, "%c\n", &msg);
 }
