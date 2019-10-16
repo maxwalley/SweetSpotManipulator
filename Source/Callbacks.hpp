@@ -14,11 +14,22 @@
 
 #pragma once
 
-
-void openRawDataFiles();
-void closeRawDataFiles();
-void DepthCallback(freenect_device*, void* data, uint32_t timestamp);
-void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp);
-void LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg);
-
+class Callbacks
+{
+private:
+    FILE* RawDepthDatatxt;
+    FILE* RawVidDatatxt;
+    FILE* Logtxt;
+    static uint16_t depthArray[640][480];
+    //static bool isBusy;
+    
+public:
+    Callbacks();
+    void openRawDataFiles();
+    void closeRawDataFiles();
+    static void DepthCallback(freenect_device*, void* data, uint32_t timestamp);
+    void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp);
+    void LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg);
+    uint16_t* getDepthData(int column);
+};
 #endif /* Callbacks_hpp */

@@ -7,11 +7,14 @@
 
 #include "Callbacks.hpp"
 
-FILE* RawDepthDatatxt;
-FILE* RawVidDatatxt;
-FILE* Logtxt;
+uint16_t Callbacks::depthArray[640][480];
 
-void openRawDataFiles()
+Callbacks::Callbacks()
+{
+    //isBusy = false;
+}
+
+void Callbacks::openRawDataFiles()
 {
     RawDepthDatatxt = fopen("RawDepth.txt", "w");
     if(RawDepthDatatxt == NULL)
@@ -46,7 +49,7 @@ void openRawDataFiles()
     }
 }
 
-void closeRawDataFiles()
+void Callbacks::closeRawDataFiles()
 {
     if(fclose(RawDepthDatatxt) == 0)
     {
@@ -76,7 +79,29 @@ void closeRawDataFiles()
     }
 }
 
-void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
+void Callbacks::DepthCallback(freenect_device*, void* data, uint32_t timestamp)
+{
+    uint16_t* castedData = static_cast<uint16_t*>(data);
+    
+//    ScopedLock
+//    isBusy = true;
+    for(int xCount = 0; xCount < 640; xCount++)
+    {
+        for(int yCount = 0; yCount < 480; yCount++)
+        {
+            depthArray[xCount][yCount] = *castedData;
+            castedData++;
+        }
+    }
+//    isBusy = false;
+}
+
+void Callbacks::VideoCallback(freenect_device*, void* data, uint32_t timestamp)
+{
+    
+}
+
+/*void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
 // maybe as part of some extention we could do this
 // set up a pointer to the EXTERNAL depthArray - only when the timestamp is the special value
@@ -108,14 +133,25 @@ void DepthCallback(freenect_device* dev, void* data, uint32_t timestamp)
             castedData++;
         }
     }
-}
+}*/
 
-void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp)
-{
-    fprintf(RawVidDatatxt, "Video Data Received at %u:\n", timestamp);
-    fprintf(RawVidDatatxt, "Size of data: %lu\n", sizeof(&data));
+//void VideoCallback(freenect_device* dev, void* data, uint32_t timestamp)
+//{
+    //fprintf(RawVidDatatxt, "Video Data Received at %u:\n", timestamp);
+    //fprintf(RawVidDatatxt, "Size of data: %lu\n", sizeof(&data));
     
     //DataInfo* VidPtr = static_cast<DataInfo*>(data);
 
     //fprintf(RawVidDatatxt, "%d\n", VidPtr->data);
+//}
+
+uint16_t* Callbacks::getDepthData(int column)
+{
+    uint16_t depthLine[640];
+    
+    for(int i = 0; i < 640; i++)
+    {
+        depthLine[i] = depthArray[i][column];
+    }
+    return depthLine;
 }

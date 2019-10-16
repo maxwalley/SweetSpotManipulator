@@ -84,14 +84,14 @@ void Kinect::InitandMove()
         printf("Depth Height is: %d\n", DepthMode.height);
         printf("Bits Per Pixel of Depth Frame is: %d\n", DepthMode.data_bits_per_pixel);
         
-        Cb.openRawDataFiles();
+        //Cb.openRawDataFiles();
         
         
         // maybe as part of some extention - we could do this
         //uint16_t depthArray[640][480];
         //DepthCallback(0, depthArray, -1111); // tell our callback where our external DepthArray is
         
-        freenect_set_depth_callback(dev, depthCbPtr);
+        freenect_set_depth_callback(dev, CB.DepthCallback);
         //freenect_set_video_callback(dev, VideoCallback);
         freenect_set_log_level(ctx, loglvl);
         //freenect_set_log_callback(ctx, *LogCallback);
@@ -157,7 +157,7 @@ void Kinect::End() const
     {
         printf("Freenect Shutdown Successfully\n");
     }
-    closeRawDataFiles();
+    //closeRawDataFiles();
 }
 
 void Kinect::checkLed(freenect_led_options ledState)
@@ -165,7 +165,38 @@ void Kinect::checkLed(freenect_led_options ledState)
     freenect_set_led(dev, ledState);
 }
 
-void Kinect::LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg)
+//void Kinect::LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg)
+//{
+//    fprintf(Logtxt, "%c\n", &msg);
+//}
+
+/*void Kinect::DepthCB(freenect_device* dev, void* data, uint32_t timestamp)
 {
-    fprintf(Logtxt, "%c\n", &msg);
+    uint16_t* castedData = static_cast<uint16_t*>(data);
+    
+    for(int xCount = 0; xCount < 640; xCount++)
+    {
+        for(int yCount = 0; yCount < 480; yCount++)
+        {
+            depthArray[xCount][yCount] = *castedData;
+            
+            castedData++;
+        }
+    }
+}*/
+
+void Kinect::rebuildArray()
+{
+    uint16_t wholeArray[640][480];
+    uint16_t* currentPixel;
+    
+    for(int i = 0; i < 480; i++)
+    {
+        currentPixel = CB.getDepthData(i);
+        for(int c = 0; c < 640; c++)
+        {
+            wholeArray[c][i] = *currentPixel;
+            currentPixel++;
+        }
+    }
 }
