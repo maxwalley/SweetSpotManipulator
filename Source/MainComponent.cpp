@@ -57,7 +57,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     audioBlockCount = 0;
     
-    rebuildArray();
+    setDepthPixels();
 }
 
 MainComponent::~MainComponent()
@@ -144,10 +144,10 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             }
         }
     }
-    if(audioBlockCount >= 10)
+    if(audioBlockCount >= 20)
     {
         audioBlockCount = 0;
-        rebuildArray();
+        setDepthPixels();
     }
     else
     {
@@ -179,13 +179,13 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    Channels.setBounds(0, 180, 800, 340);
+    /*Channels.setBounds(0, 180, 800, 340);
     
     Lights.setBounds(500, 80, 250, 60);
     
     OpenFileButton.setBounds(650, 20, 80, 20);
     PlayPauseButton.setBounds(530, 20, 80, 20);
-    rewindButton.setBounds(530, 50, 80, 20);
+    rewindButton.setBounds(530, 50, 80, 20);*/
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
 }
@@ -209,18 +209,20 @@ void MainComponent::paintImage()
     repaint(200, 200, 640, 480);
 }
 
-void MainComponent::rebuildArray()
+void MainComponent::setDepthPixels()
 {
-    uint8_t shortArray[640][480];
+    //uint8_t shortArray[480][640];
     
-    for(int i = 0; i < 480; i++)
+    for(int i = 0; i < 640; i++)
     {
-        for(int c = 0; c < 640; c++)
+        for(int c = 0; c < 480; c++)
         {
-            shortArray[c][i] = kin.depthArray[c][i]/8.02745;
-            std::cout << "Depth data = " << shortArray[c][i] << std::endl;
-            kinPic.setPixelAt(c, i, Colour(shortArray[c][i], 0, 0));
+            //shortArray[c][i] = kin.depthArray[c][i]/8.02745;
+            //printf("Depth data = %hu\n", shortArray[c][i]);
+            kinPic.setPixelAt(i, c, Colour(kin.depthArray[i][c], kin.depthArray[i][c], kin.depthArray[i][c]));
         }
     }
     paintImage();
 }
+
+

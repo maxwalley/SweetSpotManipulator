@@ -11,6 +11,10 @@
 
 uint16_t Kinect::depthArray[640][480];
 
+uint16_t Kinect::redArray[640][480];
+uint16_t Kinect::greenArray[640][480];
+uint16_t Kinect::blueArray[640][480];
+
 //==============================================================================
 Kinect::Kinect()
 {
@@ -86,15 +90,8 @@ void Kinect::InitandMove()
         printf("Depth Height is: %d\n", DepthMode.height);
         printf("Bits Per Pixel of Depth Frame is: %d\n", DepthMode.data_bits_per_pixel);
         
-        //Cb.openRawDataFiles();
-        
-        
-        // maybe as part of some extention - we could do this
-        //uint16_t depthArray[640][480];
-        //DepthCallback(0, depthArray, -1111); // tell our callback where our external DepthArray is
-        
         freenect_set_depth_callback(dev, depthCallback);
-        //freenect_set_video_callback(dev, VideoCallback);
+        //freenect_set_video_callback(dev, videoCallback);
         
         if(freenect_start_depth(dev) == 0)
         {
@@ -171,9 +168,9 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
     
 //    ScopedLock
 //    isBusy = true;
-    for(int xCount = 0; xCount < 640; xCount++)
+    for(int yCount = 0; yCount < 480; yCount++)
     {
-        for(int yCount = 0; yCount < 480; yCount++)
+        for(int xCount = 0; xCount < 640; xCount++)
         {
             depthArray[xCount][yCount] = *castedData;
             castedData++;
@@ -182,13 +179,24 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 //    isBusy = false;
 }
 
-uint16_t* Kinect::getDepthColumn(int column)
+void Kinect::videoCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
-    uint16_t depthColumn[640];
+    uint16_t* castedData = static_cast<uint16_t*>(data);
     
-    for(int i = 0; i < 640; i++)
+    for(int overallCount = 0; overallCount < 921600; overallCount++)
     {
-        depthColumn[i] = depthArray[i][column];
+        for(int yCount = 0; yCount < 480; yCount++)
+        {
+            for(int xCount = 0; xCount < 640; xCount++)
+            {
+                redArray[xCount][yCount] = *castedData;
+                castedData++;
+                greenArray[xCount][yCount] = *castedData;
+                castedData++;
+                blueArray[xCount][yCount] = *castedData;
+                castedData++;
+            }
+        }
     }
-    return depthColumn;
+    
 }

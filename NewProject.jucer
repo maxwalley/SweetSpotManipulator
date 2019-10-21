@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="mtAZFz" name="NewProject" projectType="guiapp" jucerVersion="5.4.3">
+<JUCERPROJECT id="mtAZFz" name="NewProject" projectType="guiapp" jucerVersion="5.4.5">
   <MAINGROUP id="VZQjYu" name="NewProject">
     <GROUP id="{2C9811E5-CF9E-B1AD-AAE3-BF71A40E0ACA}" name="Source">
       <GROUP id="{3CE708F4-5EBF-6122-8F18-4FA98E3C3F16}" name="libfreenect">
@@ -59,8 +59,6 @@
       <FILE id="o0DNbO" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="OJ0YnC" name="Kinect.h" compile="0" resource="0" file="Source/Kinect.h"/>
       <FILE id="ybXXGt" name="Kinect.cpp" compile="1" resource="0" file="Source/Kinect.cpp"/>
-      <FILE id="S3ZysV" name="Callbacks.cpp" compile="1" resource="0" file="Source/Callbacks.cpp"/>
-      <FILE id="AHZuTu" name="Callbacks.hpp" compile="0" resource="0" file="Source/Callbacks.hpp"/>
     </GROUP>
     <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
       <FILE id="rAUthC" name="KinImage.h" compile="0" resource="0" file="Source/KinImage.h"/>

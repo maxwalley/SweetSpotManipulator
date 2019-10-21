@@ -10,10 +10,9 @@
 
 #pragma once
 
-//#include "Callbacks.hpp"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include <../Builds/MacOSX/Dependencies/libfreenect/include/libfreenect/libfreenect.h>
 #include <stdio.h>
+#include <libfreenect.h>
 
 //==============================================================================
 /*
@@ -29,9 +28,12 @@ public:
     void End() const;
     
     void checkLed(freenect_led_options ledState);
-    static uint16_t* getDepthColumn(int column);
     static uint16_t depthArray[640][480];
-
+    
+    static uint16_t redArray[640][480];
+    static uint16_t greenArray[640][480];
+    static uint16_t blueArray[640][480];
+    
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Kinect)
     
@@ -43,4 +45,5 @@ private:
     freenect_frame_mode VideoMode;
     
     static void depthCallback(freenect_device* dev, void* data, uint32_t timestamp);
+    static void videoCallback(freenect_device* dev, void* data, uint32_t timestamp);
 };
