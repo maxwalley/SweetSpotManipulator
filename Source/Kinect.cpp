@@ -9,6 +9,8 @@
 */
 #include "Kinect.h"
 
+uint16_t Kinect::depthArray[640][480];
+
 //==============================================================================
 Kinect::Kinect()
 {
@@ -91,10 +93,8 @@ void Kinect::InitandMove()
         //uint16_t depthArray[640][480];
         //DepthCallback(0, depthArray, -1111); // tell our callback where our external DepthArray is
         
-        freenect_set_depth_callback(dev, CB.DepthCallback);
+        freenect_set_depth_callback(dev, depthCallback);
         //freenect_set_video_callback(dev, VideoCallback);
-        freenect_set_log_level(ctx, loglvl);
-        //freenect_set_log_callback(ctx, *LogCallback);
         
         if(freenect_start_depth(dev) == 0)
         {
@@ -165,38 +165,30 @@ void Kinect::checkLed(freenect_led_options ledState)
     freenect_set_led(dev, ledState);
 }
 
-//void Kinect::LogCallback(freenect_context* ctx, freenect_loglevel level, const char* msg)
-//{
-//    fprintf(Logtxt, "%c\n", &msg);
-//}
-
-/*void Kinect::DepthCB(freenect_device* dev, void* data, uint32_t timestamp)
+void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
     uint16_t* castedData = static_cast<uint16_t*>(data);
     
+//    ScopedLock
+//    isBusy = true;
     for(int xCount = 0; xCount < 640; xCount++)
     {
         for(int yCount = 0; yCount < 480; yCount++)
         {
             depthArray[xCount][yCount] = *castedData;
-            
             castedData++;
         }
     }
-}*/
+//    isBusy = false;
+}
 
-void Kinect::rebuildArray()
+uint16_t* Kinect::getDepthColumn(int column)
 {
-    uint16_t wholeArray[640][480];
-    uint16_t* currentPixel;
+    uint16_t depthColumn[640];
     
-    for(int i = 0; i < 480; i++)
+    for(int i = 0; i < 640; i++)
     {
-        currentPixel = CB.getDepthData(i);
-        for(int c = 0; c < 640; c++)
-        {
-            wholeArray[c][i] = *currentPixel;
-            currentPixel++;
-        }
+        depthColumn[i] = depthArray[i][column];
     }
+    return depthColumn;
 }

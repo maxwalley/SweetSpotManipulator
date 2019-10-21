@@ -9,17 +9,17 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, false)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true)
 {
     // Make sure you set the size of the component after
     // you add any child components.
     setSize (1300, 700);
     
-    addAndMakeVisible(Channels);
+    /*addAndMakeVisible(Channels);
     addAndMakeVisible(Lights);
     addAndMakeVisible(OpenFileButton);
     addAndMakeVisible(PlayPauseButton);
-    addAndMakeVisible(rewindButton);
+    addAndMakeVisible(rewindButton);*/
     
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
@@ -54,6 +54,10 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     FormatManager.registerBasicFormats();
     
     OpenFileButton.onClick = [this] {buttonClickedEvent();};
+    
+    audioBlockCount = 0;
+    
+    rebuildArray();
 }
 
 MainComponent::~MainComponent()
@@ -81,13 +85,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     kin.RunVidandDepth();
     kin.checkLed(Lights.selectedLed);
     
-    for(int count1 = 1; count1 <= 440; count1++)
-    {
-        for(int count2 = 1; count2 <= 640; count2++)
-        {
-            kinPic.setPixelAt(count2, count1, Colour(200, 0, 0));
-        }
-    }
+    printf("Audio Block Count = %d\n", audioBlockCount);
     
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
@@ -146,6 +144,15 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             }
         }
     }
+    if(audioBlockCount >= 10)
+    {
+        audioBlockCount = 0;
+        rebuildArray();
+    }
+    else
+    {
+        audioBlockCount++;
+    }
 }
 
 void MainComponent::releaseResources()
@@ -167,7 +174,7 @@ void MainComponent::paint (Graphics& g)
     PlayPauseButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::royalblue);
     rewindButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::royalblue);
     
-    g.drawImage(kinPic, 850, 100, 320, 240, 0, 0, 640, 480, false);
+    g.drawImage(kinPic, 200, 200, 640, 480, 0, 0, 640, 480, false);
 }
 
 void MainComponent::resized()
@@ -194,4 +201,26 @@ void MainComponent::buttonClickedEvent()
     AudioFormatReaderSource source(reader, true);
     
     std::cout<<reader->getFormatName()<<std::endl;
+}
+
+void MainComponent::paintImage()
+{
+    const MessageManagerLock paintLock;
+    repaint(200, 200, 640, 480);
+}
+
+void MainComponent::rebuildArray()
+{
+    uint8_t shortArray[640][480];
+    
+    for(int i = 0; i < 480; i++)
+    {
+        for(int c = 0; c < 640; c++)
+        {
+            shortArray[c][i] = kin.depthArray[c][i]/8.02745;
+            std::cout << "Depth data = " << shortArray[c][i] << std::endl;
+            kinPic.setPixelAt(c, i, Colour(shortArray[c][i], 0, 0));
+        }
+    }
+    paintImage();
 }

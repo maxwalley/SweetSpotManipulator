@@ -78,4 +78,8 @@ private:
     Kinect kin;
     
     Image kinPic;
+    void rebuildArray();
+    void paintImage();
+    
+    int audioBlockCount;
 };

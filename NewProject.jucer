@@ -63,12 +63,14 @@
       <FILE id="AHZuTu" name="Callbacks.hpp" compile="0" resource="0" file="Source/Callbacks.hpp"/>
     </GROUP>
     <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
-      <FILE id="krBxEY" name="LightButtonArray.cpp" compile="1" resource="0"
-            file="Source/LightButtonArray.cpp"/>
+      <FILE id="rAUthC" name="KinImage.h" compile="0" resource="0" file="Source/KinImage.h"/>
+      <FILE id="P6SGsK" name="KinImage.cpp" compile="1" resource="0" file="Source/KinImage.cpp"/>
       <FILE id="ECyIs0" name="LightButtonArray.h" compile="0" resource="0"
             file="Source/LightButtonArray.h"/>
-      <FILE id="v4KRBn" name="LightButton.cpp" compile="1" resource="0" file="Source/LightButton.cpp"/>
+      <FILE id="krBxEY" name="LightButtonArray.cpp" compile="1" resource="0"
+            file="Source/LightButtonArray.cpp"/>
       <FILE id="iDEihM" name="LightButton.h" compile="0" resource="0" file="Source/LightButton.h"/>
+      <FILE id="v4KRBn" name="LightButton.cpp" compile="1" resource="0" file="Source/LightButton.cpp"/>
       <FILE id="yK0UFZ" name="MuteButton.h" compile="0" resource="0" file="Source/MuteButton.h"/>
       <FILE id="qSRmq6" name="MuteButton.cpp" compile="1" resource="0" file="Source/MuteButton.cpp"/>
       <FILE id="IHV0kZ" name="ChannelLabel.h" compile="0" resource="0" file="Source/ChannelLabel.h"/>
