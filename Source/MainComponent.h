@@ -77,9 +77,10 @@ private:
     
     Kinect kin;
     
-    Image rgbPic;
     Image kinPic;
+    Image rgbPic;
     void setDepthPixels();
+    void setRGBPixels();
     void paintImage();
     
     int audioBlockCount;

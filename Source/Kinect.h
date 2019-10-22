@@ -23,11 +23,12 @@ public:
     Kinect();
     ~Kinect();
     
-    void InitandMove();
-    void RunVidandDepth() const;
-    void End() const;
+    int kinInit();
+    int kinTilt();
+    int RunVidandDepth() const;
+    int End() const;
+    int checkLed(freenect_led_options ledState);
     
-    void checkLed(freenect_led_options ledState);
     static uint16_t depthArray[640][480];
     
     static uint16_t redArray[640][480];

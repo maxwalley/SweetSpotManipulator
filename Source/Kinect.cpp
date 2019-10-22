@@ -18,148 +18,186 @@ uint16_t Kinect::blueArray[640][480];
 //==============================================================================
 Kinect::Kinect()
 {
-    
 }
 
 Kinect::~Kinect()
 {
 }
 
-void Kinect::InitandMove()
+int Kinect::kinInit()
 {
-    freenect_init(&ctx, NULL);
+    if(freenect_init(&ctx, NULL) != 0)
+    {
+        DBG("Freenect Init failed");
+        return 1;
+    }
+    
     numDev = freenect_num_devices(ctx);
     
     if(numDev >= 1)
     {
-        printf("Number of Connected Devices is: %d\n", numDev);
+        DBG("Number of Connected Devices is: " << numDev);
         
-        if(freenect_open_device(ctx, &dev, 0) < 0)
+        if(freenect_open_device(ctx, &dev, 0) != 0)
         {
-            printf("Error Opening Device");
-            freenect_shutdown(ctx);
+            DBG("Error Opening Device");
+            return 2;
         }
         else
         {
-            printf("Device Opened Successfully");
+            DBG("Device Opened Successfully");
         }
-        
-        freenect_set_tilt_degs(dev, 30);
-        do
-        {
-            freenect_update_tilt_state(dev);
-            state = freenect_get_tilt_state(dev);
-            printf("%d\n", state->tilt_status);
-        }
-        while(state->tilt_status == TILT_STATUS_MOVING);
-    
-        freenect_set_tilt_degs(dev, 10);
-        do
-        {
-            freenect_update_tilt_state(dev);
-            state = freenect_get_tilt_state(dev);
-            //printf("%d\n", state->tilt_status);
-        }
-        while(state->tilt_status == TILT_STATUS_MOVING);
         
         DepthMode = freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT);
         VideoMode = freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB);
         
-        if(freenect_set_depth_mode(dev, DepthMode) < 0)
+        if(freenect_set_depth_mode(dev, DepthMode) != 0)
         {
-            printf("Error Setting Depth Mode\n");
-            freenect_shutdown(ctx);
+            DBG("Error Setting Depth Mode");
+            return 3;
         }
         else
         {
-            printf("Depth Mode Set Correctly\n");
+            DBG("Depth Mode Set Correctly");
         }
         
-        if(freenect_set_video_mode(dev, VideoMode) < 0)
+        if(freenect_set_video_mode(dev, VideoMode) != 0)
         {
-            printf("Error Setting Video Mode\n");
-            freenect_shutdown(ctx);
+            DBG("Error Setting Video Mode");
+            return 4;
         }
         else
         {
-            printf("Video Mode Set Correctly\n");
+            DBG("Video Mode Set Correctly");
         }
         
-        printf("Required Depth Buffer Size is: %d\n", DepthMode.bytes);
-        printf("Depth Width is: %d\n", DepthMode.width);
-        printf("Depth Height is: %d\n", DepthMode.height);
-        printf("Bits Per Pixel of Depth Frame is: %d\n", DepthMode.data_bits_per_pixel);
+        DBG("Required Depth Buffer Size is: " << DepthMode.bytes);
+        DBG("Depth Width is: " << DepthMode.width);
+        DBG("Depth Height is: " << DepthMode.height);
+        DBG("Bits Per Pixel of Depth Frame is: " << DepthMode.data_bits_per_pixel);
         
         freenect_set_depth_callback(dev, depthCallback);
         //freenect_set_video_callback(dev, videoCallback);
         
-        if(freenect_start_depth(dev) == 0)
+        if(freenect_start_depth(dev) != 0)
         {
-            printf("Depth Stream Started\n");
+            DBG("Error Starting Depth Stream");
+            return 5;
         }
         else
         {
-            printf("Error Starting Depth Stream\n");
-            freenect_shutdown(ctx);
+            DBG("Depth Stream Started");
         }
         
-        if(freenect_start_video(dev) == 0)
+        if(freenect_start_video(dev) != 0)
         {
-            printf("Video Stream Started\n");
+            DBG("Error Starting Video Stream");
+            return 6;
         }
         else
         {
-            printf("Error Starting Video Stream\n");
-            freenect_shutdown(ctx);
+            DBG("Video Stream Started");
         }
     }
     
     else if(numDev == 0)
     {
-        printf("No Devices Found");
-        freenect_shutdown(ctx);
+        DBG("No Devices Found");
+        return 7;
     }
+    return 0;
 }
 
-void Kinect::RunVidandDepth() const
+int Kinect::kinTilt()
+{
+    if(freenect_set_tilt_degs(dev, 30) != 0)
+    {
+        DBG("Error setting tilt");
+        return 11;
+    }
+    
+    do
+    {
+        if(freenect_update_tilt_state(dev) != 0)
+        {
+            DBG("Error updating tilt state");
+            return 12;
+        }
+        state = freenect_get_tilt_state(dev);
+        DBG(state->tilt_status);
+    }
+    while(state->tilt_status == TILT_STATUS_MOVING);
+    
+    
+    if(freenect_set_tilt_degs(dev, 10) != 0)
+    {
+        DBG("Error setting tilt");
+        return 11;
+    }
+    
+    do
+    {
+        if(freenect_update_tilt_state(dev) != 0)
+        {
+            DBG("Error updating tilt state");
+            return 12;
+        }
+        state = freenect_get_tilt_state(dev);
+        DBG(state->tilt_status);
+    }
+    while(state->tilt_status == TILT_STATUS_MOVING);
+    
+    return 0;
+}
+
+int Kinect::RunVidandDepth() const
 {
     if(freenect_process_events(ctx) != 0)
     {
-        printf("Error Processing Events");
-        End();
+        DBG("Error Processing Events");
+        return 21;
     }
-    else
-    {
-    }
+    return 0;
 }
 
-void Kinect::End() const
+int Kinect::End() const
 {
-    if(freenect_stop_depth(dev) == 0)
+    if(freenect_stop_depth(dev) != 0)
     {
-        printf("Depth Stream Ended Successfully\n");
+        DBG("Depth stream stop failed");
+        return 31;
     }
     
-    if(freenect_stop_video(dev) == 0)
+    if(freenect_stop_video(dev) != 0)
     {
-        printf("Video Stream Ended Successfully\n");
+        DBG("Video stream stop failed");
+        return 32;
     }
     
-    if(freenect_close_device(dev) == 0)
+    if(freenect_close_device(dev) != 0)
     {
-        printf("Freenect Device Closed Successfully\n");
+        DBG("Error closing freenect device");
+        return 33;
     }
     
-    if(freenect_shutdown(ctx) == 0)
+    if(freenect_shutdown(ctx) != 0)
     {
-        printf("Freenect Shutdown Successfully\n");
+        DBG("Error freeing the context");
+        return 34;
     }
-    //closeRawDataFiles();
+    
+    return 0;
 }
 
-void Kinect::checkLed(freenect_led_options ledState)
+int Kinect::checkLed(freenect_led_options ledState)
 {
-    freenect_set_led(dev, ledState);
+    if(freenect_set_led(dev, ledState) != 0)
+    {
+        DBG("Error setting kinect LED");
+        return 41;
+    }
+    
+    return 0;
 }
 
 void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
@@ -173,6 +211,8 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
         for(int xCount = 0; xCount < 640; xCount++)
         {
             depthArray[xCount][yCount] = *castedData;
+            //Uncomment this if you want to inverse the colours
+            //depthArray[xCount][yCount] = (depthArray[xCount][yCount] - 255) * -1;
             castedData++;
         }
     }
@@ -183,20 +223,20 @@ void Kinect::videoCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
     uint16_t* castedData = static_cast<uint16_t*>(data);
     
-    for(int overallCount = 0; overallCount < 921600; overallCount++)
+    for(int yCount = 0; yCount < 480; yCount++)
     {
-        for(int yCount = 0; yCount < 480; yCount++)
+        for(int xCount = 0; xCount < 640; xCount++)
         {
-            for(int xCount = 0; xCount < 640; xCount++)
-            {
-                redArray[xCount][yCount] = *castedData;
-                castedData++;
-                greenArray[xCount][yCount] = *castedData;
-                castedData++;
-                blueArray[xCount][yCount] = *castedData;
-                castedData++;
-            }
+            printf("vid Data = %d\n", *castedData);
+            redArray[xCount][yCount] = *castedData;
+            //redArray[xCount][yCount] = (redArray[xCount][yCount] - 255) * -1;
+            castedData++;
+            greenArray[xCount][yCount] = *castedData;
+            //greenArray[xCount][yCount] = (greenArray[xCount][yCount] - 255) * -1;
+            castedData++;
+            blueArray[xCount][yCount] = *castedData;
+            //blueArray[xCount][yCount] = (blueArray[xCount][yCount] - 255) * -1;
+            castedData++;
         }
     }
-    
 }

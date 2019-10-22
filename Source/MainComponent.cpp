@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -58,6 +58,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     audioBlockCount = 0;
     
     setDepthPixels();
+    setRGBPixels();
 }
 
 MainComponent::~MainComponent()
@@ -76,14 +77,42 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     printf("Block Size is %d\n", samplesPerBlockExpected);
     // You can use this function to initialise any resources you might need,
     // but be careful - it will be called on the audio thread, not the GUI thread.
-    kin.InitandMove();
-    // For more details, see the help for AudioProcessor::prepareToPlay()
+    int initErrorCode = kin.kinInit();
+    
+    if(initErrorCode != 0)
+    {
+        DBG("Kinect init failed with error code: " << initErrorCode);
+    }
+    else if (initErrorCode == 0)
+    {
+        DBG("Kinect init completed");
+    }
+    
+    int tiltErrorCode = kin.kinTilt();
+    
+    if(tiltErrorCode != 0)
+    {
+        DBG("Kinect tilt failed with error code: " << tiltErrorCode);
+    }
+    else if (tiltErrorCode == 0)
+    {
+        DBG("Kinect tilt completed");
+    }
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    kin.RunVidandDepth();
-    kin.checkLed(Lights.selectedLed);
+    int kinProcessingErrorCode = kin.RunVidandDepth();
+    if(kinProcessingErrorCode != 0)
+    {
+        DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
+    }
+    
+    int kinLEDErrorCode = kin.checkLed(Lights.selectedLed);
+    if(kinLEDErrorCode != 0)
+    {
+        DBG("Kinect led check failed with error code: " << kinLEDErrorCode);
+    }
     
     printf("Audio Block Count = %d\n", audioBlockCount);
     
@@ -148,6 +177,8 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     {
         audioBlockCount = 0;
         setDepthPixels();
+        setRGBPixels();
+        paintImage();
     }
     else
     {
@@ -161,8 +192,11 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
     AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Close App?", "Are you sure you want to close this app?", "Continue", "Cancel", nullptr, nullptr);
     
-    kin.End();
-    // For more details, see the help for AudioProcessor::releaseResources()
+    int kinEndErrorCode = kin.End();
+    if(kinEndErrorCode != 0)
+    {
+        DBG("Kinect closing sequence failed with error code: " << kinEndErrorCode);
+    }
 }
 
 //==============================================================================
@@ -174,7 +208,8 @@ void MainComponent::paint (Graphics& g)
     PlayPauseButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::royalblue);
     rewindButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::royalblue);
     
-    g.drawImage(kinPic, 200, 200, 640, 480, 0, 0, 640, 480, false);
+    g.drawImage(kinPic, 100, 200, 320, 240, 0, 0, 640, 480, false);
+    g.drawImage(rgbPic, 500, 200, 320, 240, 0, 0, 640, 480, false);
 }
 
 void MainComponent::resized()
@@ -206,7 +241,7 @@ void MainComponent::buttonClickedEvent()
 void MainComponent::paintImage()
 {
     const MessageManagerLock paintLock;
-    repaint(200, 200, 640, 480);
+    repaint(100, 200, 720, 240);
 }
 
 void MainComponent::setDepthPixels()
@@ -222,7 +257,17 @@ void MainComponent::setDepthPixels()
             kinPic.setPixelAt(i, c, Colour(kin.depthArray[i][c], kin.depthArray[i][c], kin.depthArray[i][c]));
         }
     }
-    paintImage();
+}
+
+void MainComponent::setRGBPixels()
+{
+    for(int i = 0; i < 640; i++)
+    {
+        for(int c = 0; c < 480; c++)
+        {
+            rgbPic.setPixelAt(i, c, Colour(kin.redArray[i][c], kin.greenArray[i][c], kin.blueArray[i][c]));
+        }
+    }
 }
 
 
