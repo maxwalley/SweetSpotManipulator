@@ -146,3 +146,8 @@ void LightButtonArray::buttonClicked(Button* button)
         
     }
 }
+
+freenect_led_options LightButtonArray::getSelectedLed()
+{
+    return selectedLed;
+}

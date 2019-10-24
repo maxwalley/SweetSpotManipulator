@@ -110,7 +110,7 @@ int Kinect::kinInit()
 
 int Kinect::kinTilt()
 {
-    if(freenect_set_tilt_degs(dev, 30) != 0)
+    if(freenect_set_tilt_degs(dev, 10) != 0)
     {
         DBG("Error setting tilt");
         return 11;
@@ -129,10 +129,10 @@ int Kinect::kinTilt()
     while(state->tilt_status == TILT_STATUS_MOVING);
     
     
-    if(freenect_set_tilt_degs(dev, 10) != 0)
+    if(freenect_set_tilt_degs(dev, 30) != 0)
     {
         DBG("Error setting tilt");
-        return 11;
+        return 13;
     }
     
     do
@@ -140,7 +140,7 @@ int Kinect::kinTilt()
         if(freenect_update_tilt_state(dev) != 0)
         {
             DBG("Error updating tilt state");
-            return 12;
+            return 14;
         }
         state = freenect_get_tilt_state(dev);
         DBG(state->tilt_status);

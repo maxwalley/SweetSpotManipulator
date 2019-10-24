@@ -21,6 +21,10 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(PlayPauseButton);
     addAndMakeVisible(rewindButton);*/
     
+    addAndMakeVisible(masterSlider);
+    masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
+    masterSlider.setRange(0, 1);
+    
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
 
@@ -42,14 +46,14 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     PlayPauseButton.setToggleState(false, dontSendNotification);
     rewindButton.setToggleState(false, dontSendNotification);
     
-    LFMultiplier = 0;
+    /*LFMultiplier = 0;
     RFMultiplier = 0;
     
     LFMultiState = up;
     RFMultiState = up;
     
     LFsamplecount = 0;
-    RFsamplecount = 0;
+    RFsamplecount = 0;*/
     
     FormatManager.registerBasicFormats();
     
@@ -59,6 +63,47 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     setDepthPixels();
     setRGBPixels();
+    
+    channel1Multiplier = 0;
+    channel2Multiplier = 0;
+    
+    channel1State = up;
+    channel2State = up;
+    
+    channel1SampleCount = 0;
+    channel2SampleCount = 0;
+    
+    //kinectErrorCodeTriggered = true;
+    
+    int initErrorCode = kin.kinInit();
+    
+    /*if(initErrorCode != 0)
+    {
+        DBG("Kinect init failed with error code: " << initErrorCode);
+        kinectErrorCodeTriggered = false;
+    }
+    else if (initErrorCode == 0)
+    {
+        DBG("Kinect init completed");
+        kinectErrorCodeTriggered = true;
+    }
+    
+    if(kinectErrorCodeTriggered == true)
+    {
+        int tiltErrorCode = kin.kinTilt();
+    
+        if(tiltErrorCode != 0)
+        {
+            DBG("Kinect tilt failed with error code: " << tiltErrorCode);
+            kinectErrorCodeTriggered = false;
+        }
+        else if (tiltErrorCode == 0)
+        {
+            DBG("Kinect tilt completed");
+        }
+    }*/
+    
+    kinectErrorCodeTriggered = false;
 }
 
 MainComponent::~MainComponent()
@@ -77,125 +122,124 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     printf("Block Size is %d\n", samplesPerBlockExpected);
     // You can use this function to initialise any resources you might need,
     // but be careful - it will be called on the audio thread, not the GUI thread.
-    int initErrorCode = kin.kinInit();
-    
-    if(initErrorCode != 0)
-    {
-        DBG("Kinect init failed with error code: " << initErrorCode);
-    }
-    else if (initErrorCode == 0)
-    {
-        DBG("Kinect init completed");
-    }
-    
-    int tiltErrorCode = kin.kinTilt();
-    
-    if(tiltErrorCode != 0)
-    {
-        DBG("Kinect tilt failed with error code: " << tiltErrorCode);
-    }
-    else if (tiltErrorCode == 0)
-    {
-        DBG("Kinect tilt completed");
-    }
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    int kinProcessingErrorCode = kin.RunVidandDepth();
-    if(kinProcessingErrorCode != 0)
+    if(kinectErrorCodeTriggered == true)
     {
-        DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
+        DBG("Kinect no error");
+    }
+    else if(kinectErrorCodeTriggered == false)
+    {
+        DBG("Kinect error");
     }
     
-    int kinLEDErrorCode = kin.checkLed(Lights.selectedLed);
-    if(kinLEDErrorCode != 0)
+    if(kinectErrorCodeTriggered == true)
     {
-        DBG("Kinect led check failed with error code: " << kinLEDErrorCode);
+        int kinProcessingErrorCode = kin.RunVidandDepth();
+        if(kinProcessingErrorCode != 0)
+        {
+            DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
+            kinectErrorCodeTriggered = false;
+        }
     }
     
-    printf("Audio Block Count = %d\n", audioBlockCount);
+    if(kinectErrorCodeTriggered == true)
+    {
+        int kinLEDErrorCode = kin.checkLed(Lights.getSelectedLed());
+        if(kinLEDErrorCode != 0)
+        {
+            DBG("Kinect led check failed with error code: " << kinLEDErrorCode);
+            kinectErrorCodeTriggered = false;
+        }
+    }
     
+    //printf("Audio Block Count = %d\n", audioBlockCount);
+    
+    //Iterates through the channels
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
+        //Creates Pointer to the first sample of the selected channel
         float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
         
+        //Iterates through the samples
         for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
         {
-            if(channel == 0 && Channels.LeftFront.Mute.getToggleState() == false && Channels.Master.Mute.getToggleState() == false)
+            if(channel == 0)
             {
-                LFsamplecount += 1;
-                
-                if(LFMultiState == up)
+                if(channel1State == up)
                 {
-                    LFMultiplier = 0.25;
-                    if(LFsamplecount == 200)
+                    channel1Multiplier = 0.25;
+                    if(channel1SampleCount == 200)
                     {
-                        LFMultiState = down;
-                        LFsamplecount = 0;
+                        channel1SampleCount = 0;
+                        channel1State = down;
                     }
                 }
-                else if(LFMultiState == down)
+                else if(channel1State == down)
                 {
-                    LFMultiplier = -0.25;
-                    if(LFsamplecount == 200)
+                    channel1Multiplier = -0.25;
+                    if(channel1SampleCount == 200)
                     {
-                        LFMultiState = up;
-                        LFsamplecount = 0;
+                        channel1SampleCount = 0;
+                        channel1State = up;
                     }
                 }
-                buffer[sample] = LFMultiplier * (Channels.LeftFront.CHSlider.getValue() * Channels.Master.CHSlider.getValue());
+                channel1SampleCount += 1;
+                buffer[sample] = channel1Multiplier * masterSlider.getValue();
             }
             
-            if(channel == 1 && Channels.RightFront.Mute.getToggleState() == false && Channels.Master.Mute.getToggleState() == false)
+            else if(channel == 1)
             {
-                RFsamplecount += 1;
-            
-                if(RFMultiState == up)
+                if(channel2State == up)
                 {
-                    RFMultiplier = 0.25;
-                    if(RFsamplecount == 200)
+                    channel2Multiplier = 0.25;
+                    if(channel2SampleCount == 200)
                     {
-                        RFMultiState = down;
-                        RFsamplecount = 0;
+                        channel2SampleCount = 0;
+                        channel2State = down;
                     }
                 }
-                else if(RFMultiState == down)
+                else if(channel2State == down)
                 {
-                    RFMultiplier = -0.25;
-                    if(RFsamplecount == 200)
+                    channel2Multiplier = -0.25;
+                    if(channel2SampleCount == 200)
                     {
-                        RFMultiState = up;
-                        RFsamplecount = 0;
+                        channel2SampleCount = 0;
+                        channel2State = up;
                     }
                 }
-                buffer[sample] = RFMultiplier * (Channels.RightFront.CHSlider.getValue() * Channels.Master.CHSlider.getValue());
+                channel2SampleCount += 1;
+                buffer[sample] = channel2Multiplier * masterSlider.getValue();
             }
         }
     }
-    if(audioBlockCount >= 20)
+    /*if(audioBlockCount >= 50)
     {
         audioBlockCount = 0;
         setDepthPixels();
-        setRGBPixels();
+        //setRGBPixels();
         paintImage();
     }
     else
     {
         audioBlockCount++;
-    }
+    }*/
 }
 
 void MainComponent::releaseResources()
 {
     // This will be called when the audio device stops, or when it is being
     // restarted due to a setting change.
-    AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Close App?", "Are you sure you want to close this app?", "Continue", "Cancel", nullptr, nullptr);
-    
-    int kinEndErrorCode = kin.End();
-    if(kinEndErrorCode != 0)
+    if(kinectErrorCodeTriggered == true)
     {
-        DBG("Kinect closing sequence failed with error code: " << kinEndErrorCode);
+        int kinEndErrorCode = kin.End();
+        if(kinEndErrorCode != 0)
+        {
+            DBG("Kinect closing sequence failed with error code: " << kinEndErrorCode);
+            kinectErrorCodeTriggered = false;
+        }
     }
 }
 
@@ -221,6 +265,8 @@ void MainComponent::resized()
     OpenFileButton.setBounds(650, 20, 80, 20);
     PlayPauseButton.setBounds(530, 20, 80, 20);
     rewindButton.setBounds(530, 50, 80, 20);*/
+    
+    masterSlider.setBounds(900, 300, 30, 200);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
 }

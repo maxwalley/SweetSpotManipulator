@@ -28,7 +28,8 @@ public:
     void resized() override;
     
     void buttonClicked(Button* button) override;
-    freenect_led_options selectedLed;
+    
+    freenect_led_options getSelectedLed();
     
     LightButton off;
     LightButton red;
@@ -38,4 +39,6 @@ public:
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LightButtonArray)
+    
+    freenect_led_options selectedLed;
 };

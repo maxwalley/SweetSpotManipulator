@@ -45,26 +45,21 @@ private:
     AudioDeviceManager UserSelectedDevice;
     AudioDeviceSelectorComponent UserSelectedDeviceSettings;
     
-    float CMultiplier;
-    float LFMultiplier;
-    float RFMultiplier;
-    float LRMultiplier;
-    float RRMultiplier;
-    float LFEMultiplier;
-    enum MultiplierState
-    {
-        up,
-        down
-    };
-    MultiplierState CMultiState;
-    MultiplierState LFMultiState;
-    MultiplierState RFMultiState;
-    MultiplierState LRMultiState;
-    MultiplierState RRMultiState;
-    MultiplierState LFEMultiState;
+    float channel1Multiplier;
+    float channel2Multiplier;
     
-    int16_t LFsamplecount;
-    int16_t RFsamplecount;
+    int channel1SampleCount;
+    int channel2SampleCount;
+    
+    enum multiplierState
+    {
+        up = 0,
+        down = 1
+    };
+    multiplierState channel1State;
+    multiplierState channel2State;
+    
+    Slider masterSlider;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
     
@@ -84,4 +79,8 @@ private:
     void paintImage();
     
     int audioBlockCount;
+    
+    //Bool that returns false if any kinect error code is detected
+    bool kinectErrorCodeTriggered;
+
 };
