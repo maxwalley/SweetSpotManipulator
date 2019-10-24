@@ -25,6 +25,12 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     masterSlider.setRange(0, 1);
     
+    addAndMakeVisible(panningLaw);
+    
+    addAndMakeVisible(panSlider);
+    panSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    panSlider.setRange(0, 1);
+    
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
 
@@ -104,6 +110,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     }*/
     
     kinectErrorCodeTriggered = false;
+    
 }
 
 MainComponent::~MainComponent()
@@ -126,16 +133,16 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    if(kinectErrorCodeTriggered == true)
+    /*if(kinectErrorCodeTriggered == true)
     {
         DBG("Kinect no error");
     }
     else if(kinectErrorCodeTriggered == false)
     {
         DBG("Kinect error");
-    }
+    }*/
     
-    if(kinectErrorCodeTriggered == true)
+    /*if(kinectErrorCodeTriggered == true)
     {
         int kinProcessingErrorCode = kin.RunVidandDepth();
         if(kinProcessingErrorCode != 0)
@@ -143,7 +150,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
             kinectErrorCodeTriggered = false;
         }
-    }
+    }*/
     
     if(kinectErrorCodeTriggered == true)
     {
@@ -187,7 +194,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
                     }
                 }
                 channel1SampleCount += 1;
-                buffer[sample] = channel1Multiplier * masterSlider.getValue();
+                buffer[sample] = workOutValue(channel1Multiplier, channel);
             }
             
             else if(channel == 1)
@@ -211,7 +218,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
                     }
                 }
                 channel2SampleCount += 1;
-                buffer[sample] = channel2Multiplier * masterSlider.getValue();
+                buffer[sample] = workOutValue(channel2Multiplier, channel);
             }
         }
     }
@@ -267,6 +274,8 @@ void MainComponent::resized()
     rewindButton.setBounds(530, 50, 80, 20);*/
     
     masterSlider.setBounds(900, 300, 30, 200);
+    panningLaw.setBounds(800, 600, 200, 30);
+    panSlider.setBounds(800, 660, 190, 30);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
 }
@@ -316,4 +325,22 @@ void MainComponent::setRGBPixels()
     }
 }
 
-
+float MainComponent::workOutValue(float multiplier, int channel)
+{
+    if(channel == 0)
+    {
+        if(panningLaw.getPanningLaw() == 0)
+        {
+            return multiplier * masterSlider.getValue() * panSlider.getValue();
+        }
+    }
+    else if(channel == 1)
+    {
+        if(panningLaw.getPanningLaw() == 0)
+        {
+            return multiplier * masterSlider.getValue() * (1 - panSlider.getValue());
+        }
+    }
+    
+    return 0;
+}

@@ -61,6 +61,10 @@
       <FILE id="ybXXGt" name="Kinect.cpp" compile="1" resource="0" file="Source/Kinect.cpp"/>
     </GROUP>
     <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
+      <FILE id="k0wNaf" name="PanningButtonArray.h" compile="0" resource="0"
+            file="Source/PanningButtonArray.h"/>
+      <FILE id="BzaG1y" name="PanningButtonArray.cpp" compile="1" resource="0"
+            file="Source/PanningButtonArray.cpp"/>
       <FILE id="rAUthC" name="KinImage.h" compile="0" resource="0" file="Source/KinImage.h"/>
       <FILE id="P6SGsK" name="KinImage.cpp" compile="1" resource="0" file="Source/KinImage.cpp"/>
       <FILE id="ECyIs0" name="LightButtonArray.h" compile="0" resource="0"

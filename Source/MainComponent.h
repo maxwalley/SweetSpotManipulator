@@ -12,6 +12,7 @@
 #include "ChannelArray.h"
 #include "LightButtonArray.h"
 #include "Kinect.h"
+#include "PanningButtonArray.h"
 
 //==============================================================================
 /*
@@ -78,9 +79,13 @@ private:
     void setRGBPixels();
     void paintImage();
     
+    PanningButtonArray panningLaw;
+    Slider panSlider;
+    
     int audioBlockCount;
     
     //Bool that returns false if any kinect error code is detected
     bool kinectErrorCodeTriggered;
 
+    float workOutValue(float multiplier, int channel);
 };

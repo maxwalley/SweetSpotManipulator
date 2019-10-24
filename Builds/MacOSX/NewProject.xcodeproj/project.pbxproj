@@ -73,6 +73,10 @@
 			isa = PBXBuildFile;
 			fileRef = A9236C36644D1A09CD72537B;
 		};
+		4D3CD4E698D2CD92FFCF4F7C = {
+			isa = PBXBuildFile;
+			fileRef = 96016C6FB4A045AA6125FDE1;
+		};
 		638DFF9EC6BCB0A340C9B5FF = {
 			isa = PBXBuildFile;
 			fileRef = 2A4DA5C8CD1183E4787F00DD;
@@ -497,6 +501,13 @@
 			path = Dependencies/libfreenect/lib/fakenect/libfakenect.dylib;
 			sourceTree = "SOURCE_ROOT";
 		};
+		96016C6FB4A045AA6125FDE1 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = PanningButtonArray.cpp;
+			path = ../../Source/PanningButtonArray.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		96A09C11E31609681E6CE20F = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -517,6 +528,13 @@
 			name = OpenGL.framework;
 			path = System/Library/Frameworks/OpenGL.framework;
 			sourceTree = SDKROOT;
+		};
+		9F82B835FD268CE18BF5EA13 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PanningButtonArray.h;
+			path = ../../Source/PanningButtonArray.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		9FE6C56BB2593D9013A91EA0 = {
 			isa = PBXFileReference;
@@ -861,6 +879,8 @@
 		F780D6A787C9CF086D9C5617 = {
 			isa = PBXGroup;
 			children = (
+				9F82B835FD268CE18BF5EA13,
+				96016C6FB4A045AA6125FDE1,
 				BD6CB474D82966E4364BE595,
 				2A4DA5C8CD1183E4787F00DD,
 				4668E4F9EA2F2F0F06310341,
@@ -1209,6 +1229,7 @@
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,
 				F2A8DA8F5F4C1620B30A326E,
+				4D3CD4E698D2CD92FFCF4F7C,
 				638DFF9EC6BCB0A340C9B5FF,
 				2DB4CFC96B16B3B5E575EAB2,
 				24C23A06F9BC17D6D01088AE,
