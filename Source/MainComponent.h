@@ -10,9 +10,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ChannelArray.h"
-#include "LightButtonArray.h"
+#include "LightControls.h"
 #include "Kinect.h"
-#include "PanningButtonArray.h"
+#include "PanningControls.h"
+#include <math.h>
 
 //==============================================================================
 /*
@@ -42,7 +43,7 @@ private:
     void buttonClickedEvent();
     
     ChannelArray Channels;
-    LightButtonArray Lights;
+    LightControls Lights;
     AudioDeviceManager UserSelectedDevice;
     AudioDeviceSelectorComponent UserSelectedDeviceSettings;
     
@@ -61,6 +62,7 @@ private:
     multiplierState channel2State;
     
     Slider masterSlider;
+    Label masterSliderLabel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
     
@@ -79,8 +81,7 @@ private:
     void setRGBPixels();
     void paintImage();
     
-    PanningButtonArray panningLaw;
-    Slider panSlider;
+    PanningControls panningLaw;
     
     int audioBlockCount;
     

@@ -9,14 +9,13 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0)
 {
     // Make sure you set the size of the component after
     // you add any child components.
-    setSize (1300, 700);
+    setSize (1280, 800);
     
     /*addAndMakeVisible(Channels);
-    addAndMakeVisible(Lights);
     addAndMakeVisible(OpenFileButton);
     addAndMakeVisible(PlayPauseButton);
     addAndMakeVisible(rewindButton);*/
@@ -24,13 +23,14 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(masterSlider);
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     masterSlider.setRange(0, 1);
+    masterSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    addAndMakeVisible(masterSliderLabel);
+    masterSliderLabel.setText("Master", dontSendNotification);
+    
+    addAndMakeVisible(Lights);
     
     addAndMakeVisible(panningLaw);
-    
-    addAndMakeVisible(panSlider);
-    panSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
-    panSlider.setRange(0, 1);
-    
+        
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
 
@@ -52,32 +52,13 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     PlayPauseButton.setToggleState(false, dontSendNotification);
     rewindButton.setToggleState(false, dontSendNotification);
     
-    /*LFMultiplier = 0;
-    RFMultiplier = 0;
-    
-    LFMultiState = up;
-    RFMultiState = up;
-    
-    LFsamplecount = 0;
-    RFsamplecount = 0;*/
-    
     FormatManager.registerBasicFormats();
     
     OpenFileButton.onClick = [this] {buttonClickedEvent();};
     
-    audioBlockCount = 0;
-    
     setDepthPixels();
     setRGBPixels();
     
-    channel1Multiplier = 0;
-    channel2Multiplier = 0;
-    
-    channel1State = up;
-    channel2State = up;
-    
-    channel1SampleCount = 0;
-    channel2SampleCount = 0;
     
     //kinectErrorCodeTriggered = true;
     
@@ -150,7 +131,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
             kinectErrorCodeTriggered = false;
         }
-    }*/
+    }
     
     if(kinectErrorCodeTriggered == true)
     {
@@ -160,7 +141,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             DBG("Kinect led check failed with error code: " << kinLEDErrorCode);
             kinectErrorCodeTriggered = false;
         }
-    }
+    }*/
     
     //printf("Audio Block Count = %d\n", audioBlockCount);
     
@@ -267,15 +248,16 @@ void MainComponent::resized()
 {
     /*Channels.setBounds(0, 180, 800, 340);
     
-    Lights.setBounds(500, 80, 250, 60);
-    
     OpenFileButton.setBounds(650, 20, 80, 20);
     PlayPauseButton.setBounds(530, 20, 80, 20);
     rewindButton.setBounds(530, 50, 80, 20);*/
     
-    masterSlider.setBounds(900, 300, 30, 200);
-    panningLaw.setBounds(800, 600, 200, 30);
-    panSlider.setBounds(800, 660, 190, 30);
+    Lights.setBounds(1000, 50, 200, 55);
+    
+    masterSlider.setBounds(1090, 400, 50, 200);
+    masterSliderLabel.setBounds(1090, 370, 50, 25);
+    
+    panningLaw.setBounds(1000, 150, 200, 100);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
 }
@@ -329,16 +311,27 @@ float MainComponent::workOutValue(float multiplier, int channel)
 {
     if(channel == 0)
     {
-        if(panningLaw.getPanningLaw() == 0)
+        
+        if(panningLaw.getPanningLaw() == 1)
         {
-            return multiplier * masterSlider.getValue() * panSlider.getValue();
+            return multiplier * masterSlider.getValue() * (sin(0.5 * M_PI * panningLaw.getPanSliderVal()));
+        }
+        
+        else if(panningLaw.getPanningLaw() == 2)
+        {
+            return multiplier * masterSlider.getValue() * panningLaw.getPanSliderVal();
         }
     }
     else if(channel == 1)
     {
-        if(panningLaw.getPanningLaw() == 0)
+        if(panningLaw.getPanningLaw() == 1)
         {
-            return multiplier * masterSlider.getValue() * (1 - panSlider.getValue());
+            return multiplier * masterSlider.getValue() * (1 - (sin(0.5 * M_PI * panningLaw.getPanSliderVal())));
+        }
+        
+        else if(panningLaw.getPanningLaw() == 2)
+        {
+            return multiplier * masterSlider.getValue() * (1 - panningLaw.getPanSliderVal());
         }
     }
     

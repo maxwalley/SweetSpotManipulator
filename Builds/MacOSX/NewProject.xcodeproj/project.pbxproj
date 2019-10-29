@@ -73,21 +73,17 @@
 			isa = PBXBuildFile;
 			fileRef = A9236C36644D1A09CD72537B;
 		};
-		4D3CD4E698D2CD92FFCF4F7C = {
+		45E297FAD31EEEAC59E308E1 = {
 			isa = PBXBuildFile;
-			fileRef = 96016C6FB4A045AA6125FDE1;
+			fileRef = F33DDEFD2A31D417E3B6FDD8;
 		};
 		638DFF9EC6BCB0A340C9B5FF = {
 			isa = PBXBuildFile;
 			fileRef = 2A4DA5C8CD1183E4787F00DD;
 		};
-		2DB4CFC96B16B3B5E575EAB2 = {
+		F3FE73C6D705FBC03636B149 = {
 			isa = PBXBuildFile;
-			fileRef = 306512A5802FC2E220ECFFA0;
-		};
-		24C23A06F9BC17D6D01088AE = {
-			isa = PBXBuildFile;
-			fileRef = F8D5E46EA60D81C69B83D351;
+			fileRef = AE7D650C8A88D9917ECF6BDA;
 		};
 		E74A02CF53846CFFD093A499 = {
 			isa = PBXBuildFile;
@@ -333,13 +329,6 @@
 			path = System/Library/Frameworks/CoreAudio.framework;
 			sourceTree = SDKROOT;
 		};
-		306512A5802FC2E220ECFFA0 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = LightButtonArray.cpp;
-			path = ../../Source/LightButtonArray.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		35304684F9997BFA2BB32015 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.dylib;
@@ -352,13 +341,6 @@
 			lastKnownFileType = file.dylib;
 			name = libFreenectDriver.dylib;
 			path = "Dependencies/libfreenect/lib/OpenNI2-FreenectDriver/libFreenectDriver.dylib";
-			sourceTree = "SOURCE_ROOT";
-		};
-		4668E4F9EA2F2F0F06310341 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = LightButtonArray.h;
-			path = ../../Source/LightButtonArray.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4733F2A8DDF54101C2B92820 = {
@@ -501,13 +483,6 @@
 			path = Dependencies/libfreenect/lib/fakenect/libfakenect.dylib;
 			sourceTree = "SOURCE_ROOT";
 		};
-		96016C6FB4A045AA6125FDE1 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = PanningButtonArray.cpp;
-			path = ../../Source/PanningButtonArray.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		96A09C11E31609681E6CE20F = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -529,13 +504,6 @@
 			path = System/Library/Frameworks/OpenGL.framework;
 			sourceTree = SDKROOT;
 		};
-		9F82B835FD268CE18BF5EA13 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = PanningButtonArray.h;
-			path = ../../Source/PanningButtonArray.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		9FE6C56BB2593D9013A91EA0 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -555,6 +523,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Kinect.cpp;
 			path = ../../Source/Kinect.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		AE7D650C8A88D9917ECF6BDA = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = LightControls.cpp;
+			path = ../../Source/LightControls.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B03D81F7C8FD4943B1705044 = {
@@ -620,13 +595,6 @@
 			path = Dependencies/libfreenect/include/libfreenect/libfreenect.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		C2CCDFA53EC0FFE2F963D55B = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = LightButton.h;
-			path = ../../Source/LightButton.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		C4A6918F18673551806FACF3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -660,6 +628,13 @@
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_core.mm";
 			path = "../../JuceLibraryCode/include_juce_core.mm";
+			sourceTree = "SOURCE_ROOT";
+		};
+		CC6AC4B5D8B901D5720015DA = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PanningControls.h;
+			path = ../../Source/PanningControls.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		D052AA1A3F347EB30C91989A = {
@@ -732,6 +707,13 @@
 			path = Dependencies/libfreenect/lib/libfreenect.dylib;
 			sourceTree = "SOURCE_ROOT";
 		};
+		E64DFD0A4746B23C172B7DA9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = LightControls.h;
+			path = ../../Source/LightControls.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		ED6F2B73303498EE486F86DD = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -745,6 +727,13 @@
 			name = "juce_gui_extra";
 			path = "/Users/maxwalley/Documents/C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules/juce_gui_extra";
 			sourceTree = "<absolute>";
+		};
+		F33DDEFD2A31D417E3B6FDD8 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = PanningControls.cpp;
+			path = ../../Source/PanningControls.cpp;
+			sourceTree = "SOURCE_ROOT";
 		};
 		F61A37C9C81FEDC1FB6D6AC6 = {
 			isa = PBXFileReference;
@@ -765,13 +754,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MuteButton.cpp;
 			path = ../../Source/MuteButton.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		F8D5E46EA60D81C69B83D351 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = LightButton.cpp;
-			path = ../../Source/LightButton.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		FC7A398ECAA1476629547AE9 = {
@@ -879,14 +861,12 @@
 		F780D6A787C9CF086D9C5617 = {
 			isa = PBXGroup;
 			children = (
-				9F82B835FD268CE18BF5EA13,
-				96016C6FB4A045AA6125FDE1,
+				CC6AC4B5D8B901D5720015DA,
+				F33DDEFD2A31D417E3B6FDD8,
 				BD6CB474D82966E4364BE595,
 				2A4DA5C8CD1183E4787F00DD,
-				4668E4F9EA2F2F0F06310341,
-				306512A5802FC2E220ECFFA0,
-				C2CCDFA53EC0FFE2F963D55B,
-				F8D5E46EA60D81C69B83D351,
+				E64DFD0A4746B23C172B7DA9,
+				AE7D650C8A88D9917ECF6BDA,
 				DE915E02ADCB1474BD52F124,
 				F745B916956CC6C1A6017F58,
 				22BC84AACE79009FCF0421F5,
@@ -1229,10 +1209,9 @@
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,
 				F2A8DA8F5F4C1620B30A326E,
-				4D3CD4E698D2CD92FFCF4F7C,
+				45E297FAD31EEEAC59E308E1,
 				638DFF9EC6BCB0A340C9B5FF,
-				2DB4CFC96B16B3B5E575EAB2,
-				24C23A06F9BC17D6D01088AE,
+				F3FE73C6D705FBC03636B149,
 				E74A02CF53846CFFD093A499,
 				5D0957964F9B02A89B8BFC90,
 				03EA755480FBFB846DB2F54C,
