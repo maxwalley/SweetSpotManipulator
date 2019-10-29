@@ -48,6 +48,8 @@ int Kinect::kinInit()
             DBG("Device Opened Successfully");
         }
         
+        state = freenect_get_tilt_state(dev);
+        
         DepthMode = freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT);
         VideoMode = freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB);
         
@@ -147,6 +149,60 @@ int Kinect::kinTilt()
     }
     while(state->tilt_status == TILT_STATUS_MOVING);
     
+    return 0;
+}
+
+int Kinect::kinTiltUp()
+{
+    if(state->tilt_angle >= 30)
+    {
+        DBG("Kinect tilt at limit");
+    }
+    else
+    {
+        if(freenect_set_tilt_degs(dev, state->tilt_angle + 5) != 0)
+        {
+            DBG("Error setting tilt angle");
+            return 11;
+        }
+        do
+        {
+            if(freenect_update_tilt_state(dev) != 0)
+            {
+                DBG("Error updating tilt state");
+                return 12;
+            }
+            state = freenect_get_tilt_state(dev);
+        }
+        while(state->tilt_status == TILT_STATUS_MOVING);
+    }
+    return 0;
+}
+
+int Kinect::kinTiltDown()
+{
+    if(state->tilt_angle <= -30)
+    {
+        DBG("Kinect tilt at limit");
+    }
+    else
+    {
+        if(freenect_set_tilt_degs(dev, state->tilt_angle - 5) != 0)
+        {
+            DBG("Error setting tilt angle");
+            return 13;
+        }
+        do
+        {
+            if(freenect_update_tilt_state(dev) != 0)
+            {
+                DBG("Error updating tilt state");
+                return 14;
+            }
+            state = freenect_get_tilt_state(dev);
+        }
+        while(state->tilt_status == TILT_STATUS_MOVING);
+    }
     return 0;
 }
 

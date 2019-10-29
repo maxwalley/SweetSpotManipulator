@@ -20,7 +20,8 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent   : public AudioAppComponent
+class MainComponent   : public AudioAppComponent,
+                        public Button::Listener
 {
 public:
     //==============================================================================
@@ -41,6 +42,7 @@ private:
     // Your private member variables go here...
     
     void buttonClickedEvent();
+    void buttonClicked(Button* button) override;
     
     ChannelArray Channels;
     LightControls Lights;
@@ -89,4 +91,7 @@ private:
     bool kinectErrorCodeTriggered;
 
     float workOutValue(float multiplier, int channel);
+    
+    TextButton kinUpButton;
+    TextButton kinDownButton;
 };

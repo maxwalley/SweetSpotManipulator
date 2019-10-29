@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down")
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -92,6 +92,8 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     kinectErrorCodeTriggered = false;
     
+    addAndMakeVisible(kinUpButton);
+    addAndMakeVisible(kinDownButton);
 }
 
 MainComponent::~MainComponent()
@@ -114,15 +116,6 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    /*if(kinectErrorCodeTriggered == true)
-    {
-        DBG("Kinect no error");
-    }
-    else if(kinectErrorCodeTriggered == false)
-    {
-        DBG("Kinect error");
-    }*/
-    
     /*if(kinectErrorCodeTriggered == true)
     {
         int kinProcessingErrorCode = kin.RunVidandDepth();
@@ -259,6 +252,9 @@ void MainComponent::resized()
     
     panningLaw.setBounds(1000, 150, 200, 100);
     
+    kinUpButton.setBounds(1000, 300, 100, 30);
+    kinDownButton.setBounds(1000, 350, 100, 30);
+    
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
 }
 
@@ -273,6 +269,37 @@ void MainComponent::buttonClickedEvent()
     AudioFormatReaderSource source(reader, true);
     
     std::cout<<reader->getFormatName()<<std::endl;
+}
+
+void MainComponent::buttonClicked(Button* button)
+{
+    if(button == &kinUpButton)
+    {
+        if(kinectErrorCodeTriggered == true)
+        {
+            int kinTiltUpErrorCode = kin.kinTiltUp();
+            
+            if(kinTiltUpErrorCode != 0)
+            {
+                DBG("Kinect tilt up failed with error code: " << kinTiltUpErrorCode);
+                kinectErrorCodeTriggered = false;
+            }
+        }
+    }
+    
+    else if(button == &kinDownButton)
+    {
+        if(kinectErrorCodeTriggered == true)
+        {
+            int kinTiltDownErrorCode = kin.kinTiltDown();
+            
+            if(kinTiltDownErrorCode != 0)
+            {
+                DBG("Kinect tilt down failed with error code: " << kinTiltDownErrorCode);
+                kinectErrorCodeTriggered = false;
+            }
+        }
+    }
 }
 
 void MainComponent::paintImage()
@@ -312,24 +339,24 @@ float MainComponent::workOutValue(float multiplier, int channel)
     if(channel == 0)
     {
         
-        if(panningLaw.getPanningLaw() == 1)
+        if(panningLaw.getPanningLaw() == 0)
         {
             return multiplier * masterSlider.getValue() * (sin(0.5 * M_PI * panningLaw.getPanSliderVal()));
         }
         
-        else if(panningLaw.getPanningLaw() == 2)
+        else if(panningLaw.getPanningLaw() == 1)
         {
             return multiplier * masterSlider.getValue() * panningLaw.getPanSliderVal();
         }
     }
     else if(channel == 1)
     {
-        if(panningLaw.getPanningLaw() == 1)
+        if(panningLaw.getPanningLaw() == 0)
         {
             return multiplier * masterSlider.getValue() * (1 - (sin(0.5 * M_PI * panningLaw.getPanSliderVal())));
         }
         
-        else if(panningLaw.getPanningLaw() == 2)
+        else if(panningLaw.getPanningLaw() == 1)
         {
             return multiplier * masterSlider.getValue() * (1 - panningLaw.getPanSliderVal());
         }
