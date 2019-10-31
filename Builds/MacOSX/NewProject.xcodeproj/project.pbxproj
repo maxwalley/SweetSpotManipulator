@@ -73,6 +73,10 @@
 			isa = PBXBuildFile;
 			fileRef = A9236C36644D1A09CD72537B;
 		};
+		560D58B67B4CF472FA3CA079 = {
+			isa = PBXBuildFile;
+			fileRef = 22692F468AA6FE41C1D065C4;
+		};
 		45E297FAD31EEEAC59E308E1 = {
 			isa = PBXBuildFile;
 			fileRef = F33DDEFD2A31D417E3B6FDD8;
@@ -292,6 +296,13 @@
 			lastKnownFileType = file.dylib;
 			name = libfakenect.0.5.5.dylib;
 			path = Dependencies/libfreenect/lib/fakenect/libfakenect.0.5.5.dylib;
+			sourceTree = "SOURCE_ROOT";
+		};
+		22692F468AA6FE41C1D065C4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BalanceControls.cpp;
+			path = ../../Source/BalanceControls.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		22BC84AACE79009FCF0421F5 = {
@@ -516,6 +527,13 @@
 			lastKnownFileType = file.dylib;
 			name = libFreenectDriver.0.5.dylib;
 			path = "Dependencies/libfreenect/lib/OpenNI2-FreenectDriver/libFreenectDriver.0.5.dylib";
+			sourceTree = "SOURCE_ROOT";
+		};
+		A6D77D3B76732030AC530FEA = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BalanceControls.h;
+			path = ../../Source/BalanceControls.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		A9236C36644D1A09CD72537B = {
@@ -861,6 +879,8 @@
 		F780D6A787C9CF086D9C5617 = {
 			isa = PBXGroup;
 			children = (
+				A6D77D3B76732030AC530FEA,
+				22692F468AA6FE41C1D065C4,
 				CC6AC4B5D8B901D5720015DA,
 				F33DDEFD2A31D417E3B6FDD8,
 				BD6CB474D82966E4364BE595,
@@ -1209,6 +1229,7 @@
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,
 				F2A8DA8F5F4C1620B30A326E,
+				560D58B67B4CF472FA3CA079,
 				45E297FAD31EEEAC59E308E1,
 				638DFF9EC6BCB0A340C9B5FF,
 				F3FE73C6D705FBC03636B149,

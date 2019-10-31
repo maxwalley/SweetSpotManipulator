@@ -29,7 +29,8 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     addAndMakeVisible(Lights);
     
-    addAndMakeVisible(panningLaw);
+    //addAndMakeVisible(panningLaw);
+    addAndMakeVisible(balance);
         
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
@@ -196,17 +197,17 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             }
         }
     }
-    /*if(audioBlockCount >= 50)
+    if(audioBlockCount >= 50)
     {
         audioBlockCount = 0;
-        setDepthPixels();
+        //setDepthPixels();
         //setRGBPixels();
-        paintImage();
+        //paintImage();
     }
     else
     {
         audioBlockCount++;
-    }*/
+    }
 }
 
 void MainComponent::releaseResources()
@@ -245,15 +246,16 @@ void MainComponent::resized()
     PlayPauseButton.setBounds(530, 20, 80, 20);
     rewindButton.setBounds(530, 50, 80, 20);*/
     
-    Lights.setBounds(1000, 50, 200, 55);
+    Lights.setBounds(1000, 20, 200, 55);
     
-    masterSlider.setBounds(1090, 400, 50, 200);
-    masterSliderLabel.setBounds(1090, 370, 50, 25);
+    masterSlider.setBounds(1090, 470, 50, 200);
+    masterSliderLabel.setBounds(1090, 440, 50, 25);
     
-    panningLaw.setBounds(1000, 150, 200, 100);
+    //panningLaw.setBounds(1000, 150, 200, 100);
+    balance.setBounds(1000, 90, 200, 350);
     
-    kinUpButton.setBounds(1000, 300, 100, 30);
-    kinDownButton.setBounds(1000, 350, 100, 30);
+    //kinUpButton.setBounds(1000, 300, 100, 30);
+    //kinDownButton.setBounds(1000, 350, 100, 30);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
 }
@@ -336,7 +338,7 @@ void MainComponent::setRGBPixels()
 
 float MainComponent::workOutValue(float multiplier, int channel)
 {
-    if(channel == 0)
+    /*if(channel == 0)
     {
         
         if(panningLaw.getPanningLaw() == 0)
@@ -360,7 +362,9 @@ float MainComponent::workOutValue(float multiplier, int channel)
         {
             return multiplier * masterSlider.getValue() * (1 - panningLaw.getPanSliderVal());
         }
-    }
+    }*/
+    
+    return multiplier * masterSlider.getValue() * balance.workOutMultiplier(channel);
     
     return 0;
 }

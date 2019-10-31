@@ -12,7 +12,8 @@
 #include "ChannelArray.h"
 #include "LightControls.h"
 #include "Kinect.h"
-#include "PanningControls.h"
+//#include "PanningControls.h"
+#include "BalanceControls.h"
 #include <math.h>
 
 //==============================================================================
@@ -83,7 +84,8 @@ private:
     void setRGBPixels();
     void paintImage();
     
-    PanningControls panningLaw;
+    //PanningControls panningLaw;
+    BalanceControls balance;
     
     int audioBlockCount;
     
