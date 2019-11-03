@@ -73,6 +73,10 @@
 			isa = PBXBuildFile;
 			fileRef = A9236C36644D1A09CD72537B;
 		};
+		2039D4A1E2F5BCCD4EF862F8 = {
+			isa = PBXBuildFile;
+			fileRef = 8FC1BE54C1CBED527322F6EF;
+		};
 		560D58B67B4CF472FA3CA079 = {
 			isa = PBXBuildFile;
 			fileRef = 22692F468AA6FE41C1D065C4;
@@ -361,6 +365,13 @@
 			path = "/Users/maxwalley/Documents/C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules/juce_gui_basics";
 			sourceTree = "<absolute>";
 		};
+		497EC1251808E98BEE213811 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = AudioPlayer.h;
+			path = ../../Source/AudioPlayer.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		4A08FA8937BB202A72358D73 = {
 			isa = PBXFileReference;
 			lastKnownFileType = archive.ar;
@@ -492,6 +503,13 @@
 			lastKnownFileType = file.dylib;
 			name = libfakenect.dylib;
 			path = Dependencies/libfreenect/lib/fakenect/libfakenect.dylib;
+			sourceTree = "SOURCE_ROOT";
+		};
+		8FC1BE54C1CBED527322F6EF = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = AudioPlayer.cpp;
+			path = ../../Source/AudioPlayer.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		96A09C11E31609681E6CE20F = {
@@ -872,6 +890,8 @@
 				BF04AA74F36989A49735EA34,
 				059449B9193E02E1795AAAAD,
 				A9236C36644D1A09CD72537B,
+				497EC1251808E98BEE213811,
+				8FC1BE54C1CBED527322F6EF,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -1229,6 +1249,7 @@
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,
 				F2A8DA8F5F4C1620B30A326E,
+				2039D4A1E2F5BCCD4EF862F8,
 				560D58B67B4CF472FA3CA079,
 				45E297FAD31EEEAC59E308E1,
 				638DFF9EC6BCB0A340C9B5FF,

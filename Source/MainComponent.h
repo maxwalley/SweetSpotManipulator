@@ -15,6 +15,7 @@
 //#include "PanningControls.h"
 #include "BalanceControls.h"
 #include <math.h>
+#include "AudioPlayer.h"
 
 //==============================================================================
 /*
@@ -50,6 +51,8 @@ private:
     AudioDeviceManager UserSelectedDevice;
     AudioDeviceSelectorComponent UserSelectedDeviceSettings;
     
+    AudioPlayer audioPlayer;
+    
     float channel1Multiplier;
     float channel2Multiplier;
     
@@ -68,13 +71,6 @@ private:
     Label masterSliderLabel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
-    
-    AudioFormatManager FormatManager;
-    FileChooser chooser;
-    TextButton OpenFileButton;
-    TextButton PlayPauseButton;
-    TextButton rewindButton;
-    File playFile;
     
     Kinect kin;
     

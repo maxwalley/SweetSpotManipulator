@@ -9,17 +9,14 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), chooser("Open a File", File(), "*.wav", true, true), OpenFileButton("Open File"), PlayPauseButton("Play/Pause"), rewindButton("Rewind"), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down")
 {
     // Make sure you set the size of the component after
     // you add any child components.
     setSize (1280, 800);
     
-    /*addAndMakeVisible(Channels);
-    addAndMakeVisible(OpenFileButton);
-    addAndMakeVisible(PlayPauseButton);
-    addAndMakeVisible(rewindButton);*/
-    
+    //addAndMakeVisible(Channels);
+     
     addAndMakeVisible(masterSlider);
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     masterSlider.setRange(0, 1);
@@ -34,6 +31,8 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
         
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
+    
+    addAndMakeVisible(audioPlayer);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -47,15 +46,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
         // Specify the number of input and output channels that we want to open
         setAudioChannels (0, 6);
     }
-    
-    PlayPauseButton.setClickingTogglesState(true);
-    rewindButton.setClickingTogglesState(true);
-    PlayPauseButton.setToggleState(false, dontSendNotification);
-    rewindButton.setToggleState(false, dontSendNotification);
-    
-    FormatManager.registerBasicFormats();
-    
-    OpenFileButton.onClick = [this] {buttonClickedEvent();};
     
     setDepthPixels();
     setRGBPixels();
@@ -111,6 +101,8 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // its settings (i.e. sample rate, block size, etc) are changed.
     printf("Sample Rate is: %f\n", sampleRate);
     printf("Block Size is %d\n", samplesPerBlockExpected);
+    
+    audioPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
     // You can use this function to initialise any resources you might need,
     // but be careful - it will be called on the audio thread, not the GUI thread.
 }
@@ -138,6 +130,8 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     }*/
     
     //printf("Audio Block Count = %d\n", audioBlockCount);
+    
+    audioPlayer.getNextAudioBlock(bufferToFill);
     
     //Iterates through the channels
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
@@ -223,6 +217,7 @@ void MainComponent::releaseResources()
             kinectErrorCodeTriggered = false;
         }
     }
+    audioPlayer.releaseResources();
 }
 
 //==============================================================================
@@ -231,20 +226,13 @@ void MainComponent::paint (Graphics& g)
     g.setOpacity(1.0);
     g.fillAll(Colours::orangered);
     
-    PlayPauseButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::royalblue);
-    rewindButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::royalblue);
-    
     g.drawImage(kinPic, 100, 200, 320, 240, 0, 0, 640, 480, false);
     g.drawImage(rgbPic, 500, 200, 320, 240, 0, 0, 640, 480, false);
 }
 
 void MainComponent::resized()
 {
-    /*Channels.setBounds(0, 180, 800, 340);
-    
-    OpenFileButton.setBounds(650, 20, 80, 20);
-    PlayPauseButton.setBounds(530, 20, 80, 20);
-    rewindButton.setBounds(530, 50, 80, 20);*/
+    //Channels.setBounds(0, 180, 800, 340);
     
     Lights.setBounds(1000, 20, 200, 55);
     
@@ -258,20 +246,10 @@ void MainComponent::resized()
     //kinDownButton.setBounds(1000, 350, 100, 30);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
+    
+    audioPlayer.setBounds(100, 500, 200, 150);
 }
 
-void MainComponent::buttonClickedEvent()
-{
-    if(chooser.browseForFileToOpen() == true)
-    {
-        playFile = chooser.getResult();
-    }
-    
-    AudioFormatReader* reader = FormatManager.createReaderFor(playFile);
-    AudioFormatReaderSource source(reader, true);
-    
-    std::cout<<reader->getFormatName()<<std::endl;
-}
 
 void MainComponent::buttonClicked(Button* button)
 {

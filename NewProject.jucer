@@ -59,6 +59,8 @@
       <FILE id="o0DNbO" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="OJ0YnC" name="Kinect.h" compile="0" resource="0" file="Source/Kinect.h"/>
       <FILE id="ybXXGt" name="Kinect.cpp" compile="1" resource="0" file="Source/Kinect.cpp"/>
+      <FILE id="xxCw9B" name="AudioPlayer.h" compile="0" resource="0" file="Source/AudioPlayer.h"/>
+      <FILE id="OShn7E" name="AudioPlayer.cpp" compile="1" resource="0" file="Source/AudioPlayer.cpp"/>
     </GROUP>
     <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
       <FILE id="im5VO7" name="BalanceControls.h" compile="0" resource="0"
