@@ -15,9 +15,13 @@ uint16_t Kinect::redArray[640][480];
 uint16_t Kinect::greenArray[640][480];
 uint16_t Kinect::blueArray[640][480];
 
+cv::Mat Kinect::depthImageCV;
+
+
 //==============================================================================
 Kinect::Kinect()
 {
+    depthImageCV.create(480, 640, CV_16UC2);
 }
 
 Kinect::~Kinect()
@@ -110,48 +114,6 @@ int Kinect::kinInit()
     return 0;
 }
 
-int Kinect::kinTilt()
-{
-    if(freenect_set_tilt_degs(dev, 10) != 0)
-    {
-        DBG("Error setting tilt");
-        return 11;
-    }
-    
-    do
-    {
-        if(freenect_update_tilt_state(dev) != 0)
-        {
-            DBG("Error updating tilt state");
-            return 12;
-        }
-        state = freenect_get_tilt_state(dev);
-        DBG(state->tilt_status);
-    }
-    while(state->tilt_status == TILT_STATUS_MOVING);
-    
-    
-    if(freenect_set_tilt_degs(dev, 30) != 0)
-    {
-        DBG("Error setting tilt");
-        return 13;
-    }
-    
-    do
-    {
-        if(freenect_update_tilt_state(dev) != 0)
-        {
-            DBG("Error updating tilt state");
-            return 14;
-        }
-        state = freenect_get_tilt_state(dev);
-        DBG(state->tilt_status);
-    }
-    while(state->tilt_status == TILT_STATUS_MOVING);
-    
-    return 0;
-}
-
 int Kinect::kinTiltUp()
 {
     if(state->tilt_angle >= 30)
@@ -213,6 +175,10 @@ int Kinect::RunVidandDepth() const
         DBG("Error Processing Events");
         return 21;
     }
+    else
+    {
+        DBG("Processing Events");
+    }
     return 0;
 }
 
@@ -260,6 +226,10 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
     uint16_t* castedData = static_cast<uint16_t*>(data);
     
+    DBG("Depth data received");
+    
+    //cv::Mat tempMat(480, 640, CV_16UC2, data);
+    //depthImageCV = tempMat;
 //    ScopedLock
 //    isBusy = true;
     for(int yCount = 0; yCount < 480; yCount++)
@@ -296,3 +266,9 @@ void Kinect::videoCallback(freenect_device* dev, void* data, uint32_t timestamp)
         }
     }
 }
+
+cv::Mat Kinect::getDepthImageCV()
+{
+    return depthImageCV;
+}
+

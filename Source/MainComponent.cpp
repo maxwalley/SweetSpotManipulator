@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View")
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -21,10 +21,14 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     masterSlider.setRange(0, 1);
     masterSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    masterSlider.addListener(this);
     addAndMakeVisible(masterSliderLabel);
     masterSliderLabel.setText("Master", dontSendNotification);
     
     addAndMakeVisible(Lights);
+    
+    addAndMakeVisible(CVWindowButton);
+    CVWindowButton.addListener(this);
     
     //addAndMakeVisible(panningLaw);
     addAndMakeVisible(balance);
@@ -50,47 +54,40 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     setDepthPixels();
     setRGBPixels();
     
+    StringArray availableCameras = CameraDevice::getAvailableDevices();
+    DBG("Number of Available Cameras is: " << availableCameras.size());
     
-    //kinectErrorCodeTriggered = true;
+    /*int initErrorCode = kin.kinInit();
     
-    int initErrorCode = kin.kinInit();
-    
-    /*if(initErrorCode != 0)
+    if(initErrorCode != 0)
     {
         DBG("Kinect init failed with error code: " << initErrorCode);
-        kinectErrorCodeTriggered = false;
+        kinectErrorCodeTriggered = true;
     }
     else if (initErrorCode == 0)
     {
         DBG("Kinect init completed");
-        kinectErrorCodeTriggered = true;
-    }
-    
-    if(kinectErrorCodeTriggered == true)
-    {
-        int tiltErrorCode = kin.kinTilt();
-    
-        if(tiltErrorCode != 0)
-        {
-            DBG("Kinect tilt failed with error code: " << tiltErrorCode);
-            kinectErrorCodeTriggered = false;
-        }
-        else if (tiltErrorCode == 0)
-        {
-            DBG("Kinect tilt completed");
-        }
+        kinectErrorCodeTriggered = false;
     }*/
-    
-    kinectErrorCodeTriggered = false;
     
     addAndMakeVisible(kinUpButton);
     addAndMakeVisible(kinDownButton);
+    
+    addAndMakeVisible(audioOutSelector);
+    audioOutSelector.addItem("Square Wave", 1);
+    audioOutSelector.addItem("Audio Player", 2);
+    audioOutSelector.setSelectedId(1);
+    audioOutSelector.setEditableText(false);
+    
+    addAndMakeVisible(kinectImage);
+    kinectImage.kinectInit();
 }
 
 MainComponent::~MainComponent()
 {
     // This shuts down the audio device and clears the audio source.
     AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Close App?", "Are you sure you want to close this app?", "Continue", "Cancel", nullptr, nullptr);
+    kinectImage.kinectEnd();
     shutdownAudio();
 }
 
@@ -102,6 +99,8 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     printf("Sample Rate is: %f\n", sampleRate);
     printf("Block Size is %d\n", samplesPerBlockExpected);
     
+    //kinRefreshRate = floor(sampleRate/samplesPerBlockExpected);
+    
     audioPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
     // You can use this function to initialise any resources you might need,
     // but be careful - it will be called on the audio thread, not the GUI thread.
@@ -111,112 +110,124 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
 {
     /*if(kinectErrorCodeTriggered == true)
     {
-        int kinProcessingErrorCode = kin.RunVidandDepth();
-        if(kinProcessingErrorCode != 0)
-        {
-            DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
-            kinectErrorCodeTriggered = false;
-        }
-    }
-    
-    if(kinectErrorCodeTriggered == true)
-    {
         int kinLEDErrorCode = kin.checkLed(Lights.getSelectedLed());
         if(kinLEDErrorCode != 0)
         {
             DBG("Kinect led check failed with error code: " << kinLEDErrorCode);
             kinectErrorCodeTriggered = false;
         }
-    }*/
-    
+    }
+    */
     //printf("Audio Block Count = %d\n", audioBlockCount);
     
-    audioPlayer.getNextAudioBlock(bufferToFill);
-    
-    //Iterates through the channels
-    for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
+    if(audioOutSelector.getSelectedId() == 1)
     {
-        //Creates Pointer to the first sample of the selected channel
-        float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
-        
-        //Iterates through the samples
-        for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
+        //Iterates through the channels
+        for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
         {
-            if(channel == 0)
+            //Creates Pointer to the first sample of the selected channel
+            float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
+        
+            //Iterates through the samples
+            for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
             {
-                if(channel1State == up)
+                if(channel == 0)
                 {
-                    channel1Multiplier = 0.25;
-                    if(channel1SampleCount == 200)
+                    if(channel1State == up)
                     {
-                        channel1SampleCount = 0;
-                        channel1State = down;
+                        channel1Multiplier = 0.25;
+                        if(channel1SampleCount == 200)
+                        {
+                            channel1SampleCount = 0;
+                            channel1State = down;
+                        }
                     }
-                }
-                else if(channel1State == down)
-                {
-                    channel1Multiplier = -0.25;
-                    if(channel1SampleCount == 200)
+                    else if(channel1State == down)
                     {
-                        channel1SampleCount = 0;
-                        channel1State = up;
+                        channel1Multiplier = -0.25;
+                        if(channel1SampleCount == 200)
+                        {
+                            channel1SampleCount = 0;
+                            channel1State = up;
+                        }
                     }
+                    channel1SampleCount += 1;
+                    buffer[sample] = workOutValue(channel1Multiplier, channel);
                 }
-                channel1SampleCount += 1;
-                buffer[sample] = workOutValue(channel1Multiplier, channel);
-            }
             
-            else if(channel == 1)
-            {
-                if(channel2State == up)
+                else if(channel == 1)
                 {
-                    channel2Multiplier = 0.25;
-                    if(channel2SampleCount == 200)
+                    if(channel2State == up)
                     {
-                        channel2SampleCount = 0;
-                        channel2State = down;
+                        channel2Multiplier = 0.25;
+                        if(channel2SampleCount == 200)
+                        {
+                            channel2SampleCount = 0;
+                            channel2State = down;
+                        }
                     }
-                }
-                else if(channel2State == down)
-                {
-                    channel2Multiplier = -0.25;
-                    if(channel2SampleCount == 200)
+                    else if(channel2State == down)
                     {
-                        channel2SampleCount = 0;
-                        channel2State = up;
+                        channel2Multiplier = -0.25;
+                        if(channel2SampleCount == 200)
+                        {
+                            channel2SampleCount = 0;
+                            channel2State = up;
+                        }
                     }
+                    channel2SampleCount += 1;
+                    buffer[sample] = workOutValue(channel2Multiplier, channel);
                 }
-                channel2SampleCount += 1;
-                buffer[sample] = workOutValue(channel2Multiplier, channel);
             }
         }
     }
-    if(audioBlockCount >= 50)
+    
+    else if(audioOutSelector.getSelectedId() == 2)
     {
+        audioPlayer.getNextAudioBlock(bufferToFill);
+    }
+    
+    /*if(audioBlockCount >= kinRefreshRate)
+    {
+        if(kinectErrorCodeTriggered == false)
+        {
+            int kinProcessingErrorCode = kin.RunVidandDepth();
+            if(kinProcessingErrorCode != 0)
+            {
+                DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
+                kinectErrorCodeTriggered = true;
+            }
+        }
+        else
+        {
+            DBG("kinect ERROR");
+        }
+        
         audioBlockCount = 0;
-        //setDepthPixels();
+        setDepthPixels();
         //setRGBPixels();
         //paintImage();
+        pic.repaintImage();
     }
     else
     {
         audioBlockCount++;
-    }
+    }*/
 }
 
 void MainComponent::releaseResources()
 {
     // This will be called when the audio device stops, or when it is being
     // restarted due to a setting change.
-    if(kinectErrorCodeTriggered == true)
+    /*if(kinectErrorCodeTriggered == false)
     {
         int kinEndErrorCode = kin.End();
         if(kinEndErrorCode != 0)
         {
             DBG("Kinect closing sequence failed with error code: " << kinEndErrorCode);
-            kinectErrorCodeTriggered = false;
+            kinectErrorCodeTriggered = true;
         }
-    }
+    }*/
     audioPlayer.releaseResources();
 }
 
@@ -226,7 +237,7 @@ void MainComponent::paint (Graphics& g)
     g.setOpacity(1.0);
     g.fillAll(Colours::orangered);
     
-    g.drawImage(kinPic, 100, 200, 320, 240, 0, 0, 640, 480, false);
+    //g.drawImage(kinPic, 100, 200, 320, 240, 0, 0, 640, 480, false);
     g.drawImage(rgbPic, 500, 200, 320, 240, 0, 0, 640, 480, false);
 }
 
@@ -242,50 +253,61 @@ void MainComponent::resized()
     //panningLaw.setBounds(1000, 150, 200, 100);
     balance.setBounds(1000, 90, 200, 350);
     
-    //kinUpButton.setBounds(1000, 300, 100, 30);
-    //kinDownButton.setBounds(1000, 350, 100, 30);
+    kinUpButton.setBounds(1000, 300, 100, 30);
+    kinDownButton.setBounds(1000, 350, 100, 30);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
     
     audioPlayer.setBounds(100, 500, 200, 150);
+    
+    audioOutSelector.setBounds(400, 500, 200, 30);
+    CVWindowButton.setBounds(700, 500, 200, 30);
+    
+    kinectImage.setBounds(100, 200, 320, 240);
 }
 
 
 void MainComponent::buttonClicked(Button* button)
 {
-    if(button == &kinUpButton)
+    /*if(button == &kinUpButton)
     {
-        if(kinectErrorCodeTriggered == true)
+        if(kinectErrorCodeTriggered == false)
         {
             int kinTiltUpErrorCode = kin.kinTiltUp();
             
             if(kinTiltUpErrorCode != 0)
             {
                 DBG("Kinect tilt up failed with error code: " << kinTiltUpErrorCode);
-                kinectErrorCodeTriggered = false;
+                kinectErrorCodeTriggered = true;
             }
         }
     }
     
     else if(button == &kinDownButton)
     {
-        if(kinectErrorCodeTriggered == true)
+        if(kinectErrorCodeTriggered == false)
         {
             int kinTiltDownErrorCode = kin.kinTiltDown();
             
             if(kinTiltDownErrorCode != 0)
             {
                 DBG("Kinect tilt down failed with error code: " << kinTiltDownErrorCode);
-                kinectErrorCodeTriggered = false;
+                kinectErrorCodeTriggered = true;
             }
         }
+    }*/
+    
+    if (button == &CVWindowButton)
+    {
+        displayDepthImageCV();
     }
 }
 
 void MainComponent::paintImage()
 {
     const MessageManagerLock paintLock;
-    repaint(100, 200, 720, 240);
+    repaint(100, 200, 320, 240);
+    //DBG("Repainting");
 }
 
 void MainComponent::setDepthPixels()
@@ -298,7 +320,8 @@ void MainComponent::setDepthPixels()
         {
             //shortArray[c][i] = kin.depthArray[c][i]/8.02745;
             //printf("Depth data = %hu\n", shortArray[c][i]);
-            kinPic.setPixelAt(i, c, Colour(kin.depthArray[i][c], kin.depthArray[i][c], kin.depthArray[i][c]));
+            //kinPic.setPixelAt(i, c, Colour(kin.depthArray[i][c], kin.depthArray[i][c], kin.depthArray[i][c]));
+            //pic.setImage(i, c, kin.depthArray[i][c]);
         }
     }
 }
@@ -309,7 +332,7 @@ void MainComponent::setRGBPixels()
     {
         for(int c = 0; c < 480; c++)
         {
-            rgbPic.setPixelAt(i, c, Colour(kin.redArray[i][c], kin.greenArray[i][c], kin.blueArray[i][c]));
+            //rgbPic.setPixelAt(i, c, Colour(kin.redArray[i][c], kin.greenArray[i][c], kin.blueArray[i][c]));
         }
     }
 }
@@ -345,4 +368,19 @@ float MainComponent::workOutValue(float multiplier, int channel)
     return multiplier * masterSlider.getValue() * balance.workOutMultiplier(channel);
     
     return 0;
+}
+
+void MainComponent::sliderValueChanged(Slider* slider)
+{
+    audioPlayer.setGain(slider->getValue());
+}
+
+void MainComponent::displayDepthImageCV()
+{
+    //cv::Mat image = kin.getDepthImageCV();
+    
+    cv::namedWindow("Cv Image", cv::WINDOW_AUTOSIZE);
+    
+    //cv::imshow("Cv Image", image);
+    cv::waitKey(500);
 }

@@ -16,6 +16,8 @@
 #include "BalanceControls.h"
 #include <math.h>
 #include "AudioPlayer.h"
+#include <opencv2/opencv.hpp>
+#include "KinImage.h"
 
 //==============================================================================
 /*
@@ -23,7 +25,8 @@
     your controls and content.
 */
 class MainComponent   : public AudioAppComponent,
-                        public Button::Listener
+                        public Button::Listener,
+                        public Slider::Listener
 {
 public:
     //==============================================================================
@@ -42,6 +45,9 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
+    
+    //Bool that returns true if any kinect error code is detected
+    bool kinectErrorCodeTriggered;
     
     void buttonClickedEvent();
     void buttonClicked(Button* button) override;
@@ -72,7 +78,7 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
     
-    Kinect kin;
+    //Kinect kin;
     
     Image kinPic;
     Image rgbPic;
@@ -84,12 +90,20 @@ private:
     BalanceControls balance;
     
     int audioBlockCount;
-    
-    //Bool that returns false if any kinect error code is detected
-    bool kinectErrorCodeTriggered;
 
     float workOutValue(float multiplier, int channel);
     
     TextButton kinUpButton;
     TextButton kinDownButton;
+    
+    ComboBox audioOutSelector;
+    
+    void sliderValueChanged(Slider* slider) override;
+    
+    void displayDepthImageCV();
+    TextButton CVWindowButton;
+    
+    KinImage kinectImage;
+    
+    int kinRefreshRate;
 };

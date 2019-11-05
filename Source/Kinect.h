@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <stdio.h>
 #include <libfreenect.h>
+#include <opencv2/opencv.hpp>
 
 //==============================================================================
 /*
@@ -24,7 +25,6 @@ public:
     ~Kinect();
     
     int kinInit();
-    int kinTilt();
     int kinTiltUp();
     int kinTiltDown();
     int RunVidandDepth() const;
@@ -36,6 +36,8 @@ public:
     static uint16_t redArray[640][480];
     static uint16_t greenArray[640][480];
     static uint16_t blueArray[640][480];
+    
+    static cv::Mat getDepthImageCV();
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Kinect)
@@ -49,6 +51,11 @@ private:
     
     int8_t currentTilt;
     
+    static cv::Mat depthImageCV;
+    
     static void depthCallback(freenect_device* dev, void* data, uint32_t timestamp);
     static void videoCallback(freenect_device* dev, void* data, uint32_t timestamp);
 };
+
+
+

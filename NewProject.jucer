@@ -92,11 +92,12 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="usb-1.0.0&#10;freenect_sync.0.5.5&#10;freenect">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="usb-1.0.0&#10;freenect_sync.0.5.5&#10;freenect&#10;opencv_core&#10;opencv_imgproc.4.1.2&#10;opencv_highgui.4.1.2">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="${PROJECT_DIR}/Dependencies/libfreenect/include/libfreenect&#10;${PROJECT_DIR}/Dependencies/libusb/include/libusb-1.0/libusb.h"
-                       libraryPath="${PROJECT_DIR}/Dependencies/libfreenect/lib&#10;${PROJECT_DIR}/Dependencies/libusb/lib"/>
-        <CONFIGURATION isDebug="0" name="Release"/>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="${PROJECT_DIR}/Dependencies/libfreenect/include/libfreenect&#10;${PROJECT_DIR}/Dependencies/libusb/include/libusb-1.0/libusb.h&#10;${PROJECT_DIR}/Dependencies/opencv/4.1.2/include/opencv4"
+                       libraryPath="${PROJECT_DIR}/Dependencies/libfreenect/lib&#10;${PROJECT_DIR}/Dependencies/libusb/lib&#10;${PROJECT_DIR}/Dependencies/opencv/4.1.2/lib"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="${PROJECT_DIR}/Dependencies/libfreenect/include/libfreenect&#10;${PROJECT_DIR}/Dependencies/libusb/include/libusb-1.0/libusb.h&#10;${PROJECT_DIR}/Dependencies/opencv/4.1.2/include/opencv4"
+                       libraryPath="${PROJECT_DIR}/Dependencies/libfreenect/lib&#10;${PROJECT_DIR}/Dependencies/libusb/lib&#10;${PROJECT_DIR}/Dependencies/opencv/4.1.2/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
@@ -112,6 +113,7 @@
         <MODULEPATH id="juce_gui_basics" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -129,9 +131,10 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_USE_CAMERA="1"/>
 </JUCERPROJECT>
