@@ -78,19 +78,8 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
     
-    //Kinect kin;
-    
-    Image kinPic;
-    Image rgbPic;
-    void setDepthPixels();
-    void setRGBPixels();
-    void paintImage();
-    
-    //PanningControls panningLaw;
     BalanceControls balance;
-    
-    int audioBlockCount;
-
+ 
     float workOutValue(float multiplier, int channel);
     
     TextButton kinUpButton;

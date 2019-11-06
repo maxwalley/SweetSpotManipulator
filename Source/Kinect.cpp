@@ -272,3 +272,7 @@ cv::Mat Kinect::getDepthImageCV()
     return depthImageCV;
 }
 
+int16_t Kinect::getNumberDevices() const
+{
+    return numDev;
+}

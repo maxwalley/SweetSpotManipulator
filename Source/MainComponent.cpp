@@ -9,14 +9,12 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), kinPic(Image::PixelFormat::RGB, 640, 480, true), rgbPic(Image::PixelFormat::RGB, 640, 480, true), audioBlockCount(0), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View")
 {
     // Make sure you set the size of the component after
     // you add any child components.
     setSize (1280, 800);
     
-    //addAndMakeVisible(Channels);
-     
     addAndMakeVisible(masterSlider);
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     masterSlider.setRange(0, 1);
@@ -30,7 +28,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(CVWindowButton);
     CVWindowButton.addListener(this);
     
-    //addAndMakeVisible(panningLaw);
     addAndMakeVisible(balance);
         
     addAndMakeVisible(UserSelectedDeviceSettings);
@@ -51,24 +48,8 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
         setAudioChannels (0, 6);
     }
     
-    setDepthPixels();
-    setRGBPixels();
-    
     StringArray availableCameras = CameraDevice::getAvailableDevices();
     DBG("Number of Available Cameras is: " << availableCameras.size());
-    
-    /*int initErrorCode = kin.kinInit();
-    
-    if(initErrorCode != 0)
-    {
-        DBG("Kinect init failed with error code: " << initErrorCode);
-        kinectErrorCodeTriggered = true;
-    }
-    else if (initErrorCode == 0)
-    {
-        DBG("Kinect init completed");
-        kinectErrorCodeTriggered = false;
-    }*/
     
     addAndMakeVisible(kinUpButton);
     addAndMakeVisible(kinDownButton);
@@ -87,40 +68,25 @@ MainComponent::~MainComponent()
 {
     // This shuts down the audio device and clears the audio source.
     AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Close App?", "Are you sure you want to close this app?", "Continue", "Cancel", nullptr, nullptr);
+    
     kinectImage.kinectEnd();
+    
     shutdownAudio();
 }
 
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    // This function will be called when the audio device is started, or when
-    // its settings (i.e. sample rate, block size, etc) are changed.
     printf("Sample Rate is: %f\n", sampleRate);
     printf("Block Size is %d\n", samplesPerBlockExpected);
     
-    //kinRefreshRate = floor(sampleRate/samplesPerBlockExpected);
-    
     audioPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    // You can use this function to initialise any resources you might need,
-    // but be careful - it will be called on the audio thread, not the GUI thread.
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    /*if(kinectErrorCodeTriggered == true)
-    {
-        int kinLEDErrorCode = kin.checkLed(Lights.getSelectedLed());
-        if(kinLEDErrorCode != 0)
-        {
-            DBG("Kinect led check failed with error code: " << kinLEDErrorCode);
-            kinectErrorCodeTriggered = false;
-        }
-    }
-    */
-    //printf("Audio Block Count = %d\n", audioBlockCount);
-    
-    if(audioOutSelector.getSelectedId() == 1)
+    //Checks that the user has selected square wave and that the masterSlider is not at 0
+    if(audioOutSelector.getSelectedId() == 1 && masterSlider.getValue() != 0)
     {
         //Iterates through the channels
         for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
@@ -181,53 +147,15 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
             }
         }
     }
-    
+    //Checks user has selected Audio Player
     else if(audioOutSelector.getSelectedId() == 2)
     {
         audioPlayer.getNextAudioBlock(bufferToFill);
     }
-    
-    /*if(audioBlockCount >= kinRefreshRate)
-    {
-        if(kinectErrorCodeTriggered == false)
-        {
-            int kinProcessingErrorCode = kin.RunVidandDepth();
-            if(kinProcessingErrorCode != 0)
-            {
-                DBG("Kinect processing failed with error code: " << kinProcessingErrorCode);
-                kinectErrorCodeTriggered = true;
-            }
-        }
-        else
-        {
-            DBG("kinect ERROR");
-        }
-        
-        audioBlockCount = 0;
-        setDepthPixels();
-        //setRGBPixels();
-        //paintImage();
-        pic.repaintImage();
-    }
-    else
-    {
-        audioBlockCount++;
-    }*/
 }
 
 void MainComponent::releaseResources()
 {
-    // This will be called when the audio device stops, or when it is being
-    // restarted due to a setting change.
-    /*if(kinectErrorCodeTriggered == false)
-    {
-        int kinEndErrorCode = kin.End();
-        if(kinEndErrorCode != 0)
-        {
-            DBG("Kinect closing sequence failed with error code: " << kinEndErrorCode);
-            kinectErrorCodeTriggered = true;
-        }
-    }*/
     audioPlayer.releaseResources();
 }
 
@@ -236,9 +164,6 @@ void MainComponent::paint (Graphics& g)
 {
     g.setOpacity(1.0);
     g.fillAll(Colours::orangered);
-    
-    //g.drawImage(kinPic, 100, 200, 320, 240, 0, 0, 640, 480, false);
-    g.drawImage(rgbPic, 500, 200, 320, 240, 0, 0, 640, 480, false);
 }
 
 void MainComponent::resized()
@@ -300,40 +225,6 @@ void MainComponent::buttonClicked(Button* button)
     if (button == &CVWindowButton)
     {
         displayDepthImageCV();
-    }
-}
-
-void MainComponent::paintImage()
-{
-    const MessageManagerLock paintLock;
-    repaint(100, 200, 320, 240);
-    //DBG("Repainting");
-}
-
-void MainComponent::setDepthPixels()
-{
-    //uint8_t shortArray[480][640];
-    
-    for(int i = 0; i < 640; i++)
-    {
-        for(int c = 0; c < 480; c++)
-        {
-            //shortArray[c][i] = kin.depthArray[c][i]/8.02745;
-            //printf("Depth data = %hu\n", shortArray[c][i]);
-            //kinPic.setPixelAt(i, c, Colour(kin.depthArray[i][c], kin.depthArray[i][c], kin.depthArray[i][c]));
-            //pic.setImage(i, c, kin.depthArray[i][c]);
-        }
-    }
-}
-
-void MainComponent::setRGBPixels()
-{
-    for(int i = 0; i < 640; i++)
-    {
-        for(int c = 0; c < 480; c++)
-        {
-            //rgbPic.setPixelAt(i, c, Colour(kin.redArray[i][c], kin.greenArray[i][c], kin.blueArray[i][c]));
-        }
     }
 }
 
