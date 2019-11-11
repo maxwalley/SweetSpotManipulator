@@ -17,7 +17,8 @@
 */
 class AudioPlayer    : public Component,
                        public AudioSource,
-                       public Button::Listener
+                       public Button::Listener,
+                       public Timer
 {
 public:
     AudioPlayer();
@@ -48,6 +49,7 @@ private:
     
     
     void buttonClicked(Button* button) override;
+    void timerCallback() override;
     
     enum TransportState
     {
@@ -58,8 +60,6 @@ private:
     uint64_t pausePosition;
     
     TransportState transportState;
-    
-    void timeCalculations();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
 };

@@ -18,6 +18,7 @@
 #include "AudioPlayer.h"
 #include <opencv2/opencv.hpp>
 #include "KinImage.h"
+#include "Delay.h"
 
 //==============================================================================
 /*
@@ -75,12 +76,15 @@ private:
     
     Slider masterSlider;
     Label masterSliderLabel;
+    float masterSliderValue;
+    void setMasterGain();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
     
     BalanceControls balance;
  
-    float workOutValue(float multiplier, int channel);
+    /**Applies balance calculations to the input*/
+    float workOutValue(float input, int channel);
     
     TextButton kinUpButton;
     TextButton kinDownButton;
@@ -95,4 +99,7 @@ private:
     KinImage kinectImage;
     
     int kinRefreshRate;
+    
+    Delay delay;
+    double currentSampleRate;
 };

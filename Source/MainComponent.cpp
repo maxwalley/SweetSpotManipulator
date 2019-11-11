@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel2State(up), channel1SampleCount(0), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View")
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -18,6 +18,8 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(masterSlider);
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     masterSlider.setRange(0, 1);
+    masterSlider.setValue(0);
+    masterSliderValue = masterSlider.getValue();
     masterSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     masterSlider.addListener(this);
     addAndMakeVisible(masterSliderLabel);
@@ -79,6 +81,10 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 {
     printf("Sample Rate is: %f\n", sampleRate);
     printf("Block Size is %d\n", samplesPerBlockExpected);
+    
+    currentSampleRate = sampleRate;
+    
+    delay.audioSourceChanged();
     
     audioPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
@@ -150,7 +156,58 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     //Checks user has selected Audio Player
     else if(audioOutSelector.getSelectedId() == 2)
     {
+        //Gets audio player data
         audioPlayer.getNextAudioBlock(bufferToFill);
+        
+        //Iterates through the channels
+        for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
+        {
+            //Creates Pointer to the first sample of the selected channel
+            float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
+        
+            //Iterates through the samples
+            for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
+            {
+                //Applies balance processing to that data
+                buffer[sample] = workOutValue(buffer[sample], channel);
+            }
+        }
+    }
+    
+    //AudioBuffer<float> input(bufferToFill.buffer->getNumChannels(), bufferToFill.buffer->getNumSamples());
+    
+    //input = *bufferToFill.buffer;
+    
+    //input.addFrom(0, 0, bufferToFill.buffer->getReadPointer(0), bufferToFill.buffer->getNumSamples());
+    //input.addFrom(1, 0, bufferToFill.buffer->getReadPointer(1), bufferToFill.buffer->getNumSamples());
+    
+    //Work out at a later date
+    /*for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
+    input.clear (i, 0, numSamples);*/
+    
+    //float* channelDataLeft = bufferToFill.buffer->getWritePointer(0);
+    //float* channelDataRight = bufferToFill.buffer->getWritePointer(1);
+    
+    //Iterates through the channels
+    for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
+    {
+        delay.getDelayValues(balance.getListenerDistance(channel), currentSampleRate, bufferToFill.numSamples, bufferToFill.buffer->getReadPointer(channel, bufferToFill.startSample));
+                
+        delay.pushDelayToBuffer(bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample), bufferToFill.numSamples);
+    }
+    
+    //Iterates through the channels
+    for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
+    {
+        //Creates Pointer to the first sample of the selected channel
+        float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
+    
+        //Iterates through the samples
+        for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
+        {
+            //Sets the master gain
+            buffer[sample] = buffer[sample] * masterSliderValue;
+        }
     }
 }
 
@@ -228,7 +285,7 @@ void MainComponent::buttonClicked(Button* button)
     }
 }
 
-float MainComponent::workOutValue(float multiplier, int channel)
+float MainComponent::workOutValue(float input, int channel)
 {
     /*if(channel == 0)
     {
@@ -256,14 +313,17 @@ float MainComponent::workOutValue(float multiplier, int channel)
         }
     }*/
     
-    return multiplier * masterSlider.getValue() * balance.workOutMultiplier(channel);
+    return input * masterSlider.getValue() * balance.workOutMultiplier(channel);
     
     return 0;
 }
 
 void MainComponent::sliderValueChanged(Slider* slider)
 {
-    audioPlayer.setGain(slider->getValue());
+    if(slider = &masterSlider)
+    {
+        masterSliderValue = masterSlider.getValue();
+    }
 }
 
 void MainComponent::displayDepthImageCV()

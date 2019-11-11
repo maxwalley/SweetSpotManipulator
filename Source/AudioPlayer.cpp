@@ -37,7 +37,7 @@ AudioPlayer::AudioPlayer() : fileChooser("Pick a file", File(), "*.wav", true, t
     openFileButton.addListener(this);
 
     addAndMakeVisible(timeLabel);
-    timeLabel.setText("0", dontSendNotification);
+    timeLabel.setText("0.0", dontSendNotification);
        
     transportState = stopped;
     pausePosition = 0;
@@ -86,6 +86,13 @@ void AudioPlayer::buttonClicked(Button* button)
                 DBG("No readers for that file");
             }
         }
+        playButton.setEnabled(true);
+        playButton.setToggleState(false, dontSendNotification);
+        stopButton.setToggleState(true, dontSendNotification);
+        stopButton.setEnabled(false);
+        pauseButton.setToggleState(false, dontSendNotification);
+        pauseButton.setEnabled(false);
+        timeLabel.setText("0.0", dontSendNotification);
     }
     
     else if(button == &playButton)
@@ -99,6 +106,7 @@ void AudioPlayer::buttonClicked(Button* button)
             audioTransportSource.setPosition(pausePosition);
         }
         audioTransportSource.start();
+        Timer::startTimer(1000);
         playButton.setEnabled(false);
         stopButton.setToggleState(false, dontSendNotification);
         stopButton.setEnabled(true);
@@ -110,11 +118,13 @@ void AudioPlayer::buttonClicked(Button* button)
     else if(button == &stopButton)
     {
         audioTransportSource.stop();
+        Timer::stopTimer();
         stopButton.setEnabled(false);
         pauseButton.setToggleState(false, dontSendNotification);
         pauseButton.setEnabled(false);
         playButton.setToggleState(false, dontSendNotification);
         playButton.setEnabled(true);
+        timeLabel.setText("0.0", dontSendNotification);
         transportState = stopped;
     }
     
@@ -122,6 +132,7 @@ void AudioPlayer::buttonClicked(Button* button)
     {
         pausePosition = audioTransportSource.getCurrentPosition();
         audioTransportSource.stop();
+        Timer::stopTimer();
         pauseButton.setEnabled(false);
         playButton.setToggleState(false, dontSendNotification);
         playButton.setEnabled(true);
@@ -135,24 +146,6 @@ void AudioPlayer::buttonClicked(Button* button)
 void AudioPlayer::setGain(float gain)
 {
     audioTransportSource.setGain(gain);
-}
-
-void AudioPlayer::timeCalculations()
-{
-    int64_t numMins = floor(audioTransportSource.getCurrentPosition() / 60);
-    double numSecs = fmod(audioTransportSource.getCurrentPosition(), 60);
-    double decPoint = fmod(numSecs, 1);
-    int64_t numSecsInt = numSecs - decPoint;
-    
-    std::string numMinsString = std::to_string(numMins);
-    std::string numSecsString = std::to_string(numSecsInt);
-    
-    std::string fullTime = numMinsString + ":" + numSecsString;
-    
-    //DBG("Time is: " << fullTime);
-    
-    const MessageManagerLock labelLock;
-    timeLabel.setText(fullTime, dontSendNotification);
 }
 
 void AudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -169,11 +162,28 @@ void AudioPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill)
     else
     {
         audioTransportSource.getNextAudioBlock(bufferToFill);
-        timeCalculations();
     }
 }
 
 void AudioPlayer::releaseResources()
 {
     audioTransportSource.releaseResources();
+}
+
+void AudioPlayer::timerCallback()
+{
+    int64_t numMins = floor(audioTransportSource.getCurrentPosition() / 60);
+    double numSecs = fmod(audioTransportSource.getCurrentPosition(), 60);
+    double decPoint = fmod(numSecs, 1);
+    int64_t numSecsInt = numSecs - decPoint;
+    
+    std::string numMinsString = std::to_string(numMins);
+    std::string numSecsString = std::to_string(numSecsInt);
+    
+    std::string fullTime = numMinsString + ":" + numSecsString;
+    
+    //DBG("Time is: " << fullTime);
+    
+    const MessageManagerLock labelLock;
+    timeLabel.setText(fullTime, dontSendNotification);
 }
