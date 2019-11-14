@@ -16,7 +16,18 @@
 //==============================================================================
 Delay::Delay()
 {
+    //delayBuffer.setSize(2, 88200);
+    //delayBuffer.clear();
     
+    for(int channel = 0; channel < 2; channel++)
+    {
+        delayBufferWritePosition[channel] = 0;
+        
+        for (int sample = 0; sample < 44100; sample++)
+        {
+            delayBuffer[channel][sample] = 0;
+        }
+    }
 }
 
 int Delay::calculateDelayTime(float listenerDistance, int sampleRate)
@@ -27,42 +38,79 @@ int Delay::calculateDelayTime(float listenerDistance, int sampleRate)
     return floor(delayTimeInSecs * sampleRate);
 }
 
-void Delay::getDelayValues(float listenerDistance, int sampleRate, int blockSize, const float* inputBlock)
+void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance, int sampleRate, int channelNum)
 {
-    int delay = calculateDelayTime(listenerDistance, sampleRate);
+    //if(inputBuffer.getNumChannels() != delayBuffer.getNumChannels())
+        //delayBuffer.setSize(inputBuffer.getNumChannels(), 88200);
     
-    //Wipes delay buffer clean of last values
-    for(int i = 0; i < MAXIMUM_DELAY; i++)
-    {
-        buffer[i] = 0;
-    }
+    int delayTimeInSamples = calculateDelayTime(listenerDistance, sampleRate);
     
-    //Iterates through every sample in the block
-    for(int i = 0; i < blockSize; i++)
+    const float* pIn = inputBuffer.getReadPointer(channelNum);
+    
+    float* pOut = inputBuffer.getWritePointer(channelNum);
+    
+    int nbSamples = inputBuffer.getNumSamples();
+    
+    float fIn, fOut = 0;
+    
+    while (nbSamples--)
     {
-        int readPosition = i - delay;
+        fIn = *pIn++;
         
-        if(readPosition < 0)
+        delayBufferWritePosition[channelNum]++;
+        if(delayBufferWritePosition[channelNum] == 44099)
         {
-            readPosition = readPosition + MAXIMUM_DELAY;
+            delayBufferWritePosition[channelNum] = 0;
         }
+        delayBuffer[channelNum][delayBufferWritePosition[channelNum]] = fIn;
         
-        buffer[i] = inputBlock[readPosition];
-    }
-}
+        int delayBufferReadPosition = delayBufferWritePosition[channelNum] - delayTimeInSamples;
+        if(delayBufferReadPosition < 0)
+        {
+            delayBufferReadPosition += 44100;
+        }
+        fOut = delayBuffer[channelNum][delayBufferReadPosition];
 
-void Delay::pushDelayToBuffer(float* outputBlock, int blockSize)
-{
-    for(int i = 0; i < blockSize; i++)
-    {
-        outputBlock[i] = buffer[i];
+        fOut = fIn;
+        
+        *pOut++ = fOut;
     }
-}
+    
+    /*const float* pIn0 = inputBuffer.getReadPointer(0);
+    const float* pIn1 = inputBuffer.getReadPointer(1);
+    
+    float* pOut0 = inputBuffer.getWritePointer(0);
+    float* pOut1 = inputBuffer.getWritePointer(1);
+    
+    int nbSamples = inputBuffer.getNumSamples();
+    
+    float fIn0, fIn1, fOut0 = 0, fOut1 = 0;
+    
+    while (nbSamples--)
+    {
+        fIn0 = *pIn0++;
+        fIn1 = *pIn1++;
+        
+        delayBufferWritePosition++;
+        if(delayBufferWritePosition == 44099)
+        {
+            delayBufferWritePosition = 0;
+        }
+        delayBuffer[0][delayBufferWritePosition] = fIn0;
+        delayBuffer[1][delayBufferWritePosition] = fIn1;
+        
+        int delayBufferReadPosition = delayBufferWritePosition - delayTimeInSamples;
+        if(delayBufferReadPosition < 0)
+        {
+            delayBufferReadPosition += 44100;
+        }
+        fOut0 = delayBuffer[0][delayBufferReadPosition];
+        fOut1 = delayBuffer[1][delayBufferReadPosition];
 
-void Delay::audioSourceChanged()
-{
-    for(int index = 0; index < MAXIMUM_DELAY; index++)
-    {
-        buffer[index] = 0;
-    }
+        fOut0 = fIn0;
+        fOut1 = fIn1;
+        
+        *pOut0++ = fOut0;
+        *pOut1++ = fOut1;
+    }*/
 }

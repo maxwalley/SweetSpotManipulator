@@ -29,21 +29,12 @@ public:
      Returns delay time in samples*/
     int calculateDelayTime(float listenerDistance, int sampleRate);
 
-    /**Outputs delayed value
-     Do not run past 88200Hz since buffer size may not allow for it
-     
-     listenerDistance = The distance the listener is from the source in meters
-     sampleRate = the sample rate the audio is being played at
-     currentInputSample = non delayed sample that would have been played*/
-    void getDelayValues(float listenerDistance, int sampleRate, int blockSize, const float* inputBlock);
-    
-    void pushDelayToBuffer(float* outputBlock, int blockSize);
-    
-    /**Resets the write position back to the start of the buffer and fills the buffer with null to stop artefacts appearing*/
-    void audioSourceChanged();
+    void performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance, int sampleRate, int channelNum);
 private:
     
-    float buffer[MAXIMUM_DELAY];
+    //AudioBuffer<float> delayBuffer;
+    int delayBufferWritePosition[2];
+    float delayBuffer[2][44100];
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Delay)
 };

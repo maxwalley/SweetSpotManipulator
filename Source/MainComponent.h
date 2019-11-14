@@ -28,6 +28,7 @@
 class MainComponent   : public AudioAppComponent,
                         public Button::Listener,
                         public Slider::Listener
+                        //public MenuBarModel
 {
 public:
     //==============================================================================
@@ -42,7 +43,12 @@ public:
     //==============================================================================
     void paint (Graphics& g) override;
     void resized() override;
-
+    
+    //==============================================================================
+    /*StringArray getMenuBarNames() override;
+    PopupMenu getMenuForIndex(int topLevelMenuIndex, const String &menuName) override;
+    void menuItemSelected(int menuItemID, int topLevelMenuIndex);*/
+    
 private:
     //==============================================================================
     // Your private member variables go here...
@@ -100,6 +106,7 @@ private:
     
     int kinRefreshRate;
     
+    AudioBuffer<float> tempBuffer;
     Delay delay;
     double currentSampleRate;
 };

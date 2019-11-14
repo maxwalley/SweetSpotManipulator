@@ -84,8 +84,6 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     
     currentSampleRate = sampleRate;
     
-    delay.audioSourceChanged();
-    
     audioPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
@@ -189,11 +187,13 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     //float* channelDataRight = bufferToFill.buffer->getWritePointer(1);
     
     //Iterates through the channels
+    
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
-        delay.getDelayValues(balance.getListenerDistance(channel), currentSampleRate, bufferToFill.numSamples, bufferToFill.buffer->getReadPointer(channel, bufferToFill.startSample));
-                
-        delay.pushDelayToBuffer(bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample), bufferToFill.numSamples);
+        
+        delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel), currentSampleRate, channel);
+        
+//        bufferToFill.buffer->copyFrom(channel, 0, tempBuffer, 0, 0, bufferToFill.numSamples);
     }
     
     //Iterates through the channels
@@ -248,6 +248,34 @@ void MainComponent::resized()
     kinectImage.setBounds(100, 200, 320, 240);
 }
 
+/*StringArray MainComponent::getMenuBarNames()
+{
+    const char* const names[] = { "File", "Edit", 0 };
+    return StringArray (names);
+}
+
+PopupMenu getMenuForIndex(int topLevelMenuIndex, const String &menuName)
+{
+    PopupMenu menu;
+    
+    if (topLevelMenuIndex == 0)
+    {
+        menu.addItem(1, "Audio Prefrences", true, false);
+    }
+    
+    return menu;
+}
+
+void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
+{
+    if(topLevelMenuIndex == 0)
+    {
+        if (menuItemID == 1)
+        {
+            DBG("AUDIO PREFS CLICKED");
+        }
+    }
+}*/
 
 void MainComponent::buttonClicked(Button* button)
 {
