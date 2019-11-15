@@ -9,7 +9,7 @@
 */
 #include "Kinect.h"
 
-unsigned short Kinect::depthArray[640][480];
+unsigned short Kinect::depthArray[480][640];
 
 uint16_t Kinect::redArray[640][480];
 uint16_t Kinect::greenArray[640][480];

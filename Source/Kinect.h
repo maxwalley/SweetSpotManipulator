@@ -31,7 +31,7 @@ public:
     int End() const;
     int checkLed(freenect_led_options ledState);
     
-    static unsigned short depthArray[640][480];
+    static unsigned short depthArray[480][640];
     
     static uint16_t redArray[640][480];
     static uint16_t greenArray[640][480];
