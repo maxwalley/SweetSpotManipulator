@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Kinect.h"
+#include "opencv2/opencv.hpp"
 
 //==============================================================================
 /*
@@ -32,13 +33,18 @@ public:
     
     bool active() const;
     
+    cv::Mat depthImageCV;
+    cv::Mat getCVImage();
+    Kinect kinect;
+    //unsigned short cvPtr*;
 private:
     Image kinPic;
     void update() override;
     void setDepthPixels();
     
-    Kinect kinect;
     bool kinectErrorCodeTriggered;
+    
+    //OpenCV openCV;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KinImage)
 };

@@ -50,12 +50,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
         setAudioChannels (0, 6);
     }
     
-    StringArray availableCameras = CameraDevice::getAvailableDevices();
-    DBG("Number of Available Cameras is: " << availableCameras.size());
-    
-    addAndMakeVisible(kinUpButton);
-    addAndMakeVisible(kinDownButton);
-    
     addAndMakeVisible(audioOutSelector);
     audioOutSelector.addItem("Square Wave", 1);
     audioOutSelector.addItem("Audio Player", 2);
@@ -172,30 +166,20 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
         }
     }
     
-    //AudioBuffer<float> input(bufferToFill.buffer->getNumChannels(), bufferToFill.buffer->getNumSamples());
-    
-    //input = *bufferToFill.buffer;
-    
-    //input.addFrom(0, 0, bufferToFill.buffer->getReadPointer(0), bufferToFill.buffer->getNumSamples());
-    //input.addFrom(1, 0, bufferToFill.buffer->getReadPointer(1), bufferToFill.buffer->getNumSamples());
-    
     //Work out at a later date
     /*for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
     input.clear (i, 0, numSamples);*/
     
-    //float* channelDataLeft = bufferToFill.buffer->getWritePointer(0);
-    //float* channelDataRight = bufferToFill.buffer->getWritePointer(1);
-    
+    //Delay
     //Iterates through the channels
     
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
         
         delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel), currentSampleRate, channel);
-        
-//        bufferToFill.buffer->copyFrom(channel, 0, tempBuffer, 0, 0, bufferToFill.numSamples);
     }
     
+    //Master Fader
     //Iterates through the channels
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
@@ -309,7 +293,16 @@ void MainComponent::buttonClicked(Button* button)
     
     if (button == &CVWindowButton)
     {
-        displayDepthImageCV();
+        //cv::Mat test;
+        //test.create(480, 640, CV_16UC1);
+        
+        //test = kinectImage.getCVImage();
+        
+        MessageManagerLock cvLock;
+        cv::Mat test(480, 640, CV_8UC1, &kinectImage.kinect.depthArray);
+        
+        cv::namedWindow("test window", cv::WINDOW_AUTOSIZE);
+        cv::imshow("test window", test);
     }
 }
 
@@ -348,18 +341,8 @@ float MainComponent::workOutValue(float input, int channel)
 
 void MainComponent::sliderValueChanged(Slider* slider)
 {
-    if(slider = &masterSlider)
+    if(slider == &masterSlider)
     {
         masterSliderValue = masterSlider.getValue();
     }
-}
-
-void MainComponent::displayDepthImageCV()
-{
-    //cv::Mat image = kin.getDepthImageCV();
-    
-    cv::namedWindow("Cv Image", cv::WINDOW_AUTOSIZE);
-    
-    //cv::imshow("Cv Image", image);
-    cv::waitKey(500);
 }

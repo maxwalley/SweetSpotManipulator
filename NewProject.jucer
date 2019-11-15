@@ -2,6 +2,8 @@
 
 <JUCERPROJECT id="mtAZFz" name="NewProject" projectType="guiapp" jucerVersion="5.4.5">
   <MAINGROUP id="VZQjYu" name="NewProject">
+    <FILE id="vVMKWk" name="OpenCV.cpp" compile="1" resource="0" file="Source/OpenCV.cpp"/>
+    <FILE id="KLUK3d" name="OpenCV.h" compile="0" resource="0" file="Source/OpenCV.h"/>
     <GROUP id="{2C9811E5-CF9E-B1AD-AAE3-BF71A40E0ACA}" name="Source">
       <FILE id="I38xvW" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="Cnk0Q5" name="MainComponent.cpp" compile="1" resource="0"

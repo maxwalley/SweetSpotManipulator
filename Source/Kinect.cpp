@@ -9,7 +9,7 @@
 */
 #include "Kinect.h"
 
-uint16_t Kinect::depthArray[640][480];
+unsigned short Kinect::depthArray[640][480];
 
 uint16_t Kinect::redArray[640][480];
 uint16_t Kinect::greenArray[640][480];
@@ -21,7 +21,7 @@ cv::Mat Kinect::depthImageCV;
 //==============================================================================
 Kinect::Kinect()
 {
-    depthImageCV.create(480, 640, CV_16UC2);
+    //depthImageCV.create(480, 640, CV_16UC2);
 }
 
 Kinect::~Kinect()
@@ -228,8 +228,7 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
     
     DBG("Depth data received");
     
-    //cv::Mat tempMat(480, 640, CV_16UC2, data);
-    //depthImageCV = tempMat;
+    //cv::Mat tempMat(480, 640, CV_16UC1, data);
 //    ScopedLock
 //    isBusy = true;
     for(int yCount = 0; yCount < 480; yCount++)
@@ -242,6 +241,7 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
             castedData++;
         }
     }
+    //depthImageCV = cv::Mat(480, 640, CV_16UC1, depthArray);
 //    isBusy = false;
 }
 

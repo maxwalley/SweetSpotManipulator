@@ -17,6 +17,7 @@ KinImage::KinImage() : kinPic(Image::PixelFormat::RGB, 640, 480, true)
     setSize(320, 240);
     setBufferedToImage(true);
     setFramesPerSecond(25);
+    depthImageCV.create(480, 640, CV_16UC1);
 }
 
 KinImage::~KinImage()
@@ -48,6 +49,7 @@ void KinImage::update()
 {
     kinect.RunVidandDepth();
     setDepthPixels();
+    //openCV.getDepthImage(depthImageCV);
 }
 
 void KinImage::setDepthPixels()
@@ -60,6 +62,7 @@ void KinImage::setDepthPixels()
         {
             //shortArray[c][i] = kin.depthArray[c][i]/8.02745;
             //printf("Depth data = %hu\n", shortArray[c][i]);
+            
             kinPic.setPixelAt(i, c, Colour(kinect.depthArray[i][c], kinect.depthArray[i][c], kinect.depthArray[i][c]));
         }
     }
@@ -100,4 +103,9 @@ bool KinImage::active() const
     {
         return true;
     }
+}
+
+cv::Mat KinImage::getCVImage()
+{
+    return depthImageCV;
 }

@@ -16,9 +16,9 @@
 #include "BalanceControls.h"
 #include <math.h>
 #include "AudioPlayer.h"
-#include <opencv2/opencv.hpp>
 #include "KinImage.h"
 #include "Delay.h"
+#include <opencv2/opencv.hpp>
 
 //==============================================================================
 /*
@@ -99,7 +99,6 @@ private:
     
     void sliderValueChanged(Slider* slider) override;
     
-    void displayDepthImageCV();
     TextButton CVWindowButton;
     
     KinImage kinectImage;
