@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV")
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -29,6 +29,9 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     addAndMakeVisible(CVWindowButton);
     CVWindowButton.addListener(this);
+    
+    addAndMakeVisible(closeCVWindow);
+    closeCVWindow.addListener(this);
     
     addAndMakeVisible(balance);
         
@@ -227,7 +230,9 @@ void MainComponent::resized()
     audioPlayer.setBounds(100, 500, 200, 150);
     
     audioOutSelector.setBounds(400, 500, 200, 30);
+    
     CVWindowButton.setBounds(700, 500, 200, 30);
+    closeCVWindow.setBounds(700, 550, 200, 30);
     
     kinectImage.setBounds(100, 200, 320, 240);
 }
@@ -299,10 +304,16 @@ void MainComponent::buttonClicked(Button* button)
         //test = kinectImage.getCVImage();
         
         MessageManagerLock cvLock;
-        cv::Mat test(480, 640, CV_8UC1, &kinectImage.kinect.depthArray);
+        //Shows image with small y axis
+        cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
         
         cv::namedWindow("test window", cv::WINDOW_AUTOSIZE);
         cv::imshow("test window", test);
+    }
+    
+    else if (button == &closeCVWindow)
+    {
+        cv::destroyAllWindows();
     }
 }
 

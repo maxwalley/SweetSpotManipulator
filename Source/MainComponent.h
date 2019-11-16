@@ -100,6 +100,7 @@ private:
     void sliderValueChanged(Slider* slider) override;
     
     TextButton CVWindowButton;
+    TextButton closeCVWindow;
     
     KinImage kinectImage;
     

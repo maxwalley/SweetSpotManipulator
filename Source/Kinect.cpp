@@ -228,20 +228,20 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
     
     DBG("Depth data received");
     
-    //cv::Mat tempMat(480, 640, CV_16UC1, data);
 //    ScopedLock
 //    isBusy = true;
     for(int yCount = 0; yCount < 480; yCount++)
     {
         for(int xCount = 0; xCount < 640; xCount++)
         {
-            depthArray[xCount][yCount] = *castedData;
+            //Uncomment this to show juce image in correct orientation
+            //depthArray[xCount][yCount] = *castedData;
+            depthArray[yCount][xCount] = *castedData;
             //Uncomment this if you want to inverse the colours
             //depthArray[xCount][yCount] = (depthArray[xCount][yCount] - 255) * -1;
             castedData++;
         }
     }
-    //depthImageCV = cv::Mat(480, 640, CV_16UC1, depthArray);
 //    isBusy = false;
 }
 
