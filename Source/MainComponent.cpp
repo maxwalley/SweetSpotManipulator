@@ -298,21 +298,13 @@ void MainComponent::buttonClicked(Button* button)
     
     if (button == &CVWindowButton)
     {
-        //cv::Mat test;
-        //test.create(480, 640, CV_16UC1);
-        
-        //test = kinectImage.getCVImage();
-        
-        MessageManagerLock cvLock;
-        //Shows image with small y axis
-        cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
-        
+        Timer::startTimer(40);
         cv::namedWindow("test window", cv::WINDOW_AUTOSIZE);
-        cv::imshow("test window", test);
     }
     
     else if (button == &closeCVWindow)
     {
+        Timer::stopTimer();
         cv::destroyAllWindows();
     }
 }
@@ -356,4 +348,12 @@ void MainComponent::sliderValueChanged(Slider* slider)
     {
         masterSliderValue = masterSlider.getValue();
     }
+}
+
+void MainComponent::timerCallback()
+{
+    MessageManagerLock cvLock;
+    //Shows image with small y axis
+    cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
+    cv::imshow("test window", test);
 }

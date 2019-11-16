@@ -73,9 +73,9 @@
 			isa = PBXBuildFile;
 			fileRef = 0CA8306F2D6BBD512DFE94B3;
 		};
-		87FE9D48C9EFD8BE5EAFC460 = {
+		E55F3F19E7D4DBD44E52F5F0 = {
 			isa = PBXBuildFile;
-			fileRef = 77D1A15FEB3EB5FD89177F27;
+			fileRef = 5992EC0A6F2EA5ED4115F797;
 		};
 		E37AC35B1CEB47274CBEF7A3 = {
 			isa = PBXBuildFile;
@@ -431,18 +431,18 @@
 			path = "Dependencies/libfreenect/lib/libfreenect_sync.a";
 			sourceTree = "SOURCE_ROOT";
 		};
-		4B90F0A2AA56055C36DB7C03 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = OpenCV.h;
-			path = ../../Source/OpenCV.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		4D662BEEFAF66771B6374CEB = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_graphics.mm";
 			path = "../../JuceLibraryCode/include_juce_graphics.mm";
+			sourceTree = "SOURCE_ROOT";
+		};
+		5992EC0A6F2EA5ED4115F797 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CVView.cpp;
+			path = ../../Source/CVView.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		5AC3069160C92F3741751341 = {
@@ -473,6 +473,13 @@
 			path = "/Users/maxwalley/Documents/C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules/juce_video";
 			sourceTree = "<absolute>";
 		};
+		69BA31ECC08E9E9CA785357C = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CVView.h;
+			path = ../../Source/CVView.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		6CA936CE3FD9B095F64CCB7D = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -499,13 +506,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = BinaryData.cpp;
 			path = ../../JuceLibraryCode/BinaryData.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		77D1A15FEB3EB5FD89177F27 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = OpenCV.cpp;
-			path = ../../Source/OpenCV.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7D1BFDE5DAC8806758147074 = {
@@ -1029,8 +1029,8 @@
 		A8B710D38857314F156A6BEA = {
 			isa = PBXGroup;
 			children = (
-				77D1A15FEB3EB5FD89177F27,
-				4B90F0A2AA56055C36DB7C03,
+				69BA31ECC08E9E9CA785357C,
+				5992EC0A6F2EA5ED4115F797,
 				EEF7FB8A1298BBD613ADCF62,
 				C1C41A7ABAB737502CE521C8,
 			);
@@ -1369,7 +1369,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87FE9D48C9EFD8BE5EAFC460,
+				E55F3F19E7D4DBD44E52F5F0,
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,
 				5895B3DA75F45EC10C4380C0,

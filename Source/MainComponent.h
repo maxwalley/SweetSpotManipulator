@@ -27,7 +27,8 @@
 */
 class MainComponent   : public AudioAppComponent,
                         public Button::Listener,
-                        public Slider::Listener
+                        public Slider::Listener,
+public Timer
                         //public MenuBarModel
 {
 public:
@@ -101,6 +102,7 @@ private:
     
     TextButton CVWindowButton;
     TextButton closeCVWindow;
+    void timerCallback() override;
     
     KinImage kinectImage;
     
