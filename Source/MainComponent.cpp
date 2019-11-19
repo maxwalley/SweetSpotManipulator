@@ -71,6 +71,8 @@ MainComponent::~MainComponent()
     kinectImage.kinectEnd();
     
     shutdownAudio();
+    
+    cv::destroyAllWindows();
 }
 
 //==============================================================================
@@ -299,7 +301,8 @@ void MainComponent::buttonClicked(Button* button)
     if (button == &CVWindowButton)
     {
         Timer::startTimer(40);
-        cv::namedWindow("test window", cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("Image", cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("Contours", cv::WINDOW_AUTOSIZE);
     }
     
     else if (button == &closeCVWindow)
@@ -355,5 +358,18 @@ void MainComponent::timerCallback()
     MessageManagerLock cvLock;
     //Shows image with small y axis
     cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
-    cv::imshow("test window", test);
+    //cv::Mat cannyOutput;
+    
+    //cv::Canny(test, cannyOutput, 100, 200);
+    
+    cv::imshow("Image", test);
+    
+    std::vector<std::vector<cv::Point> > contours;
+    cv::findContours(test, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    
+    cv::Mat contouredImage(480, 1280, CV_8UC1);
+    cv::Scalar colour(255, 0, 0);
+    cv::drawContours(contouredImage, contours, -1, colour);
+    
+    cv::imshow("Contours", contouredImage);
 }
