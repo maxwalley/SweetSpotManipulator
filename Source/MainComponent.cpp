@@ -303,6 +303,7 @@ void MainComponent::buttonClicked(Button* button)
         Timer::startTimer(40);
         cv::namedWindow("Image", cv::WINDOW_AUTOSIZE);
         cv::namedWindow("Contours", cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("Canny", cv::WINDOW_AUTOSIZE);
     }
     
     else if (button == &closeCVWindow)
@@ -358,18 +359,24 @@ void MainComponent::timerCallback()
     MessageManagerLock cvLock;
     //Shows image with small y axis
     cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
-    //cv::Mat cannyOutput;
+    cv::Mat cannyOutput;
     
-    //cv::Canny(test, cannyOutput, 100, 200);
+    cv::Canny(test, cannyOutput, 100, 200);
     
     cv::imshow("Image", test);
     
     std::vector<std::vector<cv::Point> > contours;
-    cv::findContours(test, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(test, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
     
     cv::Mat contouredImage(480, 1280, CV_8UC1);
-    cv::Scalar colour(255, 0, 0);
-    cv::drawContours(contouredImage, contours, -1, colour);
+    
+    for(int idx = 0; idx >= hierarchy[idx][0]; idx++)
+    {
+        cv::Scalar colour(rand()&255, rand()&255, rand()&255);
+        cv::drawContours(contouredImage, contours, -1, colour);
+    }
     
     cv::imshow("Contours", contouredImage);
+    cv::imshow("Canny", cannyOutput);
 }
