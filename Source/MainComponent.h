@@ -103,6 +103,12 @@ private:
     TextButton CVWindowButton;
     TextButton closeCVWindow;
     void timerCallback() override;
+    cv::Mat cannyOutput;
+    Slider minThresSlider;
+    Slider maxThresSlider;
+    
+    //Takes image scans it for data and prints where it finds data. Has to start x axis at 10 since there seems to be a border around the image
+    uchar workOutPosition(cv::Mat input);
     
     KinImage kinectImage;
     

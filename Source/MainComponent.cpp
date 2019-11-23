@@ -61,6 +61,15 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     addAndMakeVisible(kinectImage);
     kinectImage.kinectInit();
+    
+    addAndMakeVisible(minThresSlider);
+    minThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
+    minThresSlider.setRange(0, 1000);
+    minThresSlider.setValue(100);
+    addAndMakeVisible(maxThresSlider);
+    maxThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
+    maxThresSlider.setRange(0, 1000);
+    maxThresSlider.setValue(200);
 }
 
 MainComponent::~MainComponent()
@@ -235,6 +244,8 @@ void MainComponent::resized()
     
     CVWindowButton.setBounds(700, 500, 200, 30);
     closeCVWindow.setBounds(700, 550, 200, 30);
+    minThresSlider.setBounds(500, 100, 30, 200);
+    maxThresSlider.setBounds(550, 100, 30, 200);
     
     kinectImage.setBounds(100, 200, 320, 240);
 }
@@ -301,7 +312,7 @@ void MainComponent::buttonClicked(Button* button)
     if (button == &CVWindowButton)
     {
         Timer::startTimer(40);
-        cv::namedWindow("Image", cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("keypoints", cv::WINDOW_AUTOSIZE);
         cv::namedWindow("Contours", cv::WINDOW_AUTOSIZE);
         cv::namedWindow("Canny", cv::WINDOW_AUTOSIZE);
     }
@@ -359,13 +370,30 @@ void MainComponent::timerCallback()
     MessageManagerLock cvLock;
     //Shows image with small y axis
     cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
-    cv::Mat cannyOutput;
     
-    cv::Canny(test, cannyOutput, 100, 200);
+    cv::Canny(test, cannyOutput, minThresSlider.getValue(), maxThresSlider.getValue());
     
     cv::imshow("Image", test);
     
-    std::vector<std::vector<cv::Point> > contours;
+    cv::imshow("Canny", cannyOutput);
+    
+    uint8_t depthAtUser = workOutPosition(test);
+    
+    DBG("Depth at user pos = " << depthAtUser);
+    
+    //Read: https://www.learnopencv.com/blob-detection-using-opencv-python-c/
+    /*cv::SimpleBlobDetector detector;
+ 
+    std::vector<cv::KeyPoint> keypoints;
+    detector.detect(test, keypoints);
+ 
+    cv::Mat im_with_keypoints;
+    cv::drawKeypoints( test, keypoints, im_with_keypoints, cv::Scalar(0,0,255), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
+ 
+    imshow("keypoints", im_with_keypoints );*/
+
+    
+    /*std::vector<std::vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(test, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
     
@@ -377,6 +405,31 @@ void MainComponent::timerCallback()
         cv::drawContours(contouredImage, contours, -1, colour);
     }
     
-    cv::imshow("Contours", contouredImage);
-    cv::imshow("Canny", cannyOutput);
+    cv::imshow("Contours", contouredImage);*/
+}
+
+uint8_t MainComponent::workOutPosition(cv::Mat input)
+{
+    bool locationFound = false;
+    int xLocation;
+    int yLocation;
+    
+    //Reading from top to bottom
+    for(int y = 50; y < 480 && locationFound == false; y++)
+    {
+        for(int x = 50; x < 640 && locationFound == false; x++)
+        {
+            
+            if(cannyOutput.at<uint8_t>(y, x) == 255)
+            {
+                DBG("LOCATION FOUND!!!! at " << y << ", " << x);
+                xLocation = x;
+                yLocation = y;
+                
+                locationFound = true;
+            }
+        }
+    }
+    
+    return input.at<uint8_t>(yLocation, xLocation);
 }
