@@ -107,6 +107,12 @@ private:
     Slider minThresSlider;
     Slider maxThresSlider;
     
+    TextButton kinectTestButton;
+    uint8_t depthMatLeft;
+    uint8_t depthMatCenter;
+    uint8_t depthMatRight;
+
+    
     //Takes image scans it for data and prints where it finds data. Has to start x axis at 10 since there seems to be a border around the image
     uchar workOutPosition(cv::Mat input);
     

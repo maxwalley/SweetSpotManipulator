@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test")
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -70,6 +70,9 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     maxThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     maxThresSlider.setRange(0, 1000);
     maxThresSlider.setValue(200);
+    
+    addAndMakeVisible(kinectTestButton);
+    kinectTestButton.addListener(this);
 }
 
 MainComponent::~MainComponent()
@@ -247,6 +250,8 @@ void MainComponent::resized()
     minThresSlider.setBounds(500, 100, 30, 200);
     maxThresSlider.setBounds(550, 100, 30, 200);
     
+    kinectTestButton.setBounds(600, 100, 100, 30);
+    
     kinectImage.setBounds(100, 200, 320, 240);
 }
 
@@ -322,6 +327,17 @@ void MainComponent::buttonClicked(Button* button)
         Timer::stopTimer();
         cv::destroyAllWindows();
     }
+    
+    else if (button == &kinectTestButton)
+    {
+        DBG("Depth Array left:" << kinectImage.kinect.depthArray[240][0]);
+        DBG("Depth Array center:" << kinectImage.kinect.depthArray[240][320]);
+        DBG("Depth Array right:" << kinectImage.kinect.depthArray[240][639]);
+        
+        DBG("Depth Mat left:" << depthMatLeft);
+        DBG("Depth Mat center:" << depthMatCenter);
+        DBG("Depth Mat right:" << depthMatRight);
+    }
 }
 
 float MainComponent::workOutValue(float input, int channel)
@@ -371,6 +387,10 @@ void MainComponent::timerCallback()
     //Shows image with small y axis
     cv::Mat test(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
     
+    depthMatLeft = test.at<uint8_t>(240, 0);
+    depthMatCenter = test.at<uint8_t>(240, 640);
+    depthMatRight = test.at<uint8_t>(240, 1279);
+    
     cv::Canny(test, cannyOutput, minThresSlider.getValue(), maxThresSlider.getValue());
     
     cv::imshow("Image", test);
@@ -417,6 +437,7 @@ uint8_t MainComponent::workOutPosition(cv::Mat input)
     //Reading from top to bottom
     for(int y = 50; y < 480 && locationFound == false; y++)
     {
+        //Reading from left to right
         for(int x = 50; x < 640 && locationFound == false; x++)
         {
             
@@ -431,5 +452,7 @@ uint8_t MainComponent::workOutPosition(cv::Mat input)
         }
     }
     
-    return input.at<uint8_t>(yLocation, xLocation);
+    //return input.at<uint8_t>(yLocation, xLocation);
+    
+    return input.at<uint8_t>(yLocation + 5, xLocation + 5);
 }
