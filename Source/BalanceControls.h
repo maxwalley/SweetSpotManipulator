@@ -27,9 +27,9 @@ public:
     /*Returns a multiplier to factor in distance
     speaker argument determines which speaker this distance is from
     0 for left, 1 for right*/
-    float workOutMultiplier(int speaker);
+    float workOutMultiplier(int speaker, int xPos, int valueAtXPos);
     
-    float getListenerDistance(int channel);
+    float getListenerDistance(int channel, int xPos, int valueAtXPos);
 private:
     
     //Taken from left speaker to right speaker
@@ -47,15 +47,15 @@ private:
     /*Returns listener distance along speaker line from equivilent user position
      speaker argument determines which speaker this distance is from
      0 for left, 1 for right*/
-    float workOutLisDisHorizontalToSpeakers(int speaker);
+    float workOutLisDisHorizontalToSpeakers(int speaker, int xPos);
     
     /*Returns listener distance to the speaker line*/
-    float workOutLisDisVerticalToSpeakerLine();
+    float workOutLisDisVerticalToSpeakerLine(int valueAtXPos);
     
     /*Returns distance from speaker to user
      speaker argument determines which speaker this distance is from
      0 for left, 1 for right*/
-    float workOutListenerDistance(int speaker);
+    float workOutListenerDistance(int speaker, int xPos, int valueAtXPos);
     
     
     

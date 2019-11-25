@@ -58,21 +58,21 @@ void BalanceControls::resized()
     lawSelection.setBounds(0, 30, 200, 30);
 }
 
-float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker)
+float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos)
 {
     bool isMinus;
     float currentVal;
     
     //If user is to the left of middle
-    if(listenerXPosSlider.getValue() < 0)
+    if(xPos < 320)
     {
-        currentVal = listenerXPosSlider.getValue() * -1;
+        currentVal = xPos * -1;
         isMinus = true;
     }
     //If user is to the right of middle
-    else if (listenerXPosSlider.getValue() > 0)
+    else if (xPos > 320)
     {
-        currentVal = listenerXPosSlider.getValue();
+        currentVal = xPos;
         isMinus = false;
     }
     
@@ -102,44 +102,44 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker)
     }
 }
 
-float BalanceControls::workOutLisDisVerticalToSpeakerLine()
+float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
 {
-    if(listenerYPosSlider.getValue() > 0)
+    if(valueAtXPos > 1023)
     {
-        return (lpYLineLength/2) - listenerYPosSlider.getValue();
+        return (lpYLineLength/2) - valueAtXPos;
     }
-    else if(listenerYPosSlider.getValue() <= 0)
+    else if(valueAtXPos <= 1023)
     {
-        return (listenerYPosSlider.getValue() * -1) + (lpYLineLength/2);
+        return (valueAtXPos * -1) + (lpYLineLength/2);
     }
 }
 
-float BalanceControls::workOutListenerDistance(int speaker)
+float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueAtXPos)
 {
-    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker);
-    float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine();
+    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos);
+    float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(valueAtXPos);
     
     return sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
 }
 
-float BalanceControls::workOutMultiplier(int speaker)
+float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
 {
     if(lawSelection.getSelectedId() == 1)
     {
-       return workOutListenerDistance(speaker)/2.23;
+       return workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23;
     }
     else if(lawSelection.getSelectedId() == 2)
     {
-        return pow(workOutListenerDistance(speaker)/2.23, 2);
+        return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 2);
     }
     else if(lawSelection.getSelectedId() == 3)
     {
-        return pow(workOutListenerDistance(speaker)/2.23, 3);
+        return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 3);
     }
 }
 
 
-float BalanceControls::getListenerDistance(int channel)
+float BalanceControls::getListenerDistance(int channel, int xPos, int valueAtXPos)
 {
-    return workOutListenerDistance(channel);
+    return workOutListenerDistance(channel, xPos, valueAtXPos);
 }

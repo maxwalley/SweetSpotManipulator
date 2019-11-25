@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test"), userPosOnXAxis(329), userPosOnYAxis(239)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -193,7 +193,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
         
-        delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel), currentSampleRate, channel);
+        delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel, userPosOnXAxis, depthAtUserPos), currentSampleRate, channel);
     }
     
     //Master Fader
@@ -330,13 +330,13 @@ void MainComponent::buttonClicked(Button* button)
     
     else if (button == &kinectTestButton)
     {
-        DBG("Depth Array left:" << kinectImage.kinect.depthArray[240][0]);
-        DBG("Depth Array center:" << kinectImage.kinect.depthArray[240][320]);
-        DBG("Depth Array right:" << kinectImage.kinect.depthArray[240][639]);
+        DBG("Kin Test - Depth Array left:" << kinectImage.kinect.depthArray[240][0]);
+        DBG("Kin Test - Depth Array center:" << kinectImage.kinect.depthArray[240][320]);
+        DBG("Kin Test - Depth Array right:" << kinectImage.kinect.depthArray[240][639]);
         
-        DBG("Depth Mat left:" << depthMatLeft);
-        DBG("Depth Mat center:" << depthMatCenter);
-        DBG("Depth Mat right:" << depthMatRight);
+        DBG("Kin Test - Depth Mat left:" << depthMatLeft);
+        DBG("Kin Test - Depth Mat center:" << depthMatCenter);
+        DBG("Kin Test - Depth Mat right:" << depthMatRight);
     }
 }
 
@@ -368,7 +368,7 @@ float MainComponent::workOutValue(float input, int channel)
         }
     }*/
     
-    return input * masterSlider.getValue() * balance.workOutMultiplier(channel);
+    return input * masterSlider.getValue() * balance.workOutMultiplier(channel, userPosOnXAxis, depthAtUserPos);
     
     return 0;
 }
@@ -397,9 +397,8 @@ void MainComponent::timerCallback()
     
     cv::imshow("Canny", cannyOutput);
     
-    uint8_t depthAtUser = workOutPosition(test);
+    workOutPosition(test);
     
-    DBG("Depth at user pos = " << depthAtUser);
     
     //Read: https://www.learnopencv.com/blob-detection-using-opencv-python-c/
     /*cv::SimpleBlobDetector detector;
@@ -428,31 +427,29 @@ void MainComponent::timerCallback()
     cv::imshow("Contours", contouredImage);*/
 }
 
-uint8_t MainComponent::workOutPosition(cv::Mat input)
+void MainComponent::workOutPosition(cv::Mat input)
 {
     bool locationFound = false;
-    int xLocation;
-    int yLocation;
     
     //Reading from top to bottom
     for(int y = 50; y < 480 && locationFound == false; y++)
     {
         //Reading from left to right
-        for(int x = 50; x < 640 && locationFound == false; x++)
+        for(int x = 50; x < 1279 && locationFound == false; x++)
         {
             
             if(cannyOutput.at<uint8_t>(y, x) == 255)
             {
                 DBG("LOCATION FOUND!!!! at " << y << ", " << x);
-                xLocation = x;
-                yLocation = y;
+                userPosOnXAxis = floor(x/2);
                 
                 locationFound = true;
             }
         }
     }
-    
-    //return input.at<uint8_t>(yLocation, xLocation);
-    
-    return input.at<uint8_t>(yLocation + 5, xLocation + 5);
+}
+
+void MainComponent::workOutDepthAtPosition()
+{
+    depthAtUserPos = kinectImage.kinect.depthArray[userPosOnYAxis + 5][userPosOnXAxis + 5];
 }

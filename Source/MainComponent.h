@@ -111,10 +111,10 @@ private:
     uint8_t depthMatLeft;
     uint8_t depthMatCenter;
     uint8_t depthMatRight;
-
     
     //Takes image scans it for data and prints where it finds data. Has to start x axis at 10 since there seems to be a border around the image
-    uchar workOutPosition(cv::Mat input);
+    void workOutPosition(cv::Mat input);
+    void workOutDepthAtPosition();
     
     KinImage kinectImage;
     
@@ -123,4 +123,8 @@ private:
     AudioBuffer<float> tempBuffer;
     Delay delay;
     double currentSampleRate;
+    
+    int userPosOnXAxis;
+    int userPosOnYAxis;
+    uint16_t depthAtUserPos;
 };
