@@ -127,4 +127,8 @@ private:
     int userPosOnXAxis;
     int userPosOnYAxis;
     uint16_t depthAtUserPos;
+    
+    void cascadeTests(cv::Mat input);
+    cv::String cascadeFilePath;
+    cv::CascadeClassifier fullBodyClassifier;
 };

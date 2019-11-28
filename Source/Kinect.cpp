@@ -11,9 +11,7 @@
 
 unsigned short Kinect::depthArray[480][640];
 
-uint16_t Kinect::redArray[640][480];
-uint16_t Kinect::greenArray[640][480];
-uint16_t Kinect::blueArray[640][480];
+unsigned short Kinect::colourArray[3][480][640];
 
 cv::Mat Kinect::depthImageCV;
 
@@ -83,7 +81,7 @@ int Kinect::kinInit()
         DBG("Bits Per Pixel of Depth Frame is: " << DepthMode.data_bits_per_pixel);
         
         freenect_set_depth_callback(dev, depthCallback);
-        //freenect_set_video_callback(dev, videoCallback);
+        freenect_set_video_callback(dev, videoCallback);
         
         if(freenect_start_depth(dev) != 0)
         {
@@ -253,15 +251,10 @@ void Kinect::videoCallback(freenect_device* dev, void* data, uint32_t timestamp)
     {
         for(int xCount = 0; xCount < 640; xCount++)
         {
-            printf("vid Data = %d\n", *castedData);
-            redArray[xCount][yCount] = *castedData;
-            //redArray[xCount][yCount] = (redArray[xCount][yCount] - 255) * -1;
-            castedData++;
-            greenArray[xCount][yCount] = *castedData;
-            //greenArray[xCount][yCount] = (greenArray[xCount][yCount] - 255) * -1;
-            castedData++;
-            blueArray[xCount][yCount] = *castedData;
-            //blueArray[xCount][yCount] = (blueArray[xCount][yCount] - 255) * -1;
+            for(int colourCount = 0; colourCount < 3; colourCount++)
+            {
+                colourArray[colourCount][yCount][xCount] = *castedData;
+            }
             castedData++;
         }
     }

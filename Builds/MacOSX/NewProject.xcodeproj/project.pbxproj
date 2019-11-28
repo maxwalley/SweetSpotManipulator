@@ -1181,7 +1181,7 @@
 					"\"${PROJECT_DIR}/Dependencies/opencv/4.1.2/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				OTHER_LDFLAGS = "-lusb-1.0.0 -lfreenect_sync.0.5.5 -lfreenect -lopencv_core -lopencv_imgproc.4.1.2 -lopencv_highgui.4.1.2";
+				OTHER_LDFLAGS = "-lusb-1.0.0 -lfreenect_sync.0.5.5 -lfreenect -lopencv_core -lopencv_imgproc.4.1.2 -lopencv_highgui.4.1.2 -lopencv_objdetect.4.1.2 -lopencv_imgcodecs.4.1.2";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.NewProject;
 				PRODUCT_NAME = "NewProject";
 				USE_HEADERMAP = NO;
@@ -1236,7 +1236,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				OTHER_LDFLAGS = "-lusb-1.0.0 -lfreenect_sync.0.5.5 -lfreenect -lopencv_core -lopencv_imgproc.4.1.2 -lopencv_highgui.4.1.2";
+				OTHER_LDFLAGS = "-lusb-1.0.0 -lfreenect_sync.0.5.5 -lfreenect -lopencv_core -lopencv_imgproc.4.1.2 -lopencv_highgui.4.1.2 -lopencv_objdetect.4.1.2 -lopencv_imgcodecs.4.1.2";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.NewProject;
 				PRODUCT_NAME = "NewProject";
 				USE_HEADERMAP = NO;

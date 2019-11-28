@@ -33,9 +33,11 @@ public:
     
     static unsigned short depthArray[480][640];
     
-    static uint16_t redArray[640][480];
+    static unsigned short colourArray[3][480][640];
+    
+    /*static uint16_t redArray[640][480];
     static uint16_t greenArray[640][480];
-    static uint16_t blueArray[640][480];
+    static uint16_t blueArray[640][480];*/
     
     static cv::Mat getDepthImageCV();
     
