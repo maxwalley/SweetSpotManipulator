@@ -19,6 +19,7 @@
 #include "KinImage.h"
 #include "Delay.h"
 #include <opencv2/opencv.hpp>
+#include "HaarCascade.h"
 
 //==============================================================================
 /*
@@ -28,7 +29,7 @@
 class MainComponent   : public AudioAppComponent,
                         public Button::Listener,
                         public Slider::Listener,
-public Timer
+                        public Timer
                         //public MenuBarModel
 {
 public:
@@ -128,7 +129,5 @@ private:
     int userPosOnYAxis;
     uint16_t depthAtUserPos;
     
-    void cascadeTests(cv::Mat input);
-    cv::String cascadeFilePath;
-    cv::CascadeClassifier fullBodyClassifier;
+    HaarCascade haarCascade;
 };

@@ -73,6 +73,10 @@
 			isa = PBXBuildFile;
 			fileRef = 0CA8306F2D6BBD512DFE94B3;
 		};
+		FBD6A5782CD6EE4B90135BDA = {
+			isa = PBXBuildFile;
+			fileRef = 314B40F7E260DB226677054F;
+		};
 		E55F3F19E7D4DBD44E52F5F0 = {
 			isa = PBXBuildFile;
 			fileRef = 5992EC0A6F2EA5ED4115F797;
@@ -389,6 +393,13 @@
 			path = System/Library/Frameworks/CoreAudio.framework;
 			sourceTree = SDKROOT;
 		};
+		314B40F7E260DB226677054F = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = HaarCascade.cpp;
+			path = ../../Source/HaarCascade.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		35304684F9997BFA2BB32015 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.dylib;
@@ -402,6 +413,13 @@
 			name = AVKit.framework;
 			path = System/Library/Frameworks/AVKit.framework;
 			sourceTree = SDKROOT;
+		};
+		3EC0A175CFB3092971FB869B = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = HaarCascade.h;
+			path = ../../Source/HaarCascade.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		41E731664D47CA51A13548D9 = {
 			isa = PBXFileReference;
@@ -1029,6 +1047,8 @@
 		A8B710D38857314F156A6BEA = {
 			isa = PBXGroup;
 			children = (
+				314B40F7E260DB226677054F,
+				3EC0A175CFB3092971FB869B,
 				69BA31ECC08E9E9CA785357C,
 				5992EC0A6F2EA5ED4115F797,
 				EEF7FB8A1298BBD613ADCF62,
@@ -1369,6 +1389,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBD6A5782CD6EE4B90135BDA,
 				E55F3F19E7D4DBD44E52F5F0,
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,

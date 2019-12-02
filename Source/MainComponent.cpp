@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test"), userPosOnXAxis(329), userPosOnYAxis(239), cascadeFilePath("/Users/maxwalley/Documents/Final Year Project/Cascade Source/data/haarcascades/haarcascade_profileface.xml")
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test"), userPosOnXAxis(329), userPosOnYAxis(239)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -73,15 +73,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     addAndMakeVisible(kinectTestButton);
     kinectTestButton.addListener(this);
-    
-    if(fullBodyClassifier.load(cascadeFilePath) == false)
-    {
-        DBG("Error loading cascade file");
-    }
-    else
-    {
-        DBG("Cascade file loaded");
-    }
 }
 
 MainComponent::~MainComponent()
@@ -406,7 +397,9 @@ void MainComponent::timerCallback()
         
     //cv::imshow("Colour", colourMat);
     
-    cascadeTests(colourMat);
+    cv::Mat imageWithCascade;
+    imageWithCascade = haarCascade.performCascade(colourMat);
+    cv::imshow("Cascade", imageWithCascade);
     
     //cv::Canny(test, cannyOutput, minThresSlider.getValue(), maxThresSlider.getValue());
     
@@ -417,31 +410,7 @@ void MainComponent::timerCallback()
     //workOutPosition(test);
     
     
-    //Read: https://www.learnopencv.com/blob-detection-using-opencv-python-c/
-    /*cv::SimpleBlobDetector detector;
- 
-    std::vector<cv::KeyPoint> keypoints;
-    detector.detect(test, keypoints);
- 
-    cv::Mat im_with_keypoints;
-    cv::drawKeypoints( test, keypoints, im_with_keypoints, cv::Scalar(0,0,255), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
- 
-    imshow("keypoints", im_with_keypoints );*/
-
     
-    /*std::vector<std::vector<cv::Point> > contours;
-    std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(test, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
-    
-    cv::Mat contouredImage(480, 1280, CV_8UC1);
-    
-    for(int idx = 0; idx >= hierarchy[idx][0]; idx++)
-    {
-        cv::Scalar colour(rand()&255, rand()&255, rand()&255);
-        cv::drawContours(contouredImage, contours, -1, colour);
-    }
-    
-    cv::imshow("Contours", contouredImage);*/
 }
 
 void MainComponent::workOutPosition(cv::Mat input)
@@ -469,41 +438,4 @@ void MainComponent::workOutPosition(cv::Mat input)
 void MainComponent::workOutDepthAtPosition()
 {
     depthAtUserPos = kinectImage.kinect.depthArray[userPosOnYAxis + 5][userPosOnXAxis + 5];
-}
-
-void MainComponent::cascadeTests(cv::Mat input)
-{
-    //Test Images
-    /*cv::Mat testMat;
-    cv::Mat grayTest;
-    testMat = cv::imread("/Users/maxwalley/Documents/Final Year Project/Test Images/TestTwo.jpg");
-    
-    cv::cvtColor(testMat, grayTest, cv::COLOR_BGR2GRAY);
-    cv::equalizeHist(grayTest, grayTest);
-    
-    std::vector<cv::Rect> people;
-    fullBodyClassifier.detectMultiScale(testMat, people);
-    DBG("Amount of people detected is: " << people.size());
-    for ( size_t i = 0; i < people.size(); i++ )
-    {
-        cv::Point center(people[i].x + people[i].width/2, people[i].y + people[i].height/2);
-        cv::ellipse( testMat, center, cv::Size( people[i].width/2, people[i].height/2 ), 0, 0, 360, cv::Scalar( 255, 0, 255 ), 4 );
-    }
-    
-    cv::imshow("Cascade", testMat);*/
-    
-    cv::Mat inputGrey;
-    cv::cvtColor(input, inputGrey, cv::COLOR_BGR2GRAY);
-    cv::equalizeHist(inputGrey, inputGrey);
-    
-    std::vector<cv::Rect> people;
-    fullBodyClassifier.detectMultiScale(inputGrey, people);
-    DBG("Amount of people detected is: " << people.size());
-    for ( size_t i = 0; i < people.size(); i++ )
-    {
-        cv::Point center(people[i].x + people[i].width/2, people[i].y + people[i].height/2);
-        cv::ellipse( input, center, cv::Size( people[i].width/2, people[i].height/2 ), 0, 0, 360, cv::Scalar( 255, 0, 255 ), 4 );
-    }
-    
-    cv::imshow("Cascade", input);
 }

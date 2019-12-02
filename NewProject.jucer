@@ -2,6 +2,8 @@
 
 <JUCERPROJECT id="mtAZFz" name="NewProject" projectType="guiapp" jucerVersion="5.4.5">
   <MAINGROUP id="VZQjYu" name="NewProject">
+    <FILE id="LDXK4e" name="HaarCascade.cpp" compile="1" resource="0" file="Source/HaarCascade.cpp"/>
+    <FILE id="NfDjga" name="HaarCascade.h" compile="0" resource="0" file="Source/HaarCascade.h"/>
     <FILE id="s9rPx4" name="CVView.h" compile="0" resource="0" file="Source/CVView.h"/>
     <FILE id="wLb4uy" name="CVView.cpp" compile="1" resource="0" file="Source/CVView.cpp"/>
     <GROUP id="{2C9811E5-CF9E-B1AD-AAE3-BF71A40E0ACA}" name="Source">
