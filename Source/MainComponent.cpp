@@ -401,6 +401,8 @@ void MainComponent::timerCallback()
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
     
+    workOutDepthAtPosition();
+    
     //cv::Canny(test, cannyOutput, minThresSlider.getValue(), maxThresSlider.getValue());
     
     //cv::imshow("Image", test);
@@ -437,5 +439,6 @@ void MainComponent::workOutPosition(cv::Mat input)
 
 void MainComponent::workOutDepthAtPosition()
 {
-    depthAtUserPos = kinectImage.kinect.depthArray[userPosOnYAxis + 5][userPosOnXAxis + 5];
+    
+    depthAtUserPos = kinectImage.kinect.depthArray[haarCascade.getPersonPointY()][getPersonPointX()];
 }

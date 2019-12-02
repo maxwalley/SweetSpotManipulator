@@ -23,6 +23,8 @@ public:
     ~HaarCascade();
     
     cv::Mat performCascade(cv::Mat inputFrame);
+    int getPersonPointX() const;
+    int getPersonPointY() const;
 
 private:
     
@@ -53,6 +55,8 @@ private:
         face = 4
     };
     Classifier classifier;
+    
+    cv::Point personPoint;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HaarCascade)
 };

@@ -56,9 +56,13 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
         }
     }
     
+    personPoint.x = people[0].x + people[0].width/2;
+    personPoint.y = people[0].y + people[0].width/2;
+    
     for ( size_t i = 0; i < people.size(); i++ )
     {
         cv::Point center(people[i].x + people[i].width/2, people[i].y + people[i].height/2);
+        DBG("center x axis = " << center.x << " Center y axis = " << center.y);
         cv::ellipse( inputFrame, center, cv::Size( people[i].width/2, people[i].height/2 ), 0, 0, 360, cv::Scalar( 0, 0, 255 ), 4 );
     }
     
@@ -101,4 +105,15 @@ void HaarCascade::switchCascadeClassifier()
     }
     
     DBG("Cascade classifier switched to: " << classifier);
+}
+
+int HaarCascade::getPersonPointX() const
+{
+    return personPoint.x;
+}
+
+int HaarCascade::getPersonPointY() const
+{
+    int yPos = (personPoint.y/320) * 480;
+    return yPos;
 }
