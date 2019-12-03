@@ -440,5 +440,5 @@ void MainComponent::workOutPosition(cv::Mat input)
 void MainComponent::workOutDepthAtPosition()
 {
     
-    depthAtUserPos = kinectImage.kinect.depthArray[haarCascade.getPersonPointY()][getPersonPointX()];
+    depthAtUserPos = kinectImage.kinect.depthArray[haarCascade.getPersonPointY()][haarCascade.getPersonPointX()];
 }
