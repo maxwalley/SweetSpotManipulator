@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test"), userPosOnXAxis(329), userPosOnYAxis(239)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test"), userPosX(329)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -100,86 +100,20 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    //Checks that the user has selected square wave and that the masterSlider is not at 0
-    if(audioOutSelector.getSelectedId() == 1 && masterSlider.getValue() != 0)
+    //Gets audio player data
+    audioPlayer.getNextAudioBlock(bufferToFill);
+    
+    //Iterates through the channels
+    for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
-        //Iterates through the channels
-        for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
+        //Creates Pointer to the first sample of the selected channel
+        float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
+    
+        //Iterates through the samples
+        for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
         {
-            //Creates Pointer to the first sample of the selected channel
-            float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
-        
-            //Iterates through the samples
-            for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
-            {
-                if(channel == 0)
-                {
-                    if(channel1State == up)
-                    {
-                        channel1Multiplier = 0.25;
-                        if(channel1SampleCount == 200)
-                        {
-                            channel1SampleCount = 0;
-                            channel1State = down;
-                        }
-                    }
-                    else if(channel1State == down)
-                    {
-                        channel1Multiplier = -0.25;
-                        if(channel1SampleCount == 200)
-                        {
-                            channel1SampleCount = 0;
-                            channel1State = up;
-                        }
-                    }
-                    channel1SampleCount += 1;
-                    buffer[sample] = workOutValue(channel1Multiplier, channel);
-                }
-            
-                else if(channel == 1)
-                {
-                    if(channel2State == up)
-                    {
-                        channel2Multiplier = 0.25;
-                        if(channel2SampleCount == 200)
-                        {
-                            channel2SampleCount = 0;
-                            channel2State = down;
-                        }
-                    }
-                    else if(channel2State == down)
-                    {
-                        channel2Multiplier = -0.25;
-                        if(channel2SampleCount == 200)
-                        {
-                            channel2SampleCount = 0;
-                            channel2State = up;
-                        }
-                    }
-                    channel2SampleCount += 1;
-                    buffer[sample] = workOutValue(channel2Multiplier, channel);
-                }
-            }
-        }
-    }
-    //Checks user has selected Audio Player
-    else if(audioOutSelector.getSelectedId() == 2)
-    {
-        //Gets audio player data
-        audioPlayer.getNextAudioBlock(bufferToFill);
-        
-        //Iterates through the channels
-        for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
-        {
-            //Creates Pointer to the first sample of the selected channel
-            float* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
-        
-            //Iterates through the samples
-            for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
-            {
-                //Applies balance processing to that data
-                buffer[sample] = workOutValue(buffer[sample], channel);
-            }
+            //Applies balance mutiplier
+            buffer[sample] = buffer[sample] * balance.getListenerDistance(channel, userPosX, depthAtUserPos);
         }
     }
     
@@ -193,7 +127,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
         
-        delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel, userPosOnXAxis, depthAtUserPos), currentSampleRate, channel);
+        delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel, userPosX, depthAtUserPos), currentSampleRate, channel);
     }
     
     //Master Fader
@@ -255,65 +189,8 @@ void MainComponent::resized()
     kinectImage.setBounds(100, 200, 320, 240);
 }
 
-/*StringArray MainComponent::getMenuBarNames()
-{
-    const char* const names[] = { "File", "Edit", 0 };
-    return StringArray (names);
-}
-
-PopupMenu getMenuForIndex(int topLevelMenuIndex, const String &menuName)
-{
-    PopupMenu menu;
-    
-    if (topLevelMenuIndex == 0)
-    {
-        menu.addItem(1, "Audio Prefrences", true, false);
-    }
-    
-    return menu;
-}
-
-void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
-{
-    if(topLevelMenuIndex == 0)
-    {
-        if (menuItemID == 1)
-        {
-            DBG("AUDIO PREFS CLICKED");
-        }
-    }
-}*/
-
 void MainComponent::buttonClicked(Button* button)
 {
-    /*if(button == &kinUpButton)
-    {
-        if(kinectErrorCodeTriggered == false)
-        {
-            int kinTiltUpErrorCode = kin.kinTiltUp();
-            
-            if(kinTiltUpErrorCode != 0)
-            {
-                DBG("Kinect tilt up failed with error code: " << kinTiltUpErrorCode);
-                kinectErrorCodeTriggered = true;
-            }
-        }
-    }
-    
-    else if(button == &kinDownButton)
-    {
-        if(kinectErrorCodeTriggered == false)
-        {
-            int kinTiltDownErrorCode = kin.kinTiltDown();
-            
-            if(kinTiltDownErrorCode != 0)
-            {
-                DBG("Kinect tilt down failed with error code: " << kinTiltDownErrorCode);
-                kinectErrorCodeTriggered = true;
-            }
-        }
-    }*/
-    
     if (button == &CVWindowButton)
     {
         Timer::startTimer(1000);
@@ -340,39 +217,6 @@ void MainComponent::buttonClicked(Button* button)
         DBG("Kin Test - Depth Mat center:" << depthMatCenter);
         DBG("Kin Test - Depth Mat right:" << depthMatRight);
     }
-}
-
-float MainComponent::workOutValue(float input, int channel)
-{
-    /*if(channel == 0)
-    {
-        
-        if(panningLaw.getPanningLaw() == 0)
-        {
-            return multiplier * masterSlider.getValue() * (sin(0.5 * M_PI * panningLaw.getPanSliderVal()));
-        }
-        
-        else if(panningLaw.getPanningLaw() == 1)
-        {
-            return multiplier * masterSlider.getValue() * panningLaw.getPanSliderVal();
-        }
-    }
-    else if(channel == 1)
-    {
-        if(panningLaw.getPanningLaw() == 0)
-        {
-            return multiplier * masterSlider.getValue() * (1 - (sin(0.5 * M_PI * panningLaw.getPanSliderVal())));
-        }
-        
-        else if(panningLaw.getPanningLaw() == 1)
-        {
-            return multiplier * masterSlider.getValue() * (1 - panningLaw.getPanSliderVal());
-        }
-    }*/
-    
-    return input * masterSlider.getValue() * balance.workOutMultiplier(channel, userPosOnXAxis, depthAtUserPos);
-    
-    return 0;
 }
 
 void MainComponent::sliderValueChanged(Slider* slider)
@@ -402,43 +246,11 @@ void MainComponent::timerCallback()
     cv::imshow("Cascade", imageWithCascade);
     
     workOutDepthAtPosition();
-    
-    //cv::Canny(test, cannyOutput, minThresSlider.getValue(), maxThresSlider.getValue());
-    
-    //cv::imshow("Image", test);
-    
-    //cv::imshow("Canny", cannyOutput);
-    
-    //workOutPosition(test);
-    
-    
-    
-}
-
-void MainComponent::workOutPosition(cv::Mat input)
-{
-    bool locationFound = false;
-    
-    //Reading from top to bottom
-    for(int y = 50; y < 480 && locationFound == false; y++)
-    {
-        //Reading from left to right
-        for(int x = 50; x < 1279 && locationFound == false; x++)
-        {
-            
-            if(cannyOutput.at<uint8_t>(y, x) == 255)
-            {
-                DBG("LOCATION FOUND!!!! at " << y << ", " << x);
-                userPosOnXAxis = floor(x/2);
-                
-                locationFound = true;
-            }
-        }
-    }
 }
 
 void MainComponent::workOutDepthAtPosition()
 {
+    userPosX = haarCascade.getPersonPointX();
     
-    depthAtUserPos = kinectImage.kinect.depthArray[haarCascade.getPersonPointY()][haarCascade.getPersonPointX()];
+    depthAtUserPos = kinectImage.kinect.depthArray[haarCascade.getPersonPointY()][userPosX];
 }

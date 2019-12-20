@@ -12,14 +12,16 @@
 #include "HaarCascade.h"
 
 //==============================================================================
-HaarCascade::HaarCascade() : fullBodyModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_fullbody.xml"), upperBodyModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_upperbody.xml"), lowerBodyModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_lowerbody.xml"), faceModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_profileface.xml"), personFound(false), timerCount(0), classifier(face)
+HaarCascade::HaarCascade() : fullBodyModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_fullbody.xml"), faceModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_profileface.xml"), altFaceModelFilePathOne("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_alt_tree.xml"), altFaceModelFilePathTwo("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_alt.xml"), altFaceModelFilePathThree("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_alt2.xml"), altFaceModelFilePathFour("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_default.xml"), personFound(false), timerCount(0), classifier(face)
 {
     fullBodyClassifier.load(fullBodyModelFilePath);
-    upperBodyClassifier.load(upperBodyModelFilePath);
-    lowerBodyClassifier.load(lowerBodyModelFilePath);
     faceClassifier.load(faceModelFilePath);
+    altFaceClassifierOne.load(altFaceModelFilePathOne);
+    altFaceClassifierTwo.load(altFaceModelFilePathTwo);
+    altFaceClassifierThree.load(altFaceModelFilePathThree);
+    altFaceClassifierFour.load(altFaceModelFilePathFour);
     
-    currentClassifier = &faceClassifier;
+    currentClassifier = &altFaceClassifierOne;
 }
 
 HaarCascade::~HaarCascade()
@@ -56,8 +58,11 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
         }
     }
     
-    personPoint.x = people[0].x + people[0].width/2;
-    personPoint.y = people[0].y + people[0].width/2;
+    if(personFound == true)
+    {
+        personPoint.x = people[0].x + people[0].width/2;
+        personPoint.y = people[0].y + people[0].width/2;
+    }
     
     for ( size_t i = 0; i < people.size(); i++ )
     {
@@ -84,21 +89,31 @@ void HaarCascade::switchCascadeClassifier()
     switch(classifier)
     {
         case fullBody:
-            classifier = upperBody;
-            currentClassifier = &upperBodyClassifier;
-            break;
-            
-        case upperBody:
-            classifier = lowerBody;
-            currentClassifier = &lowerBodyClassifier;
-            break;
-            
-        case lowerBody:
             classifier = face;
             currentClassifier = &faceClassifier;
             break;
             
         case face:
+            classifier = altFaceOne;
+            currentClassifier = &altFaceClassifierOne;
+            break;
+            
+        case altFaceOne:
+            classifier = altFaceTwo;
+            currentClassifier = &altFaceClassifierTwo;
+            break;
+            
+        case altFaceTwo:
+            classifier = altFaceThree;
+            currentClassifier = &altFaceClassifierThree;
+            break;
+            
+        case altFaceThree:
+            classifier = altFaceFour;
+            currentClassifier = &altFaceClassifierFour;
+            break;
+            
+        case altFaceFour:
             classifier = fullBody;
             currentClassifier = &fullBodyClassifier;
             break;

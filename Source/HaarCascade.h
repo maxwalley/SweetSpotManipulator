@@ -31,14 +31,21 @@ private:
     cv::String fullBodyModelFilePath;
     cv::CascadeClassifier fullBodyClassifier;
     
-    cv::String upperBodyModelFilePath;
-    cv::CascadeClassifier upperBodyClassifier;
-    
-    cv::String lowerBodyModelFilePath;
-    cv::CascadeClassifier lowerBodyClassifier;
-    
     cv::String faceModelFilePath;
     cv::CascadeClassifier faceClassifier;
+    
+    cv::String altFaceModelFilePathOne;
+    cv::CascadeClassifier altFaceClassifierOne;
+    
+    cv::String altFaceModelFilePathTwo;
+    cv::CascadeClassifier altFaceClassifierTwo;
+    
+    
+    cv::String altFaceModelFilePathThree;
+    cv::CascadeClassifier altFaceClassifierThree;
+    
+    cv::String altFaceModelFilePathFour;
+    cv::CascadeClassifier altFaceClassifierFour;
     
     cv::CascadeClassifier* currentClassifier;
     
@@ -50,9 +57,11 @@ private:
     enum Classifier
     {
         fullBody = 1,
-        upperBody = 2,
-        lowerBody = 3,
-        face = 4
+        face = 2,
+        altFaceOne = 3,
+        altFaceTwo = 4,
+        altFaceThree = 5,
+        altFaceFour = 6
     };
     Classifier classifier;
     

@@ -91,9 +91,6 @@ private:
     
     BalanceControls balance;
  
-    /**Applies balance calculations to the input*/
-    float workOutValue(float input, int channel);
-    
     TextButton kinUpButton;
     TextButton kinDownButton;
     
@@ -114,7 +111,6 @@ private:
     uint8_t depthMatRight;
     
     //Takes image scans it for data and prints where it finds data. Has to start x axis at 10 since there seems to be a border around the image
-    void workOutPosition(cv::Mat input);
     void workOutDepthAtPosition();
     
     KinImage kinectImage;
@@ -125,9 +121,12 @@ private:
     Delay delay;
     double currentSampleRate;
     
-    int userPosOnXAxis;
-    int userPosOnYAxis;
-    uint16_t depthAtUserPos;
-    
     HaarCascade haarCascade;
+    int16_t depthAtUserPos;
+    int16_t userPosX;
+    
+    float speaker1BalMulti;
+    float speaker2BalMulti;
+    
+    
 };

@@ -35,9 +35,9 @@ private:
     //Taken from left speaker to right speaker
     float speakerLineDis;
     
-    float lpXLineLength;
-    float lpYLineLength;
-    float lpDisFromSpeakerLine;
+    float maxYDis;
+    
+    float currentDepthAtXPos;
     
     Slider listenerXPosSlider;
     Slider listenerYPosSlider;

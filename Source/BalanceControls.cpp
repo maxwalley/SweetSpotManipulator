@@ -15,20 +15,8 @@ BalanceControls::BalanceControls()
 {
     setSize(200, 350);
     
-    speakerLineDis = 2.0;
-    lpXLineLength = 3.0;
-    lpYLineLength = 4.0;
-    lpDisFromSpeakerLine = 2.0;
-    
-    addAndMakeVisible(listenerXPosSlider);
-    listenerXPosSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
-    listenerXPosSlider.setRange((lpXLineLength/2) * -1, lpXLineLength/2);
-    listenerXPosSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 100, 25);
-    
-    addAndMakeVisible(listenerYPosSlider);
-    listenerYPosSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
-    listenerYPosSlider.setRange((lpYLineLength/2) * -1, lpYLineLength/2);
-    listenerYPosSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxLeft, true, 100, 25);
+    speakerLineDis = 3.0;
+    maxYDis = 4.0;
     
     addAndMakeVisible(lawSelection);
     lawSelection.setEditableText(false);
@@ -60,58 +48,41 @@ void BalanceControls::resized()
 
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos)
 {
-    bool isMinus;
-    float currentVal;
+    float xDis;
     
-    //If user is to the left of middle
-    if(xPos < 320)
+    //Works out how far across the picture and then maps that between 0 and 3 for each speaker
+    if(speaker == 0)
     {
-        currentVal = xPos * -1;
-        isMinus = true;
+        xDis = (xPos/640.0) * speakerLineDis;
+        //DBG("User xPos on speaker 0 =" << xDis);
     }
-    //If user is to the right of middle
-    else if (xPos > 320)
+    else if(speaker == 1)
     {
-        currentVal = xPos;
-        isMinus = false;
+        xDis = (((xPos/640.0) * speakerLineDis)- speakerLineDis) * -1.0;
+        //DBG("User xPos on speaker 1 = " << xDis);
     }
     
-    if(currentVal < speakerLineDis/2)
-    {
-        
-        if((speaker == 0 && isMinus == true) || (speaker == 1 && isMinus == false))
-        {
-            return speakerLineDis/2 - currentVal;
-        }
-        else if((speaker == 0 && isMinus == false) || (speaker == 1 & isMinus == true))
-        {
-            return speakerLineDis/2 + currentVal;
-        }
-        
-    }
-    else if (currentVal > speakerLineDis/2)
-    {
-        if((speaker == 0 && isMinus == true) || (speaker == 1 && isMinus == false))
-        {
-            return currentVal - speakerLineDis/2;
-        }
-        else if ((speaker == 0 && isMinus == false) || (speaker == 1 && isMinus == true))
-        {
-            return (currentVal - speakerLineDis/2) + speakerLineDis;
-        }
-    }
+    return xDis;
 }
 
 float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
 {
-    if(valueAtXPos > 1023)
+    float vertDis;
+    
+    //Depth is out of cameras range
+    if(valueAtXPos == 2047)
     {
-        return (lpYLineLength/2) - valueAtXPos;
+        //returns 1
+        vertDis = 1;
     }
-    else if(valueAtXPos <= 1023)
+    
+    else
     {
-        return (valueAtXPos * -1) + (lpYLineLength/2);
+        //Maps depth down to between 0 and maximum y dis
+        vertDis = (valueAtXPos/2046) * maxYDis;
     }
+    
+    return vertDis;
 }
 
 float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueAtXPos)
@@ -130,16 +101,18 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     }
     else if(lawSelection.getSelectedId() == 2)
     {
-        return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 2);
+         return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 2);
     }
     else if(lawSelection.getSelectedId() == 3)
     {
-        return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 3);
+         return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 3);
     }
+    //DBG("Multiplier is: " << currentMultiplier);
+    
 }
 
 
 float BalanceControls::getListenerDistance(int channel, int xPos, int valueAtXPos)
 {
-    return workOutListenerDistance(channel, xPos, valueAtXPos);
+    return workOutMultiplier(channel, xPos, valueAtXPos);
 }
