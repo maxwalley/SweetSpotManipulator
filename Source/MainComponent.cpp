@@ -194,11 +194,8 @@ void MainComponent::buttonClicked(Button* button)
     if (button == &CVWindowButton)
     {
         Timer::startTimer(1000);
-        //cv::namedWindow("keypoints", cv::WINDOW_AUTOSIZE);
-        //cv::namedWindow("Contours", cv::WINDOW_AUTOSIZE);
-        cv::namedWindow("Canny", cv::WINDOW_AUTOSIZE);
         cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
-        cv::namedWindow("Colour", cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
     }
     
     else if (button == &closeCVWindow)
@@ -238,12 +235,12 @@ void MainComponent::timerCallback()
     depthMatLeft = depthMat.at<uint8_t>(240, 0);
     depthMatCenter = depthMat.at<uint8_t>(240, 640);
     depthMatRight = depthMat.at<uint8_t>(240, 1279);
-        
-    //cv::imshow("Colour", colourMat);
     
     cv::Mat imageWithCascade;
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
+    
+    cv::imshow("Depth", depthMat);
     
     workOutDepthAtPosition();
 }
