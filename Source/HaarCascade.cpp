@@ -67,7 +67,7 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
     for ( size_t i = 0; i < people.size(); i++ )
     {
         cv::Point center(people[i].x + people[i].width/2, people[i].y + people[i].height/2);
-        DBG("center x axis = " << center.x << " Center y axis = " << center.y);
+        //DBG("center x axis = " << center.x << " Center y axis = " << center.y);
         cv::ellipse( inputFrame, center, cv::Size( people[i].width/2, people[i].height/2 ), 0, 0, 360, cv::Scalar( 0, 0, 255 ), 4 );
     }
     

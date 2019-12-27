@@ -77,10 +77,6 @@
 			isa = PBXBuildFile;
 			fileRef = 314B40F7E260DB226677054F;
 		};
-		E55F3F19E7D4DBD44E52F5F0 = {
-			isa = PBXBuildFile;
-			fileRef = 5992EC0A6F2EA5ED4115F797;
-		};
 		E37AC35B1CEB47274CBEF7A3 = {
 			isa = PBXBuildFile;
 			fileRef = DC35C88D0D4533C3C053EE1D;
@@ -456,13 +452,6 @@
 			path = "../../JuceLibraryCode/include_juce_graphics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
-		5992EC0A6F2EA5ED4115F797 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = CVView.cpp;
-			path = ../../Source/CVView.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		5AC3069160C92F3741751341 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.dylib;
@@ -490,13 +479,6 @@
 			name = "juce_video";
 			path = "/Users/maxwalley/Documents/C++ Libs and Frameworks/juce-5.4.3-osx (1)/JUCE/modules/juce_video";
 			sourceTree = "<absolute>";
-		};
-		69BA31ECC08E9E9CA785357C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = CVView.h;
-			path = ../../Source/CVView.h;
-			sourceTree = "SOURCE_ROOT";
 		};
 		6CA936CE3FD9B095F64CCB7D = {
 			isa = PBXFileReference;
@@ -1049,8 +1031,6 @@
 			children = (
 				314B40F7E260DB226677054F,
 				3EC0A175CFB3092971FB869B,
-				69BA31ECC08E9E9CA785357C,
-				5992EC0A6F2EA5ED4115F797,
 				EEF7FB8A1298BBD613ADCF62,
 				C1C41A7ABAB737502CE521C8,
 			);
@@ -1390,7 +1370,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBD6A5782CD6EE4B90135BDA,
-				E55F3F19E7D4DBD44E52F5F0,
 				E37AC35B1CEB47274CBEF7A3,
 				CEC816DB9F3D257C426E01F0,
 				5895B3DA75F45EC10C4380C0,

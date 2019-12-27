@@ -240,6 +240,8 @@ void MainComponent::timerCallback()
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
     
+    cv::circle(depthMat, cv::Point(640, 240), 20, cv::Scalar(0, 0, 255), 4);
+    
     cv::imshow("Depth", depthMat);
     
     workOutDepthAtPosition();
