@@ -82,6 +82,21 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
         vertDis = (valueAtXPos/2046) * maxYDis;
     }
     
+    /* works it out in meters
+    //Depth is out of cameras range
+    if(valueAtXPos == 2047)
+    {
+        //Returns 1m
+        vertDis = 1;
+    }
+    else
+    {
+        //Converts kinect depth value to meters
+        //Equation found at: http://graphics.stanford.edu/~mdfisher/Kinect.html
+        vertDis = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
+    }
+    */
+    
     return vertDis;
 }
 
