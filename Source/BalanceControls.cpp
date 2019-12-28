@@ -46,7 +46,7 @@ void BalanceControls::resized()
     lawSelection.setBounds(0, 30, 200, 30);
 }
 
-float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos)
+float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
 {
     float xDis;
     
@@ -61,6 +61,27 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos)
         xDis = (((xPos/640.0) * speakerLineDis)- speakerLineDis) * -1.0;
         //DBG("User xPos on speaker 1 = " << xDis);
     }
+    /*
+    //Work out the maximum distance the kinect can see at the users depth
+    float maxKinView;
+    maxKinView = (workOutLisDisVerticalToSpeakerLine(valueAtXPos) * 2) / (tan(61.5));
+    
+    //Work out the listeners position across the kinects view as a percentage of this
+    if(speaker == 0)
+    {
+        xDis = (xPos/640.0) * maxKinView;
+    }
+    else if(speaker == 1)
+    {
+        xDis = (((xPos/640.0) * maxKinView) - maxKinView) * -1;
+    }
+    
+    //If the kinect isnt viewing the entire speaker line this adds the extra on
+    if(speakerLineDis > maxKinView)
+    {
+        xDis = xDis + (speakerLineDis - maxKinView);
+    }
+    */
     
     return xDis;
 }
@@ -102,7 +123,7 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
 
 float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueAtXPos)
 {
-    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos);
+    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
     float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(valueAtXPos);
     
     return sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));

@@ -47,7 +47,7 @@ private:
     /*Returns listener distance along speaker line from equivilent user position
      speaker argument determines which speaker this distance is from
      0 for left, 1 for right*/
-    float workOutLisDisHorizontalToSpeakers(int speaker, int xPos);
+    float workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos);
     
     /*Returns listener distance to the speaker line*/
     float workOutLisDisVerticalToSpeakerLine(int valueAtXPos);
