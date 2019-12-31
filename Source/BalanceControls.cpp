@@ -49,7 +49,7 @@ void BalanceControls::resized()
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
 {
     float xDis;
-    
+    /*
     //Works out how far across the picture and then maps that between 0 and 3 for each speaker
     if(speaker == 0)
     {
@@ -60,8 +60,8 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
     {
         xDis = (((xPos/640.0) * speakerLineDis)- speakerLineDis) * -1.0;
         //DBG("User xPos on speaker 1 = " << xDis);
-    }
-    /*
+    }*/
+    
     //Work out the maximum distance the kinect can see at the users depth
     float maxKinView;
     maxKinView = (workOutLisDisVerticalToSpeakerLine(valueAtXPos) * 2) / (tan(61.5));
@@ -81,8 +81,8 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
     {
         xDis = xDis + (speakerLineDis - maxKinView);
     }
-    */
     
+    DBG("Horizontal Dis = " << xDis);
     return xDis;
 }
 
@@ -90,6 +90,7 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
 {
     float vertDis;
     
+    /*
     //Depth is out of cameras range
     if(valueAtXPos == 2047)
     {
@@ -101,9 +102,9 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
     {
         //Maps depth down to between 0 and maximum y dis
         vertDis = (valueAtXPos/2046) * maxYDis;
-    }
+    }*/
     
-    /* works it out in meters
+    //works it out in meters
     //Depth is out of cameras range
     if(valueAtXPos == 2047)
     {
@@ -116,17 +117,21 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
         //Equation found at: http://graphics.stanford.edu/~mdfisher/Kinect.html
         vertDis = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
     }
-    */
     
+    DBG("Vert Distance = " << vertDis);
     return vertDis;
 }
 
 float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueAtXPos)
 {
+    float overallDis;
+    
     float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
     float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(valueAtXPos);
     
-    return sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
+    overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
+    
+    return overallDis;
 }
 
 float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
