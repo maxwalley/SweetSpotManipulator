@@ -12,7 +12,7 @@
 #include "HaarCascade.h"
 
 //==============================================================================
-HaarCascade::HaarCascade() : fullBodyModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_fullbody.xml"), faceModelFilePath("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_profileface.xml"), altFaceModelFilePathOne("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_alt_tree.xml"), altFaceModelFilePathTwo("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_alt.xml"), altFaceModelFilePathThree("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_alt2.xml"), altFaceModelFilePathFour("/Users/maxwalley/Documents/Final Year Project/Application/Haar Cascades/haarcascade_frontalface_default.xml"), personFound(false), timerCount(0), classifier(face)
+HaarCascade::HaarCascade() : fullBodyModelFilePath("/Users/maxwalley/Documents/FYP/Haar Cascades/haarcascade_fullbody.xml"), faceModelFilePath("/Users/maxwalley/Documents/FYP/Haar Cascades/haarcascade_profileface.xml"), altFaceModelFilePathOne("/Users/maxwalley/Documents/FYP/Haar Cascades/haarcascade_frontalface_alt_tree.xml"), altFaceModelFilePathTwo("/Users/maxwalley/Documents/FYP/Haar Cascades/haarcascade_frontalface_alt.xml"), altFaceModelFilePathThree("/Users/maxwalley/Documents/FYP/Haar Cascades/haarcascade_frontalface_alt2.xml"), altFaceModelFilePathFour("/Users/maxwalley/Documents/FYP/Haar Cascades/haarcascade_frontalface_default.xml"), personFound(false), timerCount(0), classifier(face)
 {
     fullBodyClassifier.load(fullBodyModelFilePath);
     faceClassifier.load(faceModelFilePath);
@@ -133,7 +133,6 @@ int HaarCascade::getPersonPointX() const
 
 int HaarCascade::getPersonPointY() const
 {
-    //int yPos = (personPoint.y/320) * 480;
     int yPos = personPoint.y;
     return yPos;
 }

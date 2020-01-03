@@ -82,7 +82,7 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
         xDis = xDis + (speakerLineDis - maxKinView);
     }
     
-    DBG("Horizontal Dis = " << xDis);
+    //DBG("Horizontal Dis = " << xDis);
     return xDis;
 }
 
@@ -118,7 +118,7 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
         vertDis = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
     }
     
-    DBG("Vert Distance = " << vertDis);
+    //DBG("Vert Distance = " << vertDis);
     return vertDis;
 }
 
