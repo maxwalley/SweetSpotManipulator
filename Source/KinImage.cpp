@@ -12,60 +12,25 @@
 #include "KinImage.h"
 
 //==============================================================================
-KinImage::KinImage() : kinPic(Image::PixelFormat::RGB, 640, 480, true)
+KinImage::KinImage()
 {
     setSize(320, 240);
     setBufferedToImage(true);
     setFramesPerSecond(25);
-    depthImageCV.create(480, 640, CV_16UC1);
 }
 
 KinImage::~KinImage()
 {
 }
 
-void KinImage::paint (Graphics& g)
-{
-    g.drawImage(kinPic, 0, 0, 320, 240, 0, 0, 640, 480, false);
-}
-
-void KinImage::resized()
+void KinImage::paint(Graphics &g)
 {
     
-}
-
-void KinImage::setImage(int row, int col, uint16_t pixel)
-{
-    kinPic.setPixelAt(row, col, Colour(pixel, pixel, pixel));
-}
-
-void KinImage::repaintImage()
-{
-    const MessageManagerLock paintLock;
-    repaint();
 }
 
 void KinImage::update()
 {
     kinect.RunVidandDepth();
-    setDepthPixels();
-    //openCV.getDepthImage(depthImageCV);
-}
-
-void KinImage::setDepthPixels()
-{
-    //uint8_t shortArray[480][640];
-    
-    for(int i = 0; i < 640; i++)
-    {
-        for(int c = 0; c < 480; c++)
-        {
-            //shortArray[c][i] = kin.depthArray[c][i]/8.02745;
-            //printf("Depth data = %hu\n", shortArray[c][i]);
-            
-            kinPic.setPixelAt(i, c, Colour(kinect.depthArray[i][c], kinect.depthArray[i][c], kinect.depthArray[i][c]));
-        }
-    }
 }
 
 void KinImage::kinectInit()
@@ -103,9 +68,4 @@ bool KinImage::active() const
     {
         return true;
     }
-}
-
-cv::Mat KinImage::getCVImage()
-{
-    return depthImageCV;
 }

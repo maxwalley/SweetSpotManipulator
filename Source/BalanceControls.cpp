@@ -49,18 +49,6 @@ void BalanceControls::resized()
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
 {
     float xDis;
-    /*
-    //Works out how far across the picture and then maps that between 0 and 3 for each speaker
-    if(speaker == 0)
-    {
-        xDis = (xPos/640.0) * speakerLineDis;
-        //DBG("User xPos on speaker 0 =" << xDis);
-    }
-    else if(speaker == 1)
-    {
-        xDis = (((xPos/640.0) * speakerLineDis)- speakerLineDis) * -1.0;
-        //DBG("User xPos on speaker 1 = " << xDis);
-    }*/
     
     //Work out the maximum distance the kinect can see at the users depth
     float maxKinView;
@@ -89,21 +77,7 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
 float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
 {
     float vertDis;
-    
-    /*
-    //Depth is out of cameras range
-    if(valueAtXPos == 2047)
-    {
-        //returns 1
-        vertDis = 1;
-    }
-    
-    else
-    {
-        //Maps depth down to between 0 and maximum y dis
-        vertDis = (valueAtXPos/2046) * maxYDis;
-    }*/
-    
+
     //works it out in meters
     //Depth is out of cameras range
     if(valueAtXPos == 2047)

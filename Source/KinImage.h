@@ -23,28 +23,20 @@ public:
     KinImage();
     ~KinImage();
 
-    void paint (Graphics&) override;
-    void resized() override;
-
-    void setImage(int row, int col, uint16_t pixel);
-    void repaintImage();
+    void paint(Graphics &g) override;
+    
     void kinectInit();
     void kinectEnd() const;
     
     bool active() const;
     
-    cv::Mat depthImageCV;
-    cv::Mat getCVImage();
     Kinect kinect;
-    //unsigned short cvPtr*;
+
 private:
-    Image kinPic;
     void update() override;
-    void setDepthPixels();
     
     bool kinectErrorCodeTriggered;
     
-    //OpenCV openCV;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KinImage)
 };

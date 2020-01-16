@@ -10,16 +10,13 @@
 #include "Kinect.h"
 
 unsigned short Kinect::depthArray[480][640];
-
 unsigned short Kinect::colourArray[3][480][640];
-
-cv::Mat Kinect::depthImageCV;
 
 
 //==============================================================================
 Kinect::Kinect()
 {
-    //depthImageCV.create(480, 640, CV_16UC2);
+    
 }
 
 Kinect::~Kinect()
@@ -52,7 +49,7 @@ int Kinect::kinInit()
         
         state = freenect_get_tilt_state(dev);
         
-        freenect_set_tilt_degs(dev, 0);
+        freenect_set_tilt_degs(dev, 5);
         
         DepthMode = freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT);
         VideoMode = freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB);
@@ -260,11 +257,6 @@ void Kinect::videoCallback(freenect_device* dev, void* data, uint32_t timestamp)
             castedData++;
         }
     }
-}
-
-cv::Mat Kinect::getDepthImageCV()
-{
-    return depthImageCV;
 }
 
 int16_t Kinect::getNumberDevices() const

@@ -12,7 +12,6 @@
 #include "ChannelArray.h"
 #include "LightControls.h"
 #include "Kinect.h"
-//#include "PanningControls.h"
 #include "BalanceControls.h"
 #include <math.h>
 #include "AudioPlayer.h"
@@ -45,11 +44,6 @@ public:
     //==============================================================================
     void paint (Graphics& g) override;
     void resized() override;
-    
-    //==============================================================================
-    /*StringArray getMenuBarNames() override;
-    PopupMenu getMenuForIndex(int topLevelMenuIndex, const String &menuName) override;
-    void menuItemSelected(int menuItemID, int topLevelMenuIndex);*/
     
 private:
     //==============================================================================

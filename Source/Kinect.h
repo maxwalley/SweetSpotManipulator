@@ -34,13 +34,7 @@ public:
     static unsigned short depthArray[480][640];
     
     static unsigned short colourArray[3][480][640];
-    
-    /*static uint16_t redArray[640][480];
-    static uint16_t greenArray[640][480];
-    static uint16_t blueArray[640][480];*/
-    
-    static cv::Mat getDepthImageCV();
-    
+
     int16_t getNumberDevices() const;
     
 private:
@@ -54,8 +48,6 @@ private:
     freenect_frame_mode VideoMode;
     
     int8_t currentTilt;
-    
-    static cv::Mat depthImageCV;
     
     static void depthCallback(freenect_device* dev, void* data, uint32_t timestamp);
     static void videoCallback(freenect_device* dev, void* data, uint32_t timestamp);

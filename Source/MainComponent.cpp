@@ -70,9 +70,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     maxThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     maxThresSlider.setRange(0, 1000);
     maxThresSlider.setValue(200);
-    
-    addAndMakeVisible(kinectTestButton);
-    kinectTestButton.addListener(this);
 }
 
 MainComponent::~MainComponent()
@@ -160,14 +157,11 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    //Channels.setBounds(0, 180, 800, 340);
-    
     Lights.setBounds(1000, 20, 200, 55);
     
     masterSlider.setBounds(1090, 470, 50, 200);
     masterSliderLabel.setBounds(1090, 440, 50, 25);
     
-    //panningLaw.setBounds(1000, 150, 200, 100);
     balance.setBounds(1000, 90, 200, 350);
     
     kinUpButton.setBounds(1000, 300, 100, 30);
@@ -183,8 +177,6 @@ void MainComponent::resized()
     closeCVWindow.setBounds(700, 550, 200, 30);
     minThresSlider.setBounds(500, 100, 30, 200);
     maxThresSlider.setBounds(550, 100, 30, 200);
-    
-    kinectTestButton.setBounds(600, 100, 100, 30);
     
     kinectImage.setBounds(100, 200, 320, 240);
 }
@@ -203,17 +195,6 @@ void MainComponent::buttonClicked(Button* button)
         Timer::stopTimer();
         cv::destroyAllWindows();
     }
-    
-    else if (button == &kinectTestButton)
-    {
-        DBG("Kin Test - Depth Array left:" << kinectImage.kinect.depthArray[240][0]);
-        DBG("Kin Test - Depth Array center:" << kinectImage.kinect.depthArray[240][320]);
-        DBG("Kin Test - Depth Array right:" << kinectImage.kinect.depthArray[240][639]);
-        
-        DBG("Kin Test - Depth Mat left:" << depthMatLeft);
-        DBG("Kin Test - Depth Mat center:" << depthMatCenter);
-        DBG("Kin Test - Depth Mat right:" << depthMatRight);
-    }
 }
 
 void MainComponent::sliderValueChanged(Slider* slider)
@@ -230,17 +211,10 @@ void MainComponent::timerCallback()
     //Shows image with small y axis
     cv::Mat depthMat(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
     cv::Mat colourMat(320, 640, CV_8UC3, &kinectImage.kinect.colourArray);
-    cv::Mat colourMatGrey;
-    
-    depthMatLeft = depthMat.at<uint8_t>(240, 0);
-    depthMatCenter = depthMat.at<uint8_t>(240, 640);
-    depthMatRight = depthMat.at<uint8_t>(240, 1279);
     
     cv::Mat imageWithCascade;
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
-    
-    cv::circle(depthMat, cv::Point(640, 240), 20, cv::Scalar(0, 0, 255), 4);
     
     cv::imshow("Depth", depthMat);
     
