@@ -70,6 +70,13 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     maxThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     maxThresSlider.setRange(0, 1000);
     maxThresSlider.setValue(200);
+    
+    addAndMakeVisible(speakerLineDistanceSlider);
+    speakerLineDistanceSlider.setRange(0.5, 10);
+    speakerLineDistanceSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    speakerLineDistanceSlider.setValue(2);
+    speakerLineDistanceSlider.addListener(this);
+    balance.setSpeakerLineDistance(speakerLineDistanceSlider.getValue());
 }
 
 MainComponent::~MainComponent()
@@ -202,6 +209,11 @@ void MainComponent::sliderValueChanged(Slider* slider)
     if(slider == &masterSlider)
     {
         masterSliderValue = masterSlider.getValue();
+    }
+    
+    else if(slider == &speakerLineDistanceSlider)
+    {
+        balance.setSpeakerLineDistance(speakerLineDistanceSlider.getValue());
     }
 }
 

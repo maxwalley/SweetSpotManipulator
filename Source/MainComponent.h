@@ -123,4 +123,6 @@ private:
     float speaker2BalMulti;
     
     
+    Slider speakerLineDistanceSlider;
+    
 };

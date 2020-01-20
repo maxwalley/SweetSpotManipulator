@@ -140,3 +140,8 @@ float BalanceControls::getListenerDistance(int channel, int xPos, int valueAtXPo
 {
     return workOutMultiplier(channel, xPos, valueAtXPos);
 }
+
+void BalanceControls::setSpeakerLineDistance(float newDistance)
+{
+    speakerLineDis = newDistance;
+}

@@ -30,6 +30,8 @@ public:
     float workOutMultiplier(int speaker, int xPos, int valueAtXPos);
     
     float getListenerDistance(int channel, int xPos, int valueAtXPos);
+    
+    void setSpeakerLineDistance(float newDistance);
 private:
     
     //Taken from left speaker to right speaker
