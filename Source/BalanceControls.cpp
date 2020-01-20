@@ -110,20 +110,29 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
 
 float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
 {
+    float currentMultiplier;
+    
     if(lawSelection.getSelectedId() == 1)
     {
-       return workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23;
+       currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23;
     }
     else if(lawSelection.getSelectedId() == 2)
     {
-         return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 2);
+         currentMultiplier = pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 6);
+        
+        currentMultiplier = currentMultiplier/3;
     }
     else if(lawSelection.getSelectedId() == 3)
     {
-         return pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 3);
+         currentMultiplier = pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 3);
     }
-    //DBG("Multiplier is: " << currentMultiplier);
+    if(currentMultiplier > 4.5)
+    {
+        currentMultiplier = 4.5;
+    }
     
+    //DBG("Multiplier is: " << currentMultiplier);
+    return currentMultiplier;
 }
 
 
