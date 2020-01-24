@@ -32,6 +32,10 @@ public:
     float getListenerDistance(int channel, int xPos, int valueAtXPos);
     
     void setSpeakerLineDistance(float newDistance);
+    
+    float getLeftGain();
+    float getRightGain();
+    
 private:
     
     //Taken from left speaker to right speaker
@@ -58,6 +62,9 @@ private:
      speaker argument determines which speaker this distance is from
      0 for left, 1 for right*/
     float workOutListenerDistance(int speaker, int xPos, int valueAtXPos);
+    
+    float leftGain;
+    float rightGain;
     
     
     

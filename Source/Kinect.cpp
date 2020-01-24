@@ -16,7 +16,7 @@ unsigned short Kinect::colourArray[3][480][640];
 //==============================================================================
 Kinect::Kinect()
 {
-    
+    Timer::startTimer(40);
 }
 
 Kinect::~Kinect()
@@ -49,7 +49,7 @@ int Kinect::kinInit()
         
         state = freenect_get_tilt_state(dev);
         
-        freenect_set_tilt_degs(dev, 0);
+        freenect_set_tilt_degs(dev, 10);
         
         DepthMode = freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT);
         VideoMode = freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB);
@@ -172,10 +172,6 @@ int Kinect::RunVidandDepth() const
         DBG("Error Processing Events");
         return 21;
     }
-    else
-    {
-        DBG("Processing Events");
-    }
     return 0;
 }
 
@@ -223,8 +219,6 @@ void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {
     uint16_t* castedData = static_cast<uint16_t*>(data);
     
-    DBG("Depth data received");
-    
 //    ScopedLock
 //    isBusy = true;
     for(int yCount = 0; yCount < 480; yCount++)
@@ -262,4 +256,9 @@ void Kinect::videoCallback(freenect_device* dev, void* data, uint32_t timestamp)
 int16_t Kinect::getNumberDevices() const
 {
     return numDev;
+}
+
+void Kinect::timerCallback()
+{
+    RunVidandDepth();
 }

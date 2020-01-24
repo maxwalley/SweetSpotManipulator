@@ -15,7 +15,6 @@ BalanceControls::BalanceControls()
 {
     setSize(200, 350);
     
-    speakerLineDis = 3.0;
     maxYDis = 4.0;
     
     addAndMakeVisible(lawSelection);
@@ -105,6 +104,12 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
     
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
     
+    //Limiter if distance is over 4m stick to 4m
+    if(overallDis > 4)
+    {
+        overallDis = 4;
+    }
+    
     return overallDis;
 }
 
@@ -112,23 +117,31 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
 {
     float currentMultiplier;
     
+    //Linear
     if(lawSelection.getSelectedId() == 1)
     {
-       currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23;
+       currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/4;
     }
+    
+    //Sine
     else if(lawSelection.getSelectedId() == 2)
     {
-         currentMultiplier = pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 6);
-        
-        currentMultiplier = currentMultiplier/3;
+        currentMultiplier = (workOutListenerDistance(speaker, xPos, valueAtXPos)/4) * 0.5 * M_PI;
     }
+    
+    //Experimental
     else if(lawSelection.getSelectedId() == 3)
     {
-         currentMultiplier = pow(workOutListenerDistance(speaker, xPos, valueAtXPos)/2.23, 3);
+        currentMultiplier = (workOutListenerDistance(speaker, xPos, valueAtXPos)/2) - 1;
     }
-    if(currentMultiplier > 4.5)
+    
+    if(speaker == 0)
     {
-        currentMultiplier = 4.5;
+        leftGain = currentMultiplier;
+    }
+    else if(speaker == 1)
+    {
+        rightGain = currentMultiplier;
     }
     
     //DBG("Multiplier is: " << currentMultiplier);
@@ -144,4 +157,14 @@ float BalanceControls::getListenerDistance(int channel, int xPos, int valueAtXPo
 void BalanceControls::setSpeakerLineDistance(float newDistance)
 {
     speakerLineDis = newDistance;
+}
+
+float BalanceControls::getLeftGain()
+{
+    return leftGain;
+}
+
+float BalanceControls::getRightGain()
+{
+    return rightGain;
 }

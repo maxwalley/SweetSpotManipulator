@@ -9,7 +9,7 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), channel1Multiplier(0), channel2Multiplier(0), channel1State(up), channel1SampleCount(0), channel2State(up), channel2SampleCount(0), kinUpButton("Tilt Up"), kinDownButton("Tilt Down"), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), kinectTestButton("Kin Test"), userPosX(329)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), userPosX(329)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -24,8 +24,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     masterSlider.addListener(this);
     addAndMakeVisible(masterSliderLabel);
     masterSliderLabel.setText("Master", dontSendNotification);
-    
-    addAndMakeVisible(Lights);
     
     addAndMakeVisible(CVWindowButton);
     CVWindowButton.addListener(this);
@@ -53,23 +51,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
         setAudioChannels (0, 6);
     }
     
-    addAndMakeVisible(audioOutSelector);
-    audioOutSelector.addItem("Square Wave", 1);
-    audioOutSelector.addItem("Audio Player", 2);
-    audioOutSelector.setSelectedId(1);
-    audioOutSelector.setEditableText(false);
-    
-    addAndMakeVisible(kinectImage);
-    kinectImage.kinectInit();
-    
-    addAndMakeVisible(minThresSlider);
-    minThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
-    minThresSlider.setRange(0, 1000);
-    minThresSlider.setValue(100);
-    addAndMakeVisible(maxThresSlider);
-    maxThresSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
-    maxThresSlider.setRange(0, 1000);
-    maxThresSlider.setValue(200);
+    kinect.kinInit();
     
     addAndMakeVisible(speakerLineDistanceSlider);
     speakerLineDistanceSlider.setRange(0.5, 10);
@@ -77,6 +59,17 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     speakerLineDistanceSlider.setValue(2);
     speakerLineDistanceSlider.addListener(this);
     balance.setSpeakerLineDistance(speakerLineDistanceSlider.getValue());
+    
+    addAndMakeVisible(leftChannelGainSlider);
+    leftChannelGainSlider.setRange(0, 1);
+    leftChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    leftChannelGainSlider.setValue(0);
+    
+    
+    addAndMakeVisible(rightChannelGainSlider);
+    rightChannelGainSlider.setRange(0, 1);
+    rightChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    rightChannelGainSlider.setValue(0);
 }
 
 MainComponent::~MainComponent()
@@ -84,7 +77,7 @@ MainComponent::~MainComponent()
     // This shuts down the audio device and clears the audio source.
     AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Close App?", "Are you sure you want to close this app?", "Continue", "Cancel", nullptr, nullptr);
     
-    kinectImage.kinectEnd();
+    kinect.End();
     
     shutdownAudio();
     
@@ -164,35 +157,30 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    Lights.setBounds(1000, 20, 200, 55);
-    
     masterSlider.setBounds(1090, 470, 50, 200);
     masterSliderLabel.setBounds(1090, 440, 50, 25);
     
     balance.setBounds(1000, 90, 200, 350);
-    
-    kinUpButton.setBounds(1000, 300, 100, 30);
-    kinDownButton.setBounds(1000, 350, 100, 30);
-    
+
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
     
     audioPlayer.setBounds(100, 500, 200, 150);
     
-    audioOutSelector.setBounds(400, 500, 200, 30);
     
     CVWindowButton.setBounds(700, 500, 200, 30);
     closeCVWindow.setBounds(700, 550, 200, 30);
-    minThresSlider.setBounds(500, 100, 30, 200);
-    maxThresSlider.setBounds(550, 100, 30, 200);
+
+    speakerLineDistanceSlider.setBounds(600, 200, 200, 30);
     
-    kinectImage.setBounds(100, 200, 320, 240);
+    leftChannelGainSlider.setBounds(100, 300, 600, 30);
+    rightChannelGainSlider.setBounds(100, 350, 600, 30);
 }
 
 void MainComponent::buttonClicked(Button* button)
 {
     if (button == &CVWindowButton)
     {
-        Timer::startTimer(1000);
+        Timer::startTimer(40);
         cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
         cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
     }
@@ -221,8 +209,8 @@ void MainComponent::timerCallback()
 {
     MessageManagerLock cvLock;
     //Shows image with small y axis
-    cv::Mat depthMat(480, 1280, CV_8UC1, &kinectImage.kinect.depthArray);
-    cv::Mat colourMat(320, 640, CV_8UC3, &kinectImage.kinect.colourArray);
+    cv::Mat depthMat(480, 1280, CV_8UC1, &kinect.depthArray);
+    cv::Mat colourMat(320, 640, CV_8UC3, &kinect.colourArray);
     
     cv::Mat imageWithCascade;
     imageWithCascade = haarCascade.performCascade(colourMat);
@@ -231,11 +219,22 @@ void MainComponent::timerCallback()
     cv::imshow("Depth", depthMat);
     
     workOutDepthAtPosition();
+    
+    repaintSliders();
 }
 
 void MainComponent::workOutDepthAtPosition()
 {
     userPosX = haarCascade.getPersonPointX();
     
-    depthAtUserPos = kinectImage.kinect.depthArray[haarCascade.getPersonPointY()][userPosX];
+    depthAtUserPos = kinect.depthArray[haarCascade.getPersonPointY()][userPosX];
+}
+
+void MainComponent::repaintSliders()
+{
+    leftChannelGainSlider.setValue(balance.getLeftGain());
+    rightChannelGainSlider.setValue(balance.getRightGain());
+    
+    leftChannelGainSlider.repaint();
+    rightChannelGainSlider.repaint();
 }

@@ -18,7 +18,7 @@
 //==============================================================================
 /*
 */
-class Kinect
+class Kinect : public Timer
 {
 public:
     Kinect();
@@ -51,6 +51,8 @@ private:
     
     static void depthCallback(freenect_device* dev, void* data, uint32_t timestamp);
     static void videoCallback(freenect_device* dev, void* data, uint32_t timestamp);
+    
+    void timerCallback() override;
 };
 
 
