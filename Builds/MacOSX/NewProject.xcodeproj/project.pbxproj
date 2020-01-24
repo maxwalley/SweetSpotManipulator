@@ -101,10 +101,6 @@
 			isa = PBXBuildFile;
 			fileRef = A9236C36644D1A09CD72537B;
 		};
-		638DFF9EC6BCB0A340C9B5FF = {
-			isa = PBXBuildFile;
-			fileRef = 2A4DA5C8CD1183E4787F00DD;
-		};
 		F3FE73C6D705FBC03636B149 = {
 			isa = PBXBuildFile;
 			fileRef = AE7D650C8A88D9917ECF6BDA;
@@ -346,13 +342,6 @@
 			name = Cocoa.framework;
 			path = System/Library/Frameworks/Cocoa.framework;
 			sourceTree = SDKROOT;
-		};
-		2A4DA5C8CD1183E4787F00DD = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = KinImage.cpp;
-			path = ../../Source/KinImage.cpp;
-			sourceTree = "SOURCE_ROOT";
 		};
 		2CCFAA355AEAF5C34F6A7536 = {
 			isa = PBXFileReference;
@@ -662,13 +651,6 @@
 			path = ../../Source/ChannelSlider.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		BD6CB474D82966E4364BE595 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = KinImage.h;
-			path = ../../Source/KinImage.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		BF04AA74F36989A49735EA34 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -911,8 +893,6 @@
 			children = (
 				059449B9193E02E1795AAAAD,
 				A9236C36644D1A09CD72537B,
-				BD6CB474D82966E4364BE595,
-				2A4DA5C8CD1183E4787F00DD,
 			);
 			name = Kinect;
 			sourceTree = "<group>";
@@ -1376,7 +1356,6 @@
 				560D58B67B4CF472FA3CA079,
 				45E297FAD31EEEAC59E308E1,
 				F2A8DA8F5F4C1620B30A326E,
-				638DFF9EC6BCB0A340C9B5FF,
 				F3FE73C6D705FBC03636B149,
 				E74A02CF53846CFFD093A499,
 				5D0957964F9B02A89B8BFC90,

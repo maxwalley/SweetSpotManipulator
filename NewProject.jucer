@@ -24,8 +24,6 @@
       <GROUP id="{C08B2F41-2BA9-B755-207C-13EF365643A7}" name="Kinect">
         <FILE id="OJ0YnC" name="Kinect.h" compile="0" resource="0" file="Source/Kinect.h"/>
         <FILE id="ybXXGt" name="Kinect.cpp" compile="1" resource="0" file="Source/Kinect.cpp"/>
-        <FILE id="rAUthC" name="KinImage.h" compile="0" resource="0" file="Source/KinImage.h"/>
-        <FILE id="P6SGsK" name="KinImage.cpp" compile="1" resource="0" file="Source/KinImage.cpp"/>
       </GROUP>
       <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
         <FILE id="ECyIs0" name="LightControls.h" compile="0" resource="0" file="Source/LightControls.h"/>
