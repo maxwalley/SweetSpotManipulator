@@ -20,8 +20,8 @@ BalanceControls::BalanceControls()
     addAndMakeVisible(lawSelection);
     lawSelection.setEditableText(false);
     lawSelection.addItem("Linear", 1);
-    lawSelection.addItem("Squared", 2);
-    lawSelection.addItem("Cubed", 3);
+    lawSelection.addItem("-3dB", 2);
+    lawSelection.addItem("Room Test", 3);
     lawSelection.setSelectedId(1);
     
     addAndMakeVisible(comboBoxLabel);
