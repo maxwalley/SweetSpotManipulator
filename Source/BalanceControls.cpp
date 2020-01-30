@@ -123,10 +123,10 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
        currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/4;
     }
     
-    //Sine
+    //-3dB
     else if(lawSelection.getSelectedId() == 2)
     {
-        currentMultiplier = (workOutListenerDistance(speaker, xPos, valueAtXPos)/4) * 0.5 * M_PI;
+        currentMultiplier = sin((workOutListenerDistance(speaker, xPos, valueAtXPos)/4) * 0.5 * M_PI);
     }
     
     //Experimental
