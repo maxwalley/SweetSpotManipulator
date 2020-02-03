@@ -132,7 +132,18 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     //Experimental
     else if(lawSelection.getSelectedId() == 3)
     {
-        currentMultiplier = (workOutListenerDistance(speaker, xPos, valueAtXPos)/2) - 1;
+        float dis = workOutListenerDistance(speaker, xPos, valueAtXPos);
+        
+        if(dis < 2)
+        {
+            dis = 0;
+        }
+        else
+        {
+            dis = (dis/2) - 1;
+        }
+        
+        currentMultiplier = dis;
     }
     
     if(speaker == 0)
