@@ -134,16 +134,22 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     {
         float dis = workOutListenerDistance(speaker, xPos, valueAtXPos);
         
-        if(dis < 2)
+        if(dis > 2)
         {
             dis = 0;
         }
         else
         {
-            dis = (dis/2) - 1;
+            dis = (dis/2);
         }
         
         currentMultiplier = dis;
+    }
+    
+    //Logarithmic linear
+    else if(lawSelection.getSelectedId() == 4)
+    {
+        currentMultiplier = log10(workOutMultiplier(speaker, xPos, valueAtXPos)/4);
     }
     
     if(speaker == 0)
