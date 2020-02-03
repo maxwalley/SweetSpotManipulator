@@ -134,13 +134,13 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     {
         float dis = workOutListenerDistance(speaker, xPos, valueAtXPos);
         
-        if(dis > 2)
+        if(dis > 2 || dis < 1)
         {
             dis = 0;
         }
         else
         {
-            dis = (dis/2);
+            dis--;
         }
         
         currentMultiplier = dis;
