@@ -22,10 +22,20 @@ BalanceControls::BalanceControls()
     lawSelection.addItem("Linear", 1);
     lawSelection.addItem("-3dB", 2);
     lawSelection.addItem("Room Test", 3);
+    lawSelection.addItem("Logarithmic", 4);
+    lawSelection.addItem("Inverse Square Law", 5);
     lawSelection.setSelectedId(1);
+    lawSelection.addListener(this);
     
     addAndMakeVisible(comboBoxLabel);
     comboBoxLabel.setText("Selected Balance Law", dontSendNotification);
+    
+    addAndMakeVisible(idealSpotSlider);
+    idealSpotSlider.setVisible(false);
+    idealSpotSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    idealSpotSlider.setRange(0, 4);
+    idealSpotSlider.setValue(2);
+    
 }
 
 BalanceControls::~BalanceControls()
@@ -39,10 +49,9 @@ void BalanceControls::paint (Graphics& g)
 
 void BalanceControls::resized()
 {
-    listenerXPosSlider.setBounds(0, 275, 200, 40);
-    listenerYPosSlider.setBounds(100, 70, 100, 200);
     comboBoxLabel.setBounds(0, 0, 200, 25);
     lawSelection.setBounds(0, 30, 200, 30);
+    idealSpotSlider.setBounds(0, 70, 200, 20);
 }
 
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
@@ -140,7 +149,7 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
         }
         else
         {
-            dis--;
+            dis = dis-1;
         }
         
         currentMultiplier = dis;
@@ -149,7 +158,22 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     //Logarithmic linear
     else if(lawSelection.getSelectedId() == 4)
     {
-        currentMultiplier = log10(workOutMultiplier(speaker, xPos, valueAtXPos)/4);
+        currentMultiplier = log10(workOutListenerDistance(speaker, xPos, valueAtXPos)/4);
+    }
+    
+    //Inverse Square Law
+    else if(lawSelection.getSelectedId() == 5)
+    {
+        //Assumes speakers are angled at 30 degrees and works out dis to ideal sweet spot
+        //float idealSpotDis = (speakerLineDis/2)/0.866;
+        
+        //Takes how far the user wants to simulate the speakers away from the slider
+        float idealSpotDis = idealSpotSlider.getValue();
+        
+        float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
+        
+        //Inverse Square Law
+        currentMultiplier = 1/(pow(proportionAway, 2));
     }
     
     if(speaker == 0)
@@ -184,4 +208,17 @@ float BalanceControls::getLeftGain()
 float BalanceControls::getRightGain()
 {
     return rightGain;
+}
+
+void BalanceControls::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
+{
+    if(comboBoxThatHasChanged->getSelectedId() == 5)
+    {
+        idealSpotSlider.setVisible(true);
+    }
+    else
+    {
+        idealSpotSlider.setVisible(false);
+    }
+    repaint();
 }

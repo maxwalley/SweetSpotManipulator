@@ -15,7 +15,8 @@
 //==============================================================================
 /*
 */
-class BalanceControls    : public Component
+class BalanceControls    : public Component,
+                           public ComboBox::Listener
 {
 public:
     BalanceControls();
@@ -45,8 +46,7 @@ private:
     
     float currentDepthAtXPos;
     
-    Slider listenerXPosSlider;
-    Slider listenerYPosSlider;
+    Slider idealSpotSlider;
     ComboBox lawSelection;
     Label comboBoxLabel;
     
@@ -66,7 +66,7 @@ private:
     float leftGain;
     float rightGain;
     
-    
+    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BalanceControls)
 };

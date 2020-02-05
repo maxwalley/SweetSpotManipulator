@@ -15,7 +15,6 @@
 #include "BalanceControls.h"
 #include <math.h>
 #include "AudioPlayer.h"
-#include "KinImage.h"
 #include "Delay.h"
 #include <opencv2/opencv.hpp>
 #include "HaarCascade.h"
@@ -86,7 +85,9 @@ private:
     
     Slider speakerLineDistanceSlider;
     
+    Label leftChannelGainLabel;
     Slider leftChannelGainSlider;
+    Label rightChannelGainLabel;
     Slider rightChannelGainSlider;
     
     void repaintSliders();

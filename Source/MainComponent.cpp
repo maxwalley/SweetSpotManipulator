@@ -64,12 +64,20 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     leftChannelGainSlider.setRange(0, 1);
     leftChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     leftChannelGainSlider.setValue(0);
+    addAndMakeVisible(leftChannelGainLabel);
+    leftChannelGainLabel.setText("Left Channel Gain", dontSendNotification);
     
     
     addAndMakeVisible(rightChannelGainSlider);
     rightChannelGainSlider.setRange(0, 1);
     rightChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     rightChannelGainSlider.setValue(0);
+    addAndMakeVisible(rightChannelGainLabel);
+    rightChannelGainLabel.setText("Right Channel Gain", dontSendNotification);
+    
+    Timer::startTimer(40);
+    cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
 }
 
 MainComponent::~MainComponent()
@@ -173,7 +181,9 @@ void MainComponent::resized()
     speakerLineDistanceSlider.setBounds(600, 200, 200, 30);
     
     leftChannelGainSlider.setBounds(100, 300, 600, 30);
+    leftChannelGainLabel.setBounds(100, 280, 100, 20);
     rightChannelGainSlider.setBounds(100, 350, 600, 30);
+    rightChannelGainLabel.setBounds(100, 330, 100, 20);
 }
 
 void MainComponent::buttonClicked(Button* button)
