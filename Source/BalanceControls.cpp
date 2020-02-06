@@ -33,7 +33,7 @@ BalanceControls::BalanceControls()
     addAndMakeVisible(idealSpotSlider);
     idealSpotSlider.setVisible(false);
     idealSpotSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
-    idealSpotSlider.setRange(0, 4);
+    idealSpotSlider.setRange(1, 4);
     idealSpotSlider.setValue(2);
     
 }
