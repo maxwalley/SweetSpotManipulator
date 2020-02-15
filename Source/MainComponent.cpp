@@ -61,7 +61,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     balance.setSpeakerLineDistance(speakerLineDistanceSlider.getValue());
     
     addAndMakeVisible(leftChannelGainSlider);
-    leftChannelGainSlider.setRange(0, 1);
+    leftChannelGainSlider.setRange(0, 2);
     leftChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     leftChannelGainSlider.setValue(0);
     addAndMakeVisible(leftChannelGainLabel);
@@ -69,7 +69,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     
     addAndMakeVisible(rightChannelGainSlider);
-    rightChannelGainSlider.setRange(0, 1);
+    rightChannelGainSlider.setRange(0, 2);
     rightChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     rightChannelGainSlider.setValue(0);
     addAndMakeVisible(rightChannelGainLabel);

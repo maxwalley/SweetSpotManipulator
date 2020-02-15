@@ -60,14 +60,21 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
     
     //Work out the maximum distance the kinect can see at the users depth
     float maxKinView;
-    maxKinView = (workOutLisDisVerticalToSpeakerLine(valueAtXPos) * 2) / (tan(61.5));
+    //maxKinView = (workOutLisDisVerticalToSpeakerLine(valueAtXPos) * 2) / (tan(61.5));
+    
+    maxKinView = workOutLisDisVerticalToSpeakerLine(valueAtXPos) * atan(30.75 * M_PI / 180);
+    
+    maxKinView = maxKinView * 2;
+    
+    //Look this up
+    //maxKinView = tan(30.75 * M_PI / 180);
     
     //Work out the listeners position across the kinects view as a percentage of this
-    if(speaker == 0)
+    if(speaker == 1)
     {
         xDis = (xPos/640.0) * maxKinView;
     }
-    else if(speaker == 1)
+    else if(speaker == 0)
     {
         xDis = (((xPos/640.0) * maxKinView) - maxKinView) * -1;
     }
@@ -173,7 +180,18 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
         float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
         
         //Inverse Square Law
-        currentMultiplier = 1/(pow(proportionAway, 2));
+        if(proportionAway > 1)
+        {
+            currentMultiplier = (1 - (1/(pow(proportionAway, 2)))) + 1;
+        }
+        else if(proportionAway < 1)
+        {
+            currentMultiplier = pow(proportionAway,2);
+        }
+        else if(proportionAway == 1)
+        {
+            currentMultiplier = 1;
+        }
     }
     
     if(speaker == 0)

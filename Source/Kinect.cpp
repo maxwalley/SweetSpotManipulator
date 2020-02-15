@@ -49,7 +49,7 @@ int Kinect::kinInit()
         
         state = freenect_get_tilt_state(dev);
         
-        freenect_set_tilt_degs(dev, 10);
+        freenect_set_tilt_degs(dev, 0);
         
         DepthMode = freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT);
         VideoMode = freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB);
