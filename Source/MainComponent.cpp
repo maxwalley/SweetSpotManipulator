@@ -75,7 +75,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(rightChannelGainLabel);
     rightChannelGainLabel.setText("Right Channel Gain", dontSendNotification);
     
-    Timer::startTimer(40);
+    Timer::startTimer(100);
     cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
     cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
 }

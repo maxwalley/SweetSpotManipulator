@@ -16,7 +16,7 @@ unsigned short Kinect::colourArray[3][480][640];
 //==============================================================================
 Kinect::Kinect()
 {
-    Timer::startTimer(40);
+    
 }
 
 Kinect::~Kinect()
@@ -35,6 +35,8 @@ int Kinect::kinInit()
     
     if(numDev >= 1)
     {
+        deviceConnected = true;
+        
         DBG("Number of Connected Devices is: " << numDev);
         
         if(freenect_open_device(ctx, &dev, 0) != 0)
@@ -46,6 +48,8 @@ int Kinect::kinInit()
         {
             DBG("Device Opened Successfully");
         }
+        
+        Timer::startTimer(100);
         
         state = freenect_get_tilt_state(dev);
         
@@ -106,6 +110,9 @@ int Kinect::kinInit()
     else if(numDev == 0)
     {
         DBG("No Devices Found");
+        
+        deviceConnected = false;
+        
         return 7;
     }
     return 0;
@@ -177,28 +184,31 @@ int Kinect::RunVidandDepth() const
 
 int Kinect::End() const
 {
-    if(freenect_stop_depth(dev) != 0)
+    if(deviceConnected == true)
     {
-        DBG("Depth stream stop failed");
-        return 31;
-    }
+        if(freenect_stop_depth(dev) != 0)
+        {
+            DBG("Depth stream stop failed");
+            return 31;
+        }
     
-    if(freenect_stop_video(dev) != 0)
-    {
-        DBG("Video stream stop failed");
-        return 32;
-    }
+        if(freenect_stop_video(dev) != 0)
+        {
+            DBG("Video stream stop failed");
+            return 32;
+        }
     
-    if(freenect_close_device(dev) != 0)
-    {
-        DBG("Error closing freenect device");
-        return 33;
-    }
+        if(freenect_close_device(dev) != 0)
+        {
+            DBG("Error closing freenect device");
+            return 33;
+        }
     
-    if(freenect_shutdown(ctx) != 0)
-    {
-        DBG("Error freeing the context");
-        return 34;
+        if(freenect_shutdown(ctx) != 0)
+        {
+            DBG("Error freeing the context");
+            return 34;
+        }
     }
     
     return 0;

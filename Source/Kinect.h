@@ -47,6 +47,8 @@ private:
     freenect_frame_mode DepthMode;
     freenect_frame_mode VideoMode;
     
+    bool deviceConnected;
+    
     int8_t currentTilt;
     
     static void depthCallback(freenect_device* dev, void* data, uint32_t timestamp);
