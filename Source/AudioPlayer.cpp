@@ -12,7 +12,7 @@
 #include "AudioPlayer.h"
 
 //==============================================================================
-AudioPlayer::AudioPlayer() : fileChooser("Pick a file", File(), "*.wav", true, true, nullptr), playButton("Play"), pauseButton("Pause"), stopButton("Stop"), openFileButton("Open File")
+AudioPlayer::AudioPlayer() : fileChooser("Pick a file", File(), "*.wav; *.mp3", true, true, nullptr), playButton("Play"), pauseButton("Pause"), stopButton("Stop"), openFileButton("Open File")
 {
     setSize (200, 150);
     

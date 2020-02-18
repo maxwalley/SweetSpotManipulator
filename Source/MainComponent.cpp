@@ -59,6 +59,8 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     speakerLineDistanceSlider.setValue(2);
     speakerLineDistanceSlider.addListener(this);
     balance.setSpeakerLineDistance(speakerLineDistanceSlider.getValue());
+    addAndMakeVisible(speakerLineDisLabel);
+    speakerLineDisLabel.setText("Speaker Distance", dontSendNotification);
     
     addAndMakeVisible(leftChannelGainSlider);
     leftChannelGainSlider.setRange(0, 2);
@@ -174,11 +176,11 @@ void MainComponent::resized()
     
     audioPlayer.setBounds(100, 500, 200, 150);
     
-    
     CVWindowButton.setBounds(700, 500, 200, 30);
     closeCVWindow.setBounds(700, 550, 200, 30);
 
     speakerLineDistanceSlider.setBounds(600, 200, 200, 30);
+    speakerLineDisLabel.setBounds(600, 180, 100, 20);
     
     leftChannelGainSlider.setBounds(100, 300, 600, 30);
     leftChannelGainLabel.setBounds(100, 280, 100, 20);

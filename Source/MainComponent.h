@@ -83,6 +83,7 @@ private:
     
     Kinect kinect;
     
+    Label speakerLineDisLabel;
     Slider speakerLineDistanceSlider;
     
     Label leftChannelGainLabel;

@@ -35,7 +35,9 @@ BalanceControls::BalanceControls()
     idealSpotSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     idealSpotSlider.setRange(1, 4);
     idealSpotSlider.setValue(2);
-    
+    addAndMakeVisible(idealSpotLabel);
+    idealSpotLabel.setVisible(false);
+    idealSpotLabel.setText("Ideal Distance from Speaker", dontSendNotification);
 }
 
 BalanceControls::~BalanceControls()
@@ -51,7 +53,8 @@ void BalanceControls::resized()
 {
     comboBoxLabel.setBounds(0, 0, 200, 25);
     lawSelection.setBounds(0, 30, 200, 30);
-    idealSpotSlider.setBounds(0, 70, 200, 20);
+    idealSpotSlider.setBounds(0, 90, 200, 20);
+    idealSpotLabel.setBounds(0, 70, 200, 20);
 }
 
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
@@ -233,10 +236,12 @@ void BalanceControls::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     if(comboBoxThatHasChanged->getSelectedId() == 5)
     {
         idealSpotSlider.setVisible(true);
+        idealSpotLabel.setVisible(true);
     }
     else
     {
         idealSpotSlider.setVisible(false);
+        idealSpotLabel.setVisible(false);
     }
     repaint();
 }

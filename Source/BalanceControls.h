@@ -47,6 +47,7 @@ private:
     float currentDepthAtXPos;
     
     Slider idealSpotSlider;
+    Label idealSpotLabel;
     ComboBox lawSelection;
     Label comboBoxLabel;
     
