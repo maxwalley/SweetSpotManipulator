@@ -133,7 +133,6 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
-        
         delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel, userPosX, depthAtUserPos), currentSampleRate, channel);
     }
     
@@ -162,7 +161,7 @@ void MainComponent::releaseResources()
 void MainComponent::paint (Graphics& g)
 {
     g.setOpacity(1.0);
-    g.fillAll(Colours::orangered);
+    g.fillAll(Colours::grey);
 }
 
 void MainComponent::resized()

@@ -21,7 +21,7 @@ BalanceControls::BalanceControls()
     lawSelection.setEditableText(false);
     lawSelection.addItem("Linear", 1);
     lawSelection.addItem("-3dB", 2);
-    lawSelection.addItem("Room Test", 3);
+    lawSelection.addItem("Experimental", 3);
     lawSelection.addItem("Logarithmic", 4);
     lawSelection.addItem("Inverse Square Law", 5);
     lawSelection.setSelectedId(1);
@@ -139,13 +139,13 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     //Linear
     if(lawSelection.getSelectedId() == 1)
     {
-       currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/4;
+       currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotSlider.getValue();
     }
     
     //-3dB
     else if(lawSelection.getSelectedId() == 2)
     {
-        currentMultiplier = sin((workOutListenerDistance(speaker, xPos, valueAtXPos)/4) * 0.5 * M_PI);
+        currentMultiplier = sin((workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotSlider.getValue()) * 0.5 * M_PI);
     }
     
     //Experimental
@@ -183,18 +183,7 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
         float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
         
         //Inverse Square Law
-        if(proportionAway > 1)
-        {
-            currentMultiplier = (1 - (1/(pow(proportionAway, 2)))) + 1;
-        }
-        else if(proportionAway < 1)
-        {
-            currentMultiplier = pow(proportionAway,2);
-        }
-        else if(proportionAway == 1)
-        {
-            currentMultiplier = 1;
-        }
+        currentMultiplier = pow(proportionAway, 2);
     }
     
     if(speaker == 0)
