@@ -31,8 +31,6 @@ HaarCascade::~HaarCascade()
 
 cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
 {
-    DBG("Performing Cascade");
-    
     cv::Mat inputGrey;
     cv::cvtColor(inputFrame, inputGrey, cv::COLOR_BGR2GRAY);
     cv::equalizeHist(inputGrey, inputGrey);
@@ -73,7 +71,10 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
         cv::ellipse( inputFrame, center, cv::Size( people[i].width/2, people[i].height/2 ), 0, 0, 360, cv::Scalar( 0, 0, 255 ), 4 );
     }
     
-    DBG("Num Detections = " << people.size());
+    if(people.size()>0)
+    {
+        DBG("Num Detections = " << people.size());
+    }
     
     return inputFrame;
 }

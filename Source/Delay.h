@@ -32,9 +32,8 @@ public:
     void performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance, int sampleRate, int channelNum);
 private:
     
-    //AudioBuffer<float> delayBuffer;
     int delayBufferWritePosition[2];
-    float delayBuffer[2][44100];
+    float delayBuffer[2][1058];
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Delay)
 };

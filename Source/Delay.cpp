@@ -16,9 +16,6 @@
 //==============================================================================
 Delay::Delay()
 {
-    //delayBuffer.setSize(2, 88200);
-    //delayBuffer.clear();
-    
     for(int channel = 0; channel < 2; channel++)
     {
         delayBufferWritePosition[channel] = 0;
@@ -40,9 +37,6 @@ int Delay::calculateDelayTime(float listenerDistance, int sampleRate)
 
 void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance, int sampleRate, int channelNum)
 {
-    //if(inputBuffer.getNumChannels() != delayBuffer.getNumChannels())
-        //delayBuffer.setSize(inputBuffer.getNumChannels(), 88200);
-    
     int delayTimeInSamples = calculateDelayTime(listenerDistance, sampleRate);
     
     const float* pIn = inputBuffer.getReadPointer(channelNum);
@@ -55,62 +49,38 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
     
     while (nbSamples--)
     {
+        //Puts value from input buffer write pointer into variable
         fIn = *pIn++;
         
+        //Moves the write position of the delay buffer on one
         delayBufferWritePosition[channelNum]++;
-        if(delayBufferWritePosition[channelNum] == 44099)
+        
+        //Checks we're not at the end of the delay buffer. 1058 is the limit since 4m max depth at 88200Hz
+        if(delayBufferWritePosition[channelNum] == 1057)
         {
+            //If we are sets write position back to 0
             delayBufferWritePosition[channelNum] = 0;
         }
+        
+        //Writes the value from the input buffer into the delay buffer
         delayBuffer[channelNum][delayBufferWritePosition[channelNum]] = fIn;
         
+        //Finds the delayed sample to return
         int delayBufferReadPosition = delayBufferWritePosition[channelNum] - delayTimeInSamples;
+        
+        //If this sample to return is meant to be in a position less than 0
         if(delayBufferReadPosition < 0)
         {
-            delayBufferReadPosition += 44100;
+            //Finds the sample at the end of the buffer
+            delayBufferReadPosition += 1058;
         }
-        fOut = delayBuffer[channelNum][delayBufferReadPosition];
-
-        fOut = fIn;
         
+        //Puts the delayed sample into a variable
+        fOut = delayBuffer[channelNum][delayBufferReadPosition];
+        
+        DBG("input = " << fIn << " output = " << fOut << " On Sample: " << delayBufferWritePosition[channelNum]);
+        
+        //Writes this delayed sample to the input buffer
         *pOut++ = fOut;
     }
-    
-    /*const float* pIn0 = inputBuffer.getReadPointer(0);
-    const float* pIn1 = inputBuffer.getReadPointer(1);
-    
-    float* pOut0 = inputBuffer.getWritePointer(0);
-    float* pOut1 = inputBuffer.getWritePointer(1);
-    
-    int nbSamples = inputBuffer.getNumSamples();
-    
-    float fIn0, fIn1, fOut0 = 0, fOut1 = 0;
-    
-    while (nbSamples--)
-    {
-        fIn0 = *pIn0++;
-        fIn1 = *pIn1++;
-        
-        delayBufferWritePosition++;
-        if(delayBufferWritePosition == 44099)
-        {
-            delayBufferWritePosition = 0;
-        }
-        delayBuffer[0][delayBufferWritePosition] = fIn0;
-        delayBuffer[1][delayBufferWritePosition] = fIn1;
-        
-        int delayBufferReadPosition = delayBufferWritePosition - delayTimeInSamples;
-        if(delayBufferReadPosition < 0)
-        {
-            delayBufferReadPosition += 44100;
-        }
-        fOut0 = delayBuffer[0][delayBufferReadPosition];
-        fOut1 = delayBuffer[1][delayBufferReadPosition];
-
-        fOut0 = fIn0;
-        fOut1 = fIn1;
-        
-        *pOut0++ = fOut0;
-        *pOut1++ = fOut1;
-    }*/
 }

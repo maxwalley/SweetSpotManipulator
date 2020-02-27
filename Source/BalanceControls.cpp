@@ -182,7 +182,7 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
         
         float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
         
-        //Inverse Square Law
+        //Inverse Inverse Square Law
         currentMultiplier = pow(proportionAway, 2);
     }
     
