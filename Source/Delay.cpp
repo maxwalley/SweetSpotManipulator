@@ -55,8 +55,8 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
         //Moves the write position of the delay buffer on one
         delayBufferWritePosition[channelNum]++;
         
-        //Checks we're not at the end of the delay buffer. 1058 is the limit since 4m max depth at 88200Hz
-        if(delayBufferWritePosition[channelNum] == 1057)
+        //Checks we're not at the end of the delay buffer.
+        if(delayBufferWritePosition[channelNum] == 44099)
         {
             //If we are sets write position back to 0
             delayBufferWritePosition[channelNum] = 0;
@@ -72,13 +72,13 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
         if(delayBufferReadPosition < 0)
         {
             //Finds the sample at the end of the buffer
-            delayBufferReadPosition += 1058;
+            delayBufferReadPosition += 44100;
         }
         
         //Puts the delayed sample into a variable
         fOut = delayBuffer[channelNum][delayBufferReadPosition];
         
-        DBG("input = " << fIn << " output = " << fOut << " On Sample: " << delayBufferWritePosition[channelNum]);
+        //DBG("input = " << fIn << " output = " << fOut << " On Sample: " << delayBufferWritePosition[channelNum]);
         
         //Writes this delayed sample to the input buffer
         *pOut++ = fOut;
