@@ -67,6 +67,7 @@ private:
     float leftGain;
     float rightGain;
     
+    /**Override from the ComboBox::Listener Juce class*/
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BalanceControls)

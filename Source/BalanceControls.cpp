@@ -123,12 +123,15 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
     
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
     
+    //To Overide this and set a distance:
+    //overallDis = 2.5 + comment out everything above
+    
     //Limiter if distance is over 4m stick to 4m
     if(overallDis > 4)
     {
         overallDis = 4;
     }
-    
+        
     return overallDis;
 }
 
