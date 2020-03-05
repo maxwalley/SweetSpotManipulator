@@ -193,7 +193,7 @@ void MainComponent::buttonClicked(Button* button)
     {
         Timer::startTimer(40);
         cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
-        cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
+        //cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
     }
     
     else if (button == &closeCVWindow)
@@ -227,7 +227,7 @@ void MainComponent::timerCallback()
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
     
-    cv::imshow("Depth", depthMat);
+    //cv::imshow("Depth", depthMat);
     
     workOutDepthAtPosition();
     

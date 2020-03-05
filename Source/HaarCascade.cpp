@@ -54,7 +54,7 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
         if(Timer::isTimerRunning() == false)
         {
             Timer::startTimer(100);
-            DBG("Starting finder timer");
+            //DBG("Starting finder timer");
         }
     }
     
@@ -73,7 +73,7 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
     
     if(people.size()>0)
     {
-        DBG("Num Detections = " << people.size());
+        //DBG("Num Detections = " << people.size());
     }
     
     return inputFrame;
@@ -124,7 +124,7 @@ void HaarCascade::switchCascadeClassifier()
             break;
     }
     
-    DBG("Cascade classifier switched to: " << classifier);
+    //DBG("Cascade classifier switched to: " << classifier);
 }
 
 int HaarCascade::getPersonPointX() const

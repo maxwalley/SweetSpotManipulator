@@ -16,7 +16,8 @@
 /*
 */
 class BalanceControls    : public Component,
-                           public ComboBox::Listener
+                           public ComboBox::Listener,
+                           public Slider::Listener
 {
 public:
     BalanceControls();
@@ -67,8 +68,13 @@ private:
     float leftGain;
     float rightGain;
     
+    float idealSpotDis;
+    
     /**Override from the ComboBox::Listener Juce class*/
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    
+    /**from the Slider::Listener Juce class*/
+    void sliderValueChanged(Slider* slider) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BalanceControls)
 };

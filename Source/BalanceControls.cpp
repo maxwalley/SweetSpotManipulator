@@ -35,6 +35,7 @@ BalanceControls::BalanceControls()
     idealSpotSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     idealSpotSlider.setRange(1, 4);
     idealSpotSlider.setValue(2);
+    idealSpotSlider.addListener(this);
     addAndMakeVisible(idealSpotLabel);
     idealSpotLabel.setVisible(false);
     idealSpotLabel.setText("Ideal Distance from Speaker", dontSendNotification);
@@ -180,9 +181,6 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
         //Assumes speakers are angled at 30 degrees and works out dis to ideal sweet spot
         //float idealSpotDis = (speakerLineDis/2)/0.866;
         
-        //Takes how far the user wants to simulate the speakers away from the slider
-        float idealSpotDis = idealSpotSlider.getValue();
-        
         float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
         
         //Inverse Inverse Square Law
@@ -236,4 +234,12 @@ void BalanceControls::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
         idealSpotLabel.setVisible(false);
     }
     repaint();
+}
+
+void BalanceControls::sliderValueChanged(Slider* slider)
+{
+    if(slider == &idealSpotSlider)
+    {
+        idealSpotDis = idealSpotSlider.getValue();
+    }
 }
