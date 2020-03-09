@@ -82,5 +82,10 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
         
         //Writes this delayed sample to the input buffer
         *pOut++ = fOut;
+        
+        //I think something like this: Look in creasys book about dry and wet signals
+        //float curVal = *pOut++;
+        //*pOut = fOut+curVal;
+        //or ++*pOut = *pOut+fOut;
     }
 }
