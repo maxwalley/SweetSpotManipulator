@@ -83,13 +83,20 @@ private:
     
     Kinect kinect;
     
-    Label speakerLineDisLabel;
-    Slider speakerLineDistanceSlider;
-    
     Label leftChannelGainLabel;
     Slider leftChannelGainSlider;
     Label rightChannelGainLabel;
     Slider rightChannelGainSlider;
+    
+    Label speaker0xCoOrdSliderLabel;
+    Slider speaker0xCoOrdSlider;
+    Label speaker0yCoOrdSliderLabel;
+    Slider speaker0yCoOrdSlider;
+    
+    Label speaker1xCoOrdSliderLabel;
+    Slider speaker1xCoOrdSlider;
+    Label speaker1yCoOrdSliderLabel;
+    Slider speaker1yCoOrdSlider;
     
     void repaintSliders();
     

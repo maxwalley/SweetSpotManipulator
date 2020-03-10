@@ -38,6 +38,14 @@ public:
     float getLeftGain();
     float getRightGain();
     
+    /**Sets the speaker co-ordinates
+     @param speakerNum = the speaker number to change the co-ordinates of
+     @param xCoOrdnate = the speakers position on the x axis
+     @param zCoOrdinate = the speakers position on the y axis
+     */
+    void setSpeakerCoOrdinates(int speakerNum, float xCoOrdinate, float zCoOrdinate);
+    
+    
 private:
     
     //Taken from left speaker to right speaker
@@ -58,7 +66,15 @@ private:
     float workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos);
     
     /*Returns listener distance to the speaker line*/
-    float workOutLisDisVerticalToSpeakerLine(int valueAtXPos);
+    float workOutLisDisVerticalToSpeakerLine(int speaker, int valueAtXPos);
+    
+    struct Coordinates
+    {
+        float x;
+        float z;
+    };
+    
+    Array<Coordinates> speakerPositions;
     
     /*Returns distance from speaker to user
      speaker argument determines which speaker this distance is from

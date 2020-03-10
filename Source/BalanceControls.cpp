@@ -13,7 +13,7 @@
 //==============================================================================
 BalanceControls::BalanceControls()
 {
-    setSize(200, 350);
+    setSize(200, 110);
     
     maxYDis = 4.0;
     
@@ -39,6 +39,7 @@ BalanceControls::BalanceControls()
     addAndMakeVisible(idealSpotLabel);
     idealSpotLabel.setVisible(false);
     idealSpotLabel.setText("Ideal Distance from Speaker", dontSendNotification);
+    
 }
 
 BalanceControls::~BalanceControls()
@@ -60,55 +61,118 @@ void BalanceControls::resized()
 
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
 {
-    float xDis;
+    float disAcross;
+    float disFromCenter;
+    float disFromSpeaker;
     
     //Work out the maximum distance the kinect can see at the users depth
     float maxKinView;
     //maxKinView = (workOutLisDisVerticalToSpeakerLine(valueAtXPos) * 2) / (tan(61.5));
     
-    maxKinView = workOutLisDisVerticalToSpeakerLine(valueAtXPos) * atan(30.75 * M_PI / 180);
+    maxKinView = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos) * atan(30.75 * M_PI / 180);
     
+    //Times it by two since its only working out half the triangle
     maxKinView = maxKinView * 2;
     
-    //Look this up
-    //maxKinView = tan(30.75 * M_PI / 180);
-    
     //Work out the listeners position across the kinects view as a percentage of this
-    if(speaker == 1)
+    disAcross = (xPos/640.0) * maxKinView;
+    
+    //Works out how far from centre user is
+    if(disAcross > maxKinView/2)
     {
-        xDis = (xPos/640.0) * maxKinView;
+        disFromCenter = disAcross - (maxKinView/2);
     }
-    else if(speaker == 0)
+    else if(disAcross < maxKinView/2)
     {
-        xDis = (((xPos/640.0) * maxKinView) - maxKinView) * -1;
+        disFromCenter = ((maxKinView/2) - disAcross) * -1;
     }
     
-    //If the kinect isnt viewing the entire speaker line this adds the extra on
-    if(speakerLineDis > maxKinView)
+    if(speakerPositions[speaker].x > 0)
     {
-        xDis = xDis + (speakerLineDis - maxKinView);
+        if(speakerPositions[speaker].x > disFromCenter)
+        {
+            disFromSpeaker = speakerPositions[speaker].x - disFromCenter;
+        }
+        else if(speakerPositions[speaker].x < disFromCenter)
+        {
+            disFromSpeaker = disFromCenter - speakerPositions[speaker].x;
+        }
+        else if(speakerPositions[speaker].x == disFromCenter)
+        {
+            disFromSpeaker = 0;
+        }
     }
     
-    //DBG("Horizontal Dis = " << xDis);
-    return xDis;
+    else if(speakerPositions[speaker].x < 0)
+    {
+        if(speakerPositions[speaker].x > disFromCenter)
+        {
+            disFromSpeaker = disFromCenter - speakerPositions[speaker].x;
+        }
+        else if(speakerPositions[speaker].x < disFromCenter)
+        {
+            disFromSpeaker = speakerPositions[speaker].x - disFromCenter;
+            
+            if(disFromSpeaker < 0)
+            {
+                disFromSpeaker = disFromSpeaker * -1;
+            }
+        }
+        else if(speakerPositions[speaker].x == disFromCenter)
+        {
+            disFromSpeaker = 0;
+        }
+    }
+    
+    else if(speakerPositions[speaker].x == 0)
+    {
+        disFromSpeaker = disFromCenter;
+        
+        if(disFromSpeaker < 0)
+        {
+            disFromSpeaker = disFromSpeaker * -1;
+        }
+    }
+    
+    //DBG("Horizontal Dis = " << disFromSpeaker);
+    return disFromSpeaker;
 }
 
-float BalanceControls::workOutLisDisVerticalToSpeakerLine(int valueAtXPos)
+float BalanceControls::workOutLisDisVerticalToSpeakerLine(int speaker, int valueAtXPos)
 {
     float vertDis;
+    float lisZ;
 
     //works it out in meters
     //Depth is out of cameras range
     if(valueAtXPos == 2047)
     {
         //Returns 1m
-        vertDis = 1;
+        lisZ = 1;
     }
     else
     {
         //Converts kinect depth value to meters
         //Equation found at: http://graphics.stanford.edu/~mdfisher/Kinect.html
-        vertDis = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
+        lisZ = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
+    }
+    
+    //DBG(lisZ);
+    
+    if(speakerPositions[speaker].z > lisZ)
+    {
+        vertDis = speakerPositions[speaker].z - lisZ;
+        //DBG("1");
+    }
+    else if(speakerPositions[speaker].z < lisZ)
+    {
+        vertDis = lisZ - speakerPositions[speaker].z;
+        //DBG("2");
+    }
+    else if(speakerPositions[speaker].z == lisZ)
+    {
+        vertDis = 0;
+        //DBG("3");
     }
     
     //DBG("Vert Distance = " << vertDis);
@@ -120,7 +184,7 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
     float overallDis;
     
     float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
-    float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(valueAtXPos);
+    float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos);
     
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
     
@@ -132,7 +196,8 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
     {
         overallDis = 4;
     }
-        
+       
+    //DBG(overallDis);
     return overallDis;
 }
 
@@ -242,4 +307,13 @@ void BalanceControls::sliderValueChanged(Slider* slider)
     {
         idealSpotDis = idealSpotSlider.getValue();
     }
+}
+
+void BalanceControls::setSpeakerCoOrdinates(int speakerNum, float xCoOrdinate, float zCoOrdinate)
+{
+    Coordinates tempCoordinate;
+    tempCoordinate.x = xCoOrdinate;
+    tempCoordinate.z = zCoOrdinate;
+    
+    speakerPositions.set(speakerNum, tempCoordinate);
 }
