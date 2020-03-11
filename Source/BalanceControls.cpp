@@ -23,7 +23,8 @@ BalanceControls::BalanceControls()
     lawSelection.addItem("-3dB", 2);
     lawSelection.addItem("Experimental", 3);
     lawSelection.addItem("Logarithmic", 4);
-    lawSelection.addItem("Inverse Square Law", 5);
+    lawSelection.addItem("1N50B", 5);
+    lawSelection.addItem("Inverse Square Law", 6);
     lawSelection.setSelectedId(1);
     lawSelection.addListener(this);
     
@@ -239,12 +240,19 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
         currentMultiplier = log10(workOutListenerDistance(speaker, xPos, valueAtXPos)/4);
     }
     
-    //Inverse Square Law
+    //1n50B
     else if(lawSelection.getSelectedId() == 5)
     {
-        //Assumes speakers are angled at 30 degrees and works out dis to ideal sweet spot
-        //float idealSpotDis = (speakerLineDis/2)/0.866;
+        float dbAtSpotDis = -5.342 * log(idealSpotDis) - 4.2527;
         
+        float currentMultiplierDB = dbAtSpotDis - (-5.342 * log(workOutMultiplier(speaker, xPos, valueAtXPos)) - 4.2527);
+        
+        currentMultiplier = pow(10, (currentMultiplierDB/20));
+    }
+    
+    //Inverse Square Law
+    else if(lawSelection.getSelectedId() == 6)
+    {
         float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
         
         //Inverse Inverse Square Law
