@@ -107,8 +107,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0yCoOrdSlider.getValue());
     balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1yCoOrdSlider.getValue());
-    //balance.setSpeakerCoOrdinates(0, 1, 1);
-    //balance.setSpeakerCoOrdinates(1, 1, 1);
 }
 
 MainComponent::~MainComponent()
@@ -231,7 +229,7 @@ void MainComponent::buttonClicked(Button* button)
     {
         Timer::startTimer(40);
         cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
-        //cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
+        cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
     }
     
     else if (button == &closeCVWindow)
@@ -270,7 +268,7 @@ void MainComponent::timerCallback()
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
     
-    //cv::imshow("Depth", depthMat);
+    cv::imshow("Depth", depthMat);
     
     workOutDepthAtPosition();
     

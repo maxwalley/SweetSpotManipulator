@@ -67,9 +67,8 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
     
     //Work out the maximum distance the kinect can see at the users depth
     float maxKinView;
-    //maxKinView = (workOutLisDisVerticalToSpeakerLine(valueAtXPos) * 2) / (tan(61.5));
     
-    maxKinView = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos) * atan(30.75 * M_PI / 180);
+    maxKinView = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos) * atan(28.5 * M_PI / 180);
     
     //Times it by two since its only working out half the triangle
     maxKinView = maxKinView * 2;
