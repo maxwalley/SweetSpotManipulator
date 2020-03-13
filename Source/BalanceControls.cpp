@@ -25,6 +25,7 @@ BalanceControls::BalanceControls()
     lawSelection.addItem("Logarithmic", 4);
     lawSelection.addItem("1N50B", 5);
     lawSelection.addItem("Inverse Square Law", 6);
+    lawSelection.addItem("Bedroom", 7);
     lawSelection.setSelectedId(1);
     lawSelection.addListener(this);
     
@@ -183,13 +184,13 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
 {
     float overallDis;
     
-    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
+    /*float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
     float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos);
     
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
-    
+    */
     //To Overide this and set a distance:
-    //overallDis = 2.5 + comment out everything above
+    overallDis = 3;
     
     //Limiter if distance is over 4m stick to 4m
     if(overallDis > 4)
@@ -205,58 +206,20 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
 {
     float currentMultiplier;
     
-    //Linear
-    if(lawSelection.getSelectedId() == 1)
-    {
-       currentMultiplier = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotSlider.getValue();
-    }
-    
-    //-3dB
-    else if(lawSelection.getSelectedId() == 2)
-    {
-        currentMultiplier = sin((workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotSlider.getValue()) * 0.5 * M_PI);
-    }
-    
-    //Experimental
-    else if(lawSelection.getSelectedId() == 3)
-    {
-        float dis = workOutListenerDistance(speaker, xPos, valueAtXPos);
-        
-        if(dis > 2 || dis < 1)
-        {
-            dis = 0;
-        }
-        else
-        {
-            dis = dis-1;
-        }
-        
-        currentMultiplier = dis;
-    }
-    
-    //Logarithmic linear
-    else if(lawSelection.getSelectedId() == 4)
-    {
-        currentMultiplier = log10(workOutListenerDistance(speaker, xPos, valueAtXPos)/4);
-    }
-    
     //1n50B
-    else if(lawSelection.getSelectedId() == 5)
+    if(lawSelection.getSelectedId() == 5)
     {
-        float dbAtSpotDis = -5.342 * log(idealSpotDis) - 4.2527;
-        
         float currentMultiplierDB = dbAtSpotDis - (-5.342 * log(workOutMultiplier(speaker, xPos, valueAtXPos)) - 4.2527);
         
         currentMultiplier = pow(10, (currentMultiplierDB/20));
     }
     
-    //Inverse Square Law
-    else if(lawSelection.getSelectedId() == 6)
+    //Bedroom
+    else if(lawSelection.getSelectedId() == 7)
     {
-        float proportionAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
+        float currentMultiplierDB = dbAtSpotDis - (-6.257 * log(workOutListenerDistance(speaker, xPos, valueAtXPos)) - 6.3795);
         
-        //Inverse Inverse Square Law
-        currentMultiplier = pow(proportionAway, 2);
+        currentMultiplier = pow(10, (currentMultiplierDB/20));
     }
     
     if(speaker == 0)
@@ -295,7 +258,7 @@ float BalanceControls::getRightGain()
 
 void BalanceControls::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
 {
-    if(comboBoxThatHasChanged->getSelectedId() == 5)
+    if(comboBoxThatHasChanged->getSelectedId() == 7)
     {
         idealSpotSlider.setVisible(true);
         idealSpotLabel.setVisible(true);
@@ -313,6 +276,7 @@ void BalanceControls::sliderValueChanged(Slider* slider)
     if(slider == &idealSpotSlider)
     {
         idealSpotDis = idealSpotSlider.getValue();
+        dbAtSpotDis = -6.257 * log(idealSpotDis) - 6.3795;
     }
 }
 

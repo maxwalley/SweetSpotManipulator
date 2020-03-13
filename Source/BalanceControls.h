@@ -85,6 +85,7 @@ private:
     float rightGain;
     
     float idealSpotDis;
+    float dbAtSpotDis;
     
     /**Override from the ComboBox::Listener Juce class*/
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
