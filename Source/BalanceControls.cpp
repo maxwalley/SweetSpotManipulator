@@ -36,7 +36,7 @@ BalanceControls::BalanceControls()
     idealSpotSlider.setVisible(false);
     idealSpotSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     idealSpotSlider.setRange(1, 4);
-    idealSpotSlider.setValue(2);
+    idealSpotSlider.setValue(1);
     idealSpotSlider.addListener(this);
     addAndMakeVisible(idealSpotLabel);
     idealSpotLabel.setVisible(false);
@@ -190,7 +190,7 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
     */
     //To Overide this and set a distance:
-    overallDis = 3;
+    overallDis = 0.25;
     
     //Limiter if distance is over 4m stick to 4m
     if(overallDis > 4)
@@ -206,12 +206,12 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
 {
     float currentMultiplier;
     
-    //1n50B
-    if(lawSelection.getSelectedId() == 5)
+    //InverseSquareLaw
+    if(lawSelection.getSelectedId() == 6)
     {
-        float currentMultiplierDB = dbAtSpotDis - (-5.342 * log(workOutMultiplier(speaker, xPos, valueAtXPos)) - 4.2527);
+        float propAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
         
-        currentMultiplier = pow(10, (currentMultiplierDB/20));
+        currentMultiplier = pow(propAway, 2);
     }
     
     //Bedroom
@@ -238,7 +238,12 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
 
 float BalanceControls::getListenerDistance(int channel, int xPos, int valueAtXPos)
 {
-    return workOutMultiplier(channel, xPos, valueAtXPos);
+    return workOutListenerDistance(channel, xPos, valueAtXPos);
+}
+
+float BalanceControls::getMultiplier(int channel, int xPos, int valueAtXpos)
+{
+    return workOutMultiplier(channel, xPos, valueAtXpos);
 }
 
 void BalanceControls::setSpeakerLineDistance(float newDistance)

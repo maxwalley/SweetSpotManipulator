@@ -33,6 +33,8 @@ public:
     
     float getListenerDistance(int channel, int xPos, int valueAtXPos);
     
+    float getMultiplier(int channel, int xPos, int valueAtXpos);
+    
     void setSpeakerLineDistance(float newDistance);
     
     float getLeftGain();

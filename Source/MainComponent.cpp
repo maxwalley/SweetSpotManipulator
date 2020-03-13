@@ -147,7 +147,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
         for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
         {
             //Applies balance mutiplier
-            buffer[sample] = buffer[sample] * balance.getListenerDistance(channel, userPosX, depthAtUserPos);
+            buffer[sample] = buffer[sample] * balance.getMultiplier(channel, userPosX, depthAtUserPos);
         }
     }
     
