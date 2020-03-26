@@ -20,9 +20,8 @@
 #include "HaarCascade.h"
 
 //==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
+/**
+    The main window of the application. Holding all GUI components and allowing objects to communicate with one another.
 */
 class MainComponent   : public AudioAppComponent,
                         public Slider::Listener,
@@ -30,24 +29,32 @@ class MainComponent   : public AudioAppComponent,
 {
 public:
     //==============================================================================
+    /**Constructor*/
     MainComponent();
+    
+    /**Destructor*/
     ~MainComponent();
 
     //==============================================================================
+    /**Implementation of the JUCE AudioSource method*/
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    
+    /**Implementation of the JUCE AudioSource method*/
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    
+    /**Implementation of the JUCE AudioSource method*/
     void releaseResources() override;
 
     //==============================================================================
+    /**Implementation of the JUCE Component method*/
     void paint (Graphics& g) override;
+    
+    /**Implementation of the JUCE Component method*/
     void resized() override;
     
 private:
     //==============================================================================
     // Your private member variables go here...
-    
-    //Bool that returns true if any kinect error code is detected
-    bool kinectErrorCodeTriggered;
     
     AudioDeviceManager UserSelectedDevice;
     AudioDeviceSelectorComponent UserSelectedDeviceSettings;
@@ -62,11 +69,13 @@ private:
     
     BalanceControls balance;
     
+    /**Implementation of the JUCE Slider::Listener method*/
     void sliderValueChanged(Slider* slider) override;
     
+    /**Implementation of the JUCE Timer method*/
     void timerCallback() override;
     
-    //Takes image scans it for data and prints where it finds data. Has to start x axis at 10 since there seems to be a border around the image
+    /**Sends an image to the HaarCascade for human detection. Stores the pixel location of detection and the depth data at that pixel location*/
     void workOutDepthAtPosition();
     
     Delay delay;
@@ -93,6 +102,7 @@ private:
     Label speaker1yCoOrdSliderLabel;
     Slider speaker1yCoOrdSlider;
     
+    /**Refreshes the gain sliders to show the current gains for each channel*/
     void repaintSliders();
     
 };

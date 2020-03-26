@@ -13,7 +13,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 //==============================================================================
-/*
+/**
+    A component class for an audio player
 */
 class AudioPlayer    : public Component,
                        public AudioSource,
@@ -21,16 +22,31 @@ class AudioPlayer    : public Component,
                        public Timer
 {
 public:
+    /**Contructor*/
     AudioPlayer();
+    
+    /**Destructor*/
     ~AudioPlayer();
 
+    /**Implementation of the JUCE Component method*/
     void paint (Graphics&) override;
+    
+    /**Implementation of the JUCE Component method*/
     void resized() override;
     
+    /**Implementation of the JUCE AudioSource method*/
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    
+    /**Implementation of the JUCE AudioSource method*/
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    
+    /**Implementation of the JUCE AudioSource method*/
     void releaseResources() override;
     
+    /**Sets the gain to apply to audio going through the player
+     
+     @param gain            the amount of gain to apply (between 0 and1)
+     */
     void setGain(float gain);
 
 private:
@@ -47,8 +63,10 @@ private:
     TextButton stopButton;
     TextButton openFileButton;
     
-    
+    /**Implementation of the JUCE Button::Listener method*/
     void buttonClicked(Button* button) override;
+    
+    /**Implementation of the JUCE Timer method*/
     void timerCallback() override;
     
     enum TransportState

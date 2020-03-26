@@ -118,7 +118,7 @@ int Kinect::kinInit()
     return 0;
 }
 
-int Kinect::kinTiltUp()
+/*int Kinect::kinTiltUp()
 {
     if(state->tilt_angle >= 30)
     {
@@ -170,7 +170,7 @@ int Kinect::kinTiltDown()
         while(state->tilt_status == TILT_STATUS_MOVING);
     }
     return 0;
-}
+}*/
 
 int Kinect::RunVidandDepth() const
 {
@@ -214,7 +214,7 @@ int Kinect::End() const
     return 0;
 }
 
-int Kinect::checkLed(freenect_led_options ledState)
+/*int Kinect::checkLed(freenect_led_options ledState)
 {
     if(freenect_set_led(dev, ledState) != 0)
     {
@@ -223,7 +223,7 @@ int Kinect::checkLed(freenect_led_options ledState)
     }
     
     return 0;
-}
+}*/
 
 void Kinect::depthCallback(freenect_device* dev, void* data, uint32_t timestamp)
 {

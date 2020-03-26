@@ -45,7 +45,7 @@ void BalanceControls::resized()
     idealSpotLabel.setBounds(0, 0, 200, 20);
 }
 
-float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
+float BalanceControls::workOutLisDisXAxis(int speaker, int xPos, int valueAtXPos)
 {
     float disAcross;
     float disFromCenter;
@@ -123,7 +123,7 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
     return disFromSpeaker;
 }
 
-float BalanceControls::workOutLisDisVerticalToSpeakerLine(int speaker, int valueAtXPos)
+float BalanceControls::workOutLisDisZAxis(int speaker, int valueAtXPos)
 {
     float vertDis;
     float lisZ;
@@ -173,8 +173,8 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
 {
     float overallDis;
     
-    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
-    float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos);
+    float speakerToHorizontalListenerPos = workOutLisDisXAxis(speaker, xPos, valueAtXPos);
+    float speakerLineToVerticalListenerPos = workOutLisDisZAxis(speaker, valueAtXPos);
     
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
     
@@ -226,11 +226,6 @@ float BalanceControls::getListenerDistance(int channel, int xPos, int valueAtXPo
 float BalanceControls::getMultiplier(int channel, int xPos, int valueAtXpos)
 {
     return workOutMultiplier(channel, xPos, valueAtXpos);
-}
-
-void BalanceControls::setSpeakerLineDistance(float newDistance)
-{
-    speakerLineDis = newDistance;
 }
 
 float BalanceControls::getLeftGain()
