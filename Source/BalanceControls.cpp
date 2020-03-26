@@ -13,34 +13,20 @@
 //==============================================================================
 BalanceControls::BalanceControls()
 {
-    setSize(200, 110);
+    setSize(200, 40);
     
     maxYDis = 4.0;
     
-    addAndMakeVisible(lawSelection);
-    lawSelection.setEditableText(false);
-    lawSelection.addItem("Linear", 1);
-    lawSelection.addItem("-3dB", 2);
-    lawSelection.addItem("Experimental", 3);
-    lawSelection.addItem("Logarithmic", 4);
-    lawSelection.addItem("1N50B", 5);
-    lawSelection.addItem("Inverse Square Law", 6);
-    lawSelection.addItem("Bedroom", 7);
-    lawSelection.setSelectedId(1);
-    lawSelection.addListener(this);
-    
-    addAndMakeVisible(comboBoxLabel);
-    comboBoxLabel.setText("Selected Balance Law", dontSendNotification);
-    
     addAndMakeVisible(idealSpotSlider);
-    idealSpotSlider.setVisible(false);
     idealSpotSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     idealSpotSlider.setRange(1, 4);
     idealSpotSlider.setValue(1);
     idealSpotSlider.addListener(this);
     addAndMakeVisible(idealSpotLabel);
-    idealSpotLabel.setVisible(false);
     idealSpotLabel.setText("Ideal Distance from Speaker", dontSendNotification);
+    
+    idealSpotDis = idealSpotSlider.getValue();
+    dbAtSpotDis = -6.257 * log(idealSpotDis) - 6.3795;
     
 }
 
@@ -55,10 +41,8 @@ void BalanceControls::paint (Graphics& g)
 
 void BalanceControls::resized()
 {
-    comboBoxLabel.setBounds(0, 0, 200, 25);
-    lawSelection.setBounds(0, 30, 200, 30);
-    idealSpotSlider.setBounds(0, 90, 200, 20);
-    idealSpotLabel.setBounds(0, 70, 200, 20);
+    idealSpotSlider.setBounds(0, 20, 200, 20);
+    idealSpotLabel.setBounds(0, 0, 200, 20);
 }
 
 float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, int valueAtXPos)
@@ -135,7 +119,7 @@ float BalanceControls::workOutLisDisHorizontalToSpeakers(int speaker, int xPos, 
         }
     }
     
-    //DBG("Horizontal Dis = " << disFromSpeaker);
+    DBG("Horizontal Dis = " << disFromSpeaker);
     return disFromSpeaker;
 }
 
@@ -156,6 +140,11 @@ float BalanceControls::workOutLisDisVerticalToSpeakerLine(int speaker, int value
         //Converts kinect depth value to meters
         //Equation found at: http://graphics.stanford.edu/~mdfisher/Kinect.html
         lisZ = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
+    }
+    
+    if(lisZ > 3)
+    {
+        lisZ = lisZ - 0.25;
     }
     
     //DBG(lisZ);
@@ -184,13 +173,13 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
 {
     float overallDis;
     
-    /*float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
+    float speakerToHorizontalListenerPos = workOutLisDisHorizontalToSpeakers(speaker, xPos, valueAtXPos);
     float speakerLineToVerticalListenerPos = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos);
     
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
-    */
+    
     //To Overide this and set a distance:
-    overallDis = 0.25;
+    //overallDis = 3;
     
     //Limiter if distance is over 4m stick to 4m
     if(overallDis > 4)
@@ -198,7 +187,7 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
         overallDis = 4;
     }
        
-    //DBG(overallDis);
+    //DBG("Overall distance" << overallDis);
     return overallDis;
 }
 
@@ -207,20 +196,13 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     float currentMultiplier;
     
     //InverseSquareLaw
-    if(lawSelection.getSelectedId() == 6)
-    {
-        float propAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
-        
-        currentMultiplier = pow(propAway, 2);
-    }
+    /*float propAway = workOutListenerDistance(speaker, xPos, valueAtXPos)/idealSpotDis;
+    currentMultiplier = pow(propAway, 2);*/
     
     //Bedroom
-    else if(lawSelection.getSelectedId() == 7)
-    {
-        float currentMultiplierDB = dbAtSpotDis - (-6.257 * log(workOutListenerDistance(speaker, xPos, valueAtXPos)) - 6.3795);
+    float currentMultiplierDB = dbAtSpotDis - (-6.257 * log(workOutListenerDistance(speaker, xPos, valueAtXPos)) - 6.3795);
         
-        currentMultiplier = pow(10, (currentMultiplierDB/20));
-    }
+    currentMultiplier = pow(10, (currentMultiplierDB/20));
     
     if(speaker == 0)
     {
@@ -259,21 +241,6 @@ float BalanceControls::getLeftGain()
 float BalanceControls::getRightGain()
 {
     return rightGain;
-}
-
-void BalanceControls::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
-{
-    if(comboBoxThatHasChanged->getSelectedId() == 7)
-    {
-        idealSpotSlider.setVisible(true);
-        idealSpotLabel.setVisible(true);
-    }
-    else
-    {
-        idealSpotSlider.setVisible(false);
-        idealSpotLabel.setVisible(false);
-    }
-    repaint();
 }
 
 void BalanceControls::sliderValueChanged(Slider* slider)

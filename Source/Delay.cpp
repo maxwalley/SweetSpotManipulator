@@ -39,6 +39,7 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
 {
     int delayTimeInSamples = calculateDelayTime(listenerDistance, sampleRate);
     
+    
     const float* pIn = inputBuffer.getReadPointer(channelNum);
     
     float* pOut = inputBuffer.getWritePointer(channelNum);
@@ -76,7 +77,10 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
         }
         
         //Puts the delayed sample into a variable
-        fOut = delayBuffer[channelNum][delayBufferReadPosition];
+        //fOut = delayBuffer[channelNum][delayBufferReadPosition];
+        
+        //For Test
+        fOut = delayBuffer[channelNum][delayBufferReadPosition] + fIn;
         
         //DBG("input = " << fIn << " output = " << fOut << " On Sample: " << delayBufferWritePosition[channelNum]);
         

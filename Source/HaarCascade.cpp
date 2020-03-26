@@ -61,7 +61,7 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
     if(personFound == true)
     {
         personPoint.x = people[0].x + people[0].width/2;
-        personPoint.y = people[0].y + people[0].width/2;
+        personPoint.y = people[0].y + people[0].height/2;
     }
     
     for ( size_t i = 0; i < people.size(); i++ )

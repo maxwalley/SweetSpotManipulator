@@ -40,7 +40,6 @@ private:
     cv::String altFaceModelFilePathTwo;
     cv::CascadeClassifier altFaceClassifierTwo;
     
-    
     cv::String altFaceModelFilePathThree;
     cv::CascadeClassifier altFaceClassifierThree;
     

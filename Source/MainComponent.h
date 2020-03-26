@@ -25,7 +25,6 @@
     your controls and content.
 */
 class MainComponent   : public AudioAppComponent,
-                        public Button::Listener,
                         public Slider::Listener,
                         public Timer
 {
@@ -50,8 +49,6 @@ private:
     //Bool that returns true if any kinect error code is detected
     bool kinectErrorCodeTriggered;
     
-    void buttonClicked(Button* button) override;
-    
     AudioDeviceManager UserSelectedDevice;
     AudioDeviceSelectorComponent UserSelectedDeviceSettings;
     
@@ -67,8 +64,6 @@ private:
     
     void sliderValueChanged(Slider* slider) override;
     
-    TextButton CVWindowButton;
-    TextButton closeCVWindow;
     void timerCallback() override;
     
     //Takes image scans it for data and prints where it finds data. Has to start x axis at 10 since there seems to be a border around the image

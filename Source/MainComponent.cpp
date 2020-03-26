@@ -9,11 +9,11 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), CVWindowButton("Open CV View"), closeCVWindow("Close CV"), userPosX(329)
+MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSelectedDeviceSettings(UserSelectedDevice, 0, 0, 0, 6, false, false, false, false), userPosX(329)
 {
     // Make sure you set the size of the component after
     // you add any child components.
-    setSize (1280, 800);
+    setSize (1000, 600);
     
     addAndMakeVisible(masterSlider);
     masterSlider.setSliderStyle(Slider::SliderStyle::LinearVertical);
@@ -24,12 +24,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     masterSlider.addListener(this);
     addAndMakeVisible(masterSliderLabel);
     masterSliderLabel.setText("Master", dontSendNotification);
-    
-    addAndMakeVisible(CVWindowButton);
-    CVWindowButton.addListener(this);
-    
-    addAndMakeVisible(closeCVWindow);
-    closeCVWindow.addListener(this);
     
     addAndMakeVisible(balance);
         
@@ -193,50 +187,31 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    masterSlider.setBounds(1090, 490, 50, 200);
-    masterSliderLabel.setBounds(1090, 470, 50, 20);
+    masterSlider.setBounds(350, 370, 50, 200);
+    masterSliderLabel.setBounds(350, 350, 50, 20);
     
-    balance.setBounds(1000, 90, 200, 110);
+    balance.setBounds(500, 30, 200, 40);
     
-    speaker0xCoOrdSliderLabel.setBounds(1000, 220, 200, 20);
-    speaker0xCoOrdSlider.setBounds(1000, 250, 200, 20);
+    speaker0xCoOrdSliderLabel.setBounds(750, 170, 200, 20);
+    speaker0xCoOrdSlider.setBounds(750, 200, 200, 20);
     
-    speaker0yCoOrdSliderLabel.setBounds(1000, 280, 200, 20);
-    speaker0yCoOrdSlider.setBounds(1000, 310, 200, 20);
+    speaker0yCoOrdSliderLabel.setBounds(750, 230, 200, 20);
+    speaker0yCoOrdSlider.setBounds(750, 260, 200, 20);
     
-    speaker1xCoOrdSliderLabel.setBounds(1000, 350, 200, 20);
-    speaker1xCoOrdSlider.setBounds(1000, 380, 200, 20);
+    speaker1xCoOrdSliderLabel.setBounds(750, 300, 200, 20);
+    speaker1xCoOrdSlider.setBounds(750, 330, 200, 20);
     
-    speaker1yCoOrdSliderLabel.setBounds(1000, 410, 200, 20);
-    speaker1yCoOrdSlider.setBounds(1000, 440, 200, 20);
+    speaker1yCoOrdSliderLabel.setBounds(750, 360, 200, 20);
+    speaker1yCoOrdSlider.setBounds(750, 390, 200, 20);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
     
-    audioPlayer.setBounds(100, 500, 200, 150);
+    audioPlayer.setBounds(100, 420, 200, 150);
     
-    CVWindowButton.setBounds(700, 500, 200, 30);
-    closeCVWindow.setBounds(700, 550, 200, 30);
-    
-    leftChannelGainSlider.setBounds(100, 300, 600, 30);
-    leftChannelGainLabel.setBounds(100, 280, 100, 20);
-    rightChannelGainSlider.setBounds(100, 350, 600, 30);
-    rightChannelGainLabel.setBounds(100, 330, 100, 20);
-}
-
-void MainComponent::buttonClicked(Button* button)
-{
-    if (button == &CVWindowButton)
-    {
-        Timer::startTimer(40);
-        cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
-        cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
-    }
-    
-    else if (button == &closeCVWindow)
-    {
-        Timer::stopTimer();
-        cv::destroyAllWindows();
-    }
+    leftChannelGainSlider.setBounds(50, 220, 600, 30);
+    leftChannelGainLabel.setBounds(50, 200, 100, 20);
+    rightChannelGainSlider.setBounds(50, 270, 600, 30);
+    rightChannelGainLabel.setBounds(50, 250, 100, 20);
 }
 
 void MainComponent::sliderValueChanged(Slider* slider)
@@ -261,16 +236,28 @@ void MainComponent::timerCallback()
 {
     MessageManagerLock cvLock;
     //Shows image with small y axis
-    cv::Mat depthMat(480, 1280, CV_8UC1, &kinect.depthArray);
     cv::Mat colourMat(320, 640, CV_8UC3, &kinect.colourArray);
     
     cv::Mat imageWithCascade;
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
     
-    cv::imshow("Depth", depthMat);
+    /*for(int y = 0; y < 320; y++)
+    {
+        kinect.depthArray[y][haarCascade.getPersonPointX()] = 0;
+    }
+    
+    for(int x = 0; x < 640; x++)
+    {
+        kinect.depthArray[haarCascade.getPersonPointY()][x] = 0;
+    }
+    //kinect.depthArray[haarCascade.getPersonPointY()][haarCascade.getPersonPointX()] = 0;
+    */
+    cv::Mat depthMat(480, 1280, CV_8UC1, &kinect.depthArray);
     
     workOutDepthAtPosition();
+    
+    cv::imshow("Depth", depthMat);
     
     repaintSliders();
 }
@@ -278,8 +265,10 @@ void MainComponent::timerCallback()
 void MainComponent::workOutDepthAtPosition()
 {
     userPosX = haarCascade.getPersonPointX();
+    //DBG(userPosX);
     
     depthAtUserPos = kinect.depthArray[haarCascade.getPersonPointY()][userPosX];
+    //DBG(haarCascade.getPersonPointY());
 }
 
 void MainComponent::repaintSliders()

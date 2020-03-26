@@ -16,7 +16,6 @@
 /*
 */
 class BalanceControls    : public Component,
-                           public ComboBox::Listener,
                            public Slider::Listener
 {
 public:
@@ -59,8 +58,6 @@ private:
     
     Slider idealSpotSlider;
     Label idealSpotLabel;
-    ComboBox lawSelection;
-    Label comboBoxLabel;
     
     /*Returns listener distance along speaker line from equivilent user position
      speaker argument determines which speaker this distance is from
@@ -88,9 +85,6 @@ private:
     
     float idealSpotDis;
     float dbAtSpotDis;
-    
-    /**Override from the ComboBox::Listener Juce class*/
-    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
     
     /**from the Slider::Listener Juce class*/
     void sliderValueChanged(Slider* slider) override;
