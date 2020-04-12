@@ -48,7 +48,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     kinect.kinInit();
     
     addAndMakeVisible(leftChannelGainSlider);
-    leftChannelGainSlider.setRange(0, 2);
+    leftChannelGainSlider.setRange(0, 4);
     leftChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     leftChannelGainSlider.setValue(0);
     addAndMakeVisible(leftChannelGainLabel);
@@ -56,7 +56,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     
     
     addAndMakeVisible(rightChannelGainSlider);
-    rightChannelGainSlider.setRange(0, 2);
+    rightChannelGainSlider.setRange(0, 4);
     rightChannelGainSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
     rightChannelGainSlider.setValue(0);
     addAndMakeVisible(rightChannelGainLabel);
@@ -74,13 +74,13 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(speaker0xCoOrdSliderLabel);
     speaker0xCoOrdSliderLabel.setText("Speaker 1 X Position", dontSendNotification);
     
-    addAndMakeVisible(speaker0yCoOrdSlider);
-    speaker0yCoOrdSlider.setRange(0, 8);
-    speaker0yCoOrdSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
-    speaker0yCoOrdSlider.setValue(0);
-    speaker0yCoOrdSlider.addListener(this);
-    addAndMakeVisible(speaker0yCoOrdSliderLabel);
-    speaker0yCoOrdSliderLabel.setText("Speaker 1 Y Position", dontSendNotification);
+    addAndMakeVisible(speaker0zCoOrdSlider);
+    speaker0zCoOrdSlider.setRange(0, 8);
+    speaker0zCoOrdSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    speaker0zCoOrdSlider.setValue(0);
+    speaker0zCoOrdSlider.addListener(this);
+    addAndMakeVisible(speaker0zCoOrdSliderLabel);
+    speaker0zCoOrdSliderLabel.setText("Speaker 1 Z Position", dontSendNotification);
     
     addAndMakeVisible(speaker1xCoOrdSlider);
     speaker1xCoOrdSlider.setRange(-4, 4);
@@ -90,17 +90,17 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(speaker1xCoOrdSliderLabel);
     speaker1xCoOrdSliderLabel.setText("Speaker 2 X Position", dontSendNotification);
     
-    addAndMakeVisible(speaker1yCoOrdSlider);
-    speaker1yCoOrdSlider.setRange(0, 8);
-    speaker1yCoOrdSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
-    speaker1yCoOrdSlider.setValue(0);
-    speaker1yCoOrdSlider.addListener(this);
-    addAndMakeVisible(speaker1yCoOrdSliderLabel);
-    speaker1yCoOrdSliderLabel.setText("Speaker 2 Y Position", dontSendNotification);
+    addAndMakeVisible(speaker1zCoOrdSlider);
+    speaker1zCoOrdSlider.setRange(0, 8);
+    speaker1zCoOrdSlider.setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+    speaker1zCoOrdSlider.setValue(0);
+    speaker1zCoOrdSlider.addListener(this);
+    addAndMakeVisible(speaker1zCoOrdSliderLabel);
+    speaker1zCoOrdSliderLabel.setText("Speaker 2 Z Position", dontSendNotification);
     
     
-    balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0yCoOrdSlider.getValue());
-    balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1yCoOrdSlider.getValue());
+    balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
+    balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1zCoOrdSlider.getValue());
 }
 
 MainComponent::~MainComponent()
@@ -195,14 +195,14 @@ void MainComponent::resized()
     speaker0xCoOrdSliderLabel.setBounds(750, 170, 200, 20);
     speaker0xCoOrdSlider.setBounds(750, 200, 200, 20);
     
-    speaker0yCoOrdSliderLabel.setBounds(750, 230, 200, 20);
-    speaker0yCoOrdSlider.setBounds(750, 260, 200, 20);
+    speaker0zCoOrdSliderLabel.setBounds(750, 230, 200, 20);
+    speaker0zCoOrdSlider.setBounds(750, 260, 200, 20);
     
-    speaker1xCoOrdSliderLabel.setBounds(750, 300, 200, 20);
-    speaker1xCoOrdSlider.setBounds(750, 330, 200, 20);
+    speaker1xCoOrdSliderLabel.setBounds(750, 320, 200, 20);
+    speaker1xCoOrdSlider.setBounds(750, 350, 200, 20);
     
-    speaker1yCoOrdSliderLabel.setBounds(750, 360, 200, 20);
-    speaker1yCoOrdSlider.setBounds(750, 390, 200, 20);
+    speaker1zCoOrdSliderLabel.setBounds(750, 380, 200, 20);
+    speaker1zCoOrdSlider.setBounds(750, 410, 200, 20);
     
     UserSelectedDeviceSettings.setBounds(0, 0, 400, 100);
     
@@ -221,14 +221,14 @@ void MainComponent::sliderValueChanged(Slider* slider)
         masterSliderValue = masterSlider.getValue();
     }
     
-    else if(slider == &speaker0xCoOrdSlider || slider == &speaker0yCoOrdSlider)
+    else if(slider == &speaker0xCoOrdSlider || slider == &speaker0zCoOrdSlider)
     {
-        balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0yCoOrdSlider.getValue());
+        balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
     }
     
-    else if(slider == &speaker1xCoOrdSlider || slider == &speaker1yCoOrdSlider)
+    else if(slider == &speaker1xCoOrdSlider || slider == &speaker1zCoOrdSlider)
     {
-        balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1yCoOrdSlider.getValue());
+        balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1zCoOrdSlider.getValue());
     }
 }
 

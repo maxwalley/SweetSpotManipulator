@@ -23,10 +23,10 @@ BalanceControls::BalanceControls()
     idealSpotSlider.setValue(1);
     idealSpotSlider.addListener(this);
     addAndMakeVisible(idealSpotLabel);
-    idealSpotLabel.setText("Ideal Distance from Speaker", dontSendNotification);
+    idealSpotLabel.setText("Simulated Distance from Speaker", dontSendNotification);
     
     idealSpotDis = idealSpotSlider.getValue();
-    dbAtSpotDis = -6.257 * log(idealSpotDis) - 6.3795;
+    dbAtSpotDis = -6.559 * log(idealSpotDis) + 4.2348;
     
 }
 
@@ -54,7 +54,7 @@ float BalanceControls::workOutLisDisXAxis(int speaker, int xPos, int valueAtXPos
     //Work out the maximum distance the kinect can see at the users depth
     float maxKinView;
     
-    maxKinView = workOutLisDisVerticalToSpeakerLine(speaker, valueAtXPos) * atan(31.35 * M_PI / 180);
+    maxKinView = workOutLisDisZAxis(speaker, valueAtXPos) * atan(31.35 * M_PI / 180);
     
     //Times it by two since its only working out half the triangle
     maxKinView = maxKinView * 2;
@@ -119,7 +119,7 @@ float BalanceControls::workOutLisDisXAxis(int speaker, int xPos, int valueAtXPos
         }
     }
     
-    DBG("Horizontal Dis = " << disFromSpeaker);
+    //DBG("Horizontal Dis = " << disFromSpeaker);
     return disFromSpeaker;
 }
 
@@ -173,13 +173,22 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
 {
     float overallDis;
     
-    float speakerToHorizontalListenerPos = workOutLisDisXAxis(speaker, xPos, valueAtXPos);
+    /*float speakerToHorizontalListenerPos = workOutLisDisXAxis(speaker, xPos, valueAtXPos);
     float speakerLineToVerticalListenerPos = workOutLisDisZAxis(speaker, valueAtXPos);
     
-    overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
+    overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));*/
     
     //To Overide this and set a distance:
-    //overallDis = 3;
+    overallDis = 0.5;
+    
+    /*if(speaker == 0)
+    {
+        overallDis = 1.10;
+    }
+    else if(speaker == 1)
+    {
+        overallDis = 0.56;
+    }*/
     
     //Limiter if distance is over 4m stick to 4m
     if(overallDis > 4)
@@ -200,8 +209,12 @@ float BalanceControls::workOutMultiplier(int speaker, int xPos, int valueAtXPos)
     currentMultiplier = pow(propAway, 2);*/
     
     //Bedroom
-    float currentMultiplierDB = dbAtSpotDis - (-6.257 * log(workOutListenerDistance(speaker, xPos, valueAtXPos)) - 6.3795);
+    //float currentMultiplierDB = dbAtSpotDis - (-6.257 * log(workOutListenerDistance(speaker, xPos, valueAtXPos)) - 6.3795);
+    
+    //Using room acoustic calculations to work out multiplier
+    float currentMultiplierDB = dbAtSpotDis - (-6.559 * log(workOutListenerDistance(speaker, xPos, valueAtXPos)) + 4.2348);
         
+    //Converting from db to gain
     currentMultiplier = pow(10, (currentMultiplierDB/20));
     
     if(speaker == 0)
@@ -243,7 +256,9 @@ void BalanceControls::sliderValueChanged(Slider* slider)
     if(slider == &idealSpotSlider)
     {
         idealSpotDis = idealSpotSlider.getValue();
-        dbAtSpotDis = -6.257 * log(idealSpotDis) - 6.3795;
+        //dbAtSpotDis = -6.257 * log(idealSpotDis) - 6.3795;
+        
+        dbAtSpotDis = -6.559 * log(idealSpotDis) + 4.2348;
     }
 }
 

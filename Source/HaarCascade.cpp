@@ -38,13 +38,15 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
     std::vector<cv::Rect> people;
     currentClassifier->detectMultiScale(inputGrey, people);
     
+    //If something is detected
     if(people.size() > 0)
     {
         personFound = true;
         if(Timer::isTimerRunning() == true)
         {
+            //Stops the switcher timer
             Timer::stopTimer();
-            DBG("Ending finder timer");
+            //DBG("Ending finder timer");
             timerCount = 0;
         }
     }
@@ -53,6 +55,7 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
         personFound = false;
         if(Timer::isTimerRunning() == false)
         {
+            //Starts the switcher timer
             Timer::startTimer(100);
             //DBG("Starting finder timer");
         }
@@ -60,12 +63,14 @@ cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
     
     if(personFound == true)
     {
+        //Gets central detected co-ordinates
         personPoint.x = people[0].x + people[0].width/2;
         personPoint.y = people[0].y + people[0].height/2;
     }
     
     for ( size_t i = 0; i < people.size(); i++ )
     {
+        //Draws a circle around the detected area. See https://docs.opencv.org/3.4/db/d28/tutorial_cascade_classifier.html
         cv::Point center(people[i].x + people[i].width/2, people[i].y + people[i].height/2);
         //DBG("center x axis = " << center.x << " Center y axis = " << center.y);
         cv::ellipse( inputFrame, center, cv::Size( people[i].width/2, people[i].height/2 ), 0, 0, 360, cv::Scalar( 0, 0, 255 ), 4 );
@@ -83,6 +88,7 @@ void HaarCascade::timerCallback()
 {
     timerCount++;
     
+    //If the timer is 10 or a multiple of 10
     if(timerCount % 10 == 0)
     {
         switchCascadeClassifier();
@@ -91,6 +97,7 @@ void HaarCascade::timerCallback()
 
 void HaarCascade::switchCascadeClassifier()
 {
+    //Changes the current classifier
     switch(classifier)
     {
         case fullBody:

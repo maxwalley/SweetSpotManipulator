@@ -94,13 +94,13 @@ private:
     
     Label speaker0xCoOrdSliderLabel;
     Slider speaker0xCoOrdSlider;
-    Label speaker0yCoOrdSliderLabel;
-    Slider speaker0yCoOrdSlider;
+    Label speaker0zCoOrdSliderLabel;
+    Slider speaker0zCoOrdSlider;
     
     Label speaker1xCoOrdSliderLabel;
     Slider speaker1xCoOrdSlider;
-    Label speaker1yCoOrdSliderLabel;
-    Slider speaker1yCoOrdSlider;
+    Label speaker1zCoOrdSliderLabel;
+    Slider speaker1zCoOrdSlider;
     
     /**Refreshes the gain sliders to show the current gains for each channel*/
     void repaintSliders();
