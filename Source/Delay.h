@@ -30,7 +30,7 @@ public:
      
      @returns delay time in samples
      */
-    int calculateDelayTime(float listenerDistance, int sampleRate);
+    int calculateDelayTime(float listenerDistance, int sampleRate, int channel);
 
     /**Performs delay based upon listener distance on an audio buffer
      
@@ -44,6 +44,8 @@ private:
     
     int delayBufferWritePosition[2];
     float delayBuffer[2][44100];
+    
+    float delayTimeInSamples[2];
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Delay)
 };

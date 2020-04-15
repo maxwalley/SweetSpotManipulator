@@ -24,21 +24,49 @@ Delay::Delay()
         {
             delayBuffer[channel][sample] = 0;
         }
+        
+        delayTimeInSamples[channel] = 0;
     }
 }
 
-int Delay::calculateDelayTime(float listenerDistance, int sampleRate)
+int Delay::calculateDelayTime(float listenerDistance, int sampleRate, int channel)
 {
     float delayTimeInSecs = listenerDistance/SPEED_OF_SOUND;
     
+    delayTimeInSamples[channel] = floor(delayTimeInSecs * sampleRate);
+    
+    if(channel == 0)
+    {
+        if(delayTimeInSamples[0] >= delayTimeInSamples[1])
+        {
+            return 0;
+        }
+        else
+        {
+            return delayTimeInSamples[1] - delayTimeInSamples[0];
+        }
+    }
+    else if(channel == 1)
+    {
+        if(delayTimeInSamples[1] >= delayTimeInSamples[0])
+        {
+            return 0;
+        }
+        else
+        {
+            return delayTimeInSamples[0] - delayTimeInSamples[1];
+        }
+    }
+    
     //Rounds the number of samples of delay as in David Creaseys book pg. 234
-    return floor(delayTimeInSecs * sampleRate);
+    //return floor(delayTimeInSecs * sampleRate);
 }
 
 void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance, int sampleRate, int channelNum)
 {
-    int delayTimeInSamples = calculateDelayTime(listenerDistance, sampleRate);
+    int delayTimeInSamples = calculateDelayTime(listenerDistance, sampleRate, channelNum);
     
+    DBG("delay time on channel" << channelNum << "=" << delayTimeInSamples);
     
     const float* pIn = inputBuffer.getReadPointer(channelNum);
     
@@ -80,7 +108,7 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
         //fOut = delayBuffer[channelNum][delayBufferReadPosition];
         
         //For Test
-        fOut = delayBuffer[channelNum][delayBufferReadPosition] + fIn;
+        fOut = delayBuffer[channelNum][delayBufferReadPosition];
         
         //DBG("input = " << fIn << " output = " << fOut << " On Sample: " << delayBufferWritePosition[channelNum]);
         

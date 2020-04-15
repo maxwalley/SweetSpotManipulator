@@ -168,7 +168,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
         for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
         {
             //Sets the master gain
-            buffer[sample] = buffer[sample] * masterSliderValue;
+            buffer[sample] = buffer[sample] * masterSliderValue * 5;
         }
     }
 }
@@ -250,9 +250,9 @@ void MainComponent::timerCallback()
     for(int x = 0; x < 640; x++)
     {
         kinect.depthArray[haarCascade.getPersonPointY()][x] = 0;
-    }
+    }*/
     //kinect.depthArray[haarCascade.getPersonPointY()][haarCascade.getPersonPointX()] = 0;
-    */
+    
     cv::Mat depthMat(480, 1280, CV_8UC1, &kinect.depthArray);
     
     workOutDepthAtPosition();
