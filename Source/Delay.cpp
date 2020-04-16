@@ -66,7 +66,7 @@ void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance
 {
     int delayTimeInSamples = calculateDelayTime(listenerDistance, sampleRate, channelNum);
     
-    DBG("delay time on channel" << channelNum << "=" << delayTimeInSamples);
+    //DBG("delay time on channel" << channelNum << "=" << delayTimeInSamples);
     
     const float* pIn = inputBuffer.getReadPointer(channelNum);
     

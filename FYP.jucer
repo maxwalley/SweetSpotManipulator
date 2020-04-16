@@ -17,32 +17,10 @@
               file="Source/BalanceControls.h"/>
         <FILE id="uiFAQh" name="BalanceControls.cpp" compile="1" resource="0"
               file="Source/BalanceControls.cpp"/>
-        <FILE id="k0wNaf" name="PanningControls.h" compile="0" resource="0"
-              file="Source/PanningControls.h"/>
-        <FILE id="BzaG1y" name="PanningControls.cpp" compile="1" resource="0"
-              file="Source/PanningControls.cpp"/>
       </GROUP>
       <GROUP id="{C08B2F41-2BA9-B755-207C-13EF365643A7}" name="Kinect">
         <FILE id="OJ0YnC" name="Kinect.h" compile="0" resource="0" file="Source/Kinect.h"/>
         <FILE id="ybXXGt" name="Kinect.cpp" compile="1" resource="0" file="Source/Kinect.cpp"/>
-      </GROUP>
-      <GROUP id="{CFB2662A-1A54-F9A9-B8E7-45AE18BA6F05}" name="Channel Classes">
-        <FILE id="ECyIs0" name="LightControls.h" compile="0" resource="0" file="Source/LightControls.h"/>
-        <FILE id="krBxEY" name="LightControls.cpp" compile="1" resource="0"
-              file="Source/LightControls.cpp"/>
-        <FILE id="yK0UFZ" name="MuteButton.h" compile="0" resource="0" file="Source/MuteButton.h"/>
-        <FILE id="qSRmq6" name="MuteButton.cpp" compile="1" resource="0" file="Source/MuteButton.cpp"/>
-        <FILE id="IHV0kZ" name="ChannelLabel.h" compile="0" resource="0" file="Source/ChannelLabel.h"/>
-        <FILE id="m3E2He" name="ChannelLabel.cpp" compile="1" resource="0"
-              file="Source/ChannelLabel.cpp"/>
-        <FILE id="SbTjbv" name="ChannelSlider.h" compile="0" resource="0" file="Source/ChannelSlider.h"/>
-        <FILE id="LGgpQf" name="ChannelSlider.cpp" compile="1" resource="0"
-              file="Source/ChannelSlider.cpp"/>
-        <FILE id="cUNEU7" name="Channel.h" compile="0" resource="0" file="Source/Channel.h"/>
-        <FILE id="CFMU8m" name="Channel.cpp" compile="1" resource="0" file="Source/Channel.cpp"/>
-        <FILE id="O5NEUz" name="ChannelArray.h" compile="0" resource="0" file="Source/ChannelArray.h"/>
-        <FILE id="ElNMZC" name="ChannelArray.cpp" compile="1" resource="0"
-              file="Source/ChannelArray.cpp"/>
       </GROUP>
       <GROUP id="{525A0141-207B-6F4A-467A-3AFD3D876E81}" name="Playback"/>
       <FILE id="xxCw9B" name="AudioPlayer.h" compile="0" resource="0" file="Source/AudioPlayer.h"/>

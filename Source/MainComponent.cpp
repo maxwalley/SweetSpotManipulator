@@ -257,7 +257,7 @@ void MainComponent::timerCallback()
     
     workOutDepthAtPosition();
     
-    cv::imshow("Depth", depthMat);
+    //cv::imshow("Depth", depthMat);
     
     repaintSliders();
 }
