@@ -63,6 +63,7 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     rightChannelGainLabel.setText("Right Channel Gain", dontSendNotification);
     
     Timer::startTimer(100);
+    //Creates OpenCV Windows
     cv::namedWindow("Cascade", cv::WINDOW_AUTOSIZE);
     cv::namedWindow("Depth", cv::WINDOW_AUTOSIZE);
     
@@ -145,10 +146,6 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
         }
     }
     
-    //Work out at a later date
-    /*for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
-    input.clear (i, 0, numSamples);*/
-    
     //Delay
     //Iterates through the channels
     
@@ -216,11 +213,13 @@ void MainComponent::resized()
 
 void MainComponent::sliderValueChanged(Slider* slider)
 {
+    //MasterSlider
     if(slider == &masterSlider)
     {
         masterSliderValue = masterSlider.getValue();
     }
     
+    //X Co-ordinate sliders
     else if(slider == &speaker0xCoOrdSlider || slider == &speaker0zCoOrdSlider)
     {
         balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
@@ -238,6 +237,7 @@ void MainComponent::timerCallback()
     //Shows image with small y axis
     cv::Mat colourMat(320, 640, CV_8UC3, &kinect.colourArray);
     
+    //Sends to the haar cascade and displays the image
     cv::Mat imageWithCascade;
     imageWithCascade = haarCascade.performCascade(colourMat);
     cv::imshow("Cascade", imageWithCascade);
@@ -255,10 +255,12 @@ void MainComponent::timerCallback()
     
     cv::Mat depthMat(480, 1280, CV_8UC1, &kinect.depthArray);
     
+    //Sends to determine depth
     workOutDepthAtPosition();
     
     //cv::imshow("Depth", depthMat);
     
+    //Refreshes the channel gain sliders
     repaintSliders();
 }
 

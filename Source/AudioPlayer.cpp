@@ -77,6 +77,7 @@ void AudioPlayer::buttonClicked(Button* button)
             {
                 std::unique_ptr<AudioFormatReaderSource> tempAudioFormatReaderSource (new AudioFormatReaderSource (audioFormatReader, true));
             
+                //Sets up the transport with the selected file
                 audioTransportSource.setSource(tempAudioFormatReaderSource.get(), 0, nullptr, audioFormatReader->sampleRate, audioFormatReader->numChannels);
             
                 audioFormatReaderSource.reset(tempAudioFormatReaderSource.release());
@@ -172,6 +173,7 @@ void AudioPlayer::releaseResources()
 
 void AudioPlayer::timerCallback()
 {
+    //Works out the time and displays
     int64_t numMins = floor(audioTransportSource.getCurrentPosition() / 60);
     double numSecs = fmod(audioTransportSource.getCurrentPosition(), 60);
     double decPoint = fmod(numSecs, 1);

@@ -72,6 +72,7 @@ float BalanceControls::workOutLisDisXAxis(int speaker, int xPos, int valueAtXPos
         disFromCenter = ((maxKinView/2) - disAcross) * -1;
     }
     
+    //Works out lisener position in relation to speaker on x axis
     if(speakerPositions[speaker].x > 0)
     {
         if(speakerPositions[speaker].x > disFromCenter)
@@ -142,13 +143,15 @@ float BalanceControls::workOutLisDisZAxis(int speaker, int valueAtXPos)
         lisZ = (1.0 / (valueAtXPos * -0.0030711016 + 3.3309495161));
     }
     
-    if(lisZ > 3)
+    //Compensation over 3.25m
+    if(lisZ > 3.25)
     {
         lisZ = lisZ - 0.25;
     }
     
     //DBG(lisZ);
     
+    //Works out listener position in relation to speaker on z axis
     if(speakerPositions[speaker].z > lisZ)
     {
         vertDis = speakerPositions[speaker].z - lisZ;
@@ -176,6 +179,7 @@ float BalanceControls::workOutListenerDistance(int speaker, int xPos, int valueA
     float speakerToHorizontalListenerPos = workOutLisDisXAxis(speaker, xPos, valueAtXPos);
     float speakerLineToVerticalListenerPos = workOutLisDisZAxis(speaker, valueAtXPos);
     
+    //Uses trignometry to work out listener distance overall from speaker 
     overallDis = sqrt((pow(speakerToHorizontalListenerPos, 2) + pow(speakerLineToVerticalListenerPos, 2)));
     
     //To Overide this and set a distance:

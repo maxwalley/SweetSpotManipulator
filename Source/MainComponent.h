@@ -9,8 +9,6 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ChannelArray.h"
-#include "LightControls.h"
 #include "Kinect.h"
 #include "BalanceControls.h"
 #include <math.h>

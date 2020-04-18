@@ -82,6 +82,7 @@ private:
     
     /**Switches the current classifier being used to a new classifier*/
     void switchCascadeClassifier();
+    
     enum Classifier
     {
         fullBody = 1,

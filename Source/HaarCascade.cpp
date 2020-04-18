@@ -31,6 +31,8 @@ HaarCascade::~HaarCascade()
 
 cv::Mat HaarCascade::performCascade(cv::Mat inputFrame)
 {
+    //Performs Haar cascade
+    //See: https://docs.opencv.org/3.4/db/d28/tutorial_cascade_classifier.html
     cv::Mat inputGrey;
     cv::cvtColor(inputFrame, inputGrey, cv::COLOR_BGR2GRAY);
     cv::equalizeHist(inputGrey, inputGrey);
@@ -91,6 +93,7 @@ void HaarCascade::timerCallback()
     //If the timer is 10 or a multiple of 10
     if(timerCount % 10 == 0)
     {
+        //Changes the current classifier
         switchCascadeClassifier();
     }
 }

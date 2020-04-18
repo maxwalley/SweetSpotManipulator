@@ -20,6 +20,7 @@ Delay::Delay()
     {
         delayBufferWritePosition[channel] = 0;
         
+        //Clears buffer
         for (int sample = 0; sample < 44100; sample++)
         {
             delayBuffer[channel][sample] = 0;
@@ -31,10 +32,14 @@ Delay::Delay()
 
 int Delay::calculateDelayTime(float listenerDistance, int sampleRate, int channel)
 {
+    //Time = Dis/Speed
     float delayTimeInSecs = listenerDistance/SPEED_OF_SOUND;
     
+    //Works it out with the sample rate and rounds it down - See David Creaseys book pg. 234
     delayTimeInSamples[channel] = floor(delayTimeInSecs * sampleRate);
     
+    //Works which channel has the shorter delay time
+    //If delay time is shorter on selected channel returns the larger time - this one
     if(channel == 0)
     {
         if(delayTimeInSamples[0] >= delayTimeInSamples[1])
@@ -58,8 +63,6 @@ int Delay::calculateDelayTime(float listenerDistance, int sampleRate, int channe
         }
     }
     
-    //Rounds the number of samples of delay as in David Creaseys book pg. 234
-    //return floor(delayTimeInSecs * sampleRate);
 }
 
 void Delay::performDelay(AudioBuffer<float>& inputBuffer, float listenerDistance, int sampleRate, int channelNum)
