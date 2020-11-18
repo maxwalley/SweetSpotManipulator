@@ -9,8 +9,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "Kinect.h"
-#include "BalanceControls.h"
+#include "KinectController.h"
+#include "DistanceBasedAttenuationCalculator.h"
 #include <math.h>
 #include "AudioPlayer.h"
 #include "Delay.h"
@@ -63,9 +63,7 @@ private:
     Label masterSliderLabel;
     float masterSliderValue;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
-    
-    BalanceControls balance;
+    DistanceBasedAttenuationCalculator attenuationCalculator;
     
     /**Implementation of the JUCE Slider::Listener method*/
     void sliderValueChanged(Slider* slider) override;
@@ -83,7 +81,7 @@ private:
     int16_t depthAtUserPos;
     int16_t userPosX;
     
-    Kinect kinect;
+    KinectController kinect;
     
     Label leftChannelGainLabel;
     Slider leftChannelGainSlider;
@@ -100,7 +98,11 @@ private:
     Label speaker1zCoOrdSliderLabel;
     Slider speaker1zCoOrdSlider;
     
+    Slider distanceToSimulateSlider;
+    Label distanceToSimulateLabel;
+    
     /**Refreshes the gain sliders to show the current gains for each channel*/
     void repaintSliders();
-    
+  
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

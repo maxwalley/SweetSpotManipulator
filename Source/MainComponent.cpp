@@ -25,8 +25,6 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(masterSliderLabel);
     masterSliderLabel.setText("Master", dontSendNotification);
     
-    addAndMakeVisible(balance);
-        
     addAndMakeVisible(UserSelectedDeviceSettings);
     UserSelectedDevice.initialise(0, 6, nullptr, false);
     
@@ -99,9 +97,17 @@ MainComponent::MainComponent() : AudioAppComponent(UserSelectedDevice), UserSele
     addAndMakeVisible(speaker1zCoOrdSliderLabel);
     speaker1zCoOrdSliderLabel.setText("Speaker 2 Z Position", dontSendNotification);
     
+    addAndMakeVisible(distanceToSimulateSlider);
+    distanceToSimulateSlider.setSliderStyle(Slider::LinearHorizontal);
+    distanceToSimulateSlider.setRange(1.0f, 4.0f);
+    distanceToSimulateSlider.setValue(1.0);
+    distanceToSimulateSlider.addListener(this);
+    distanceToSimulateLabel.attachToComponent(&distanceToSimulateSlider, false);
+    distanceToSimulateLabel.setText("Simulated Distance from Speaker", dontSendNotification);
+    addAndMakeVisible(distanceToSimulateLabel);
     
-    balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
-    balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1zCoOrdSlider.getValue());
+    attenuationCalculator.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
+    attenuationCalculator.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1zCoOrdSlider.getValue());
 }
 
 MainComponent::~MainComponent()
@@ -142,7 +148,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
         for(int sample = 0; sample < bufferToFill.numSamples; ++sample)
         {
             //Applies balance mutiplier
-            buffer[sample] = buffer[sample] * balance.getMultiplier(channel, userPosX, depthAtUserPos);
+            buffer[sample] = buffer[sample] * attenuationCalculator.getMultiplier(channel, userPosX, depthAtUserPos);
         }
     }
     
@@ -151,7 +157,7 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
     
     for(int channel = 0; channel < bufferToFill.buffer->getNumChannels(); channel++)
     {
-        delay.performDelay(*bufferToFill.buffer, balance.getListenerDistance(channel, userPosX, depthAtUserPos), currentSampleRate, channel);
+        delay.performDelay(*bufferToFill.buffer, attenuationCalculator.getListenerDistance(channel, userPosX, depthAtUserPos), currentSampleRate, channel);
     }
     
     //Master Fader
@@ -187,7 +193,7 @@ void MainComponent::resized()
     masterSlider.setBounds(350, 370, 50, 200);
     masterSliderLabel.setBounds(350, 350, 50, 20);
     
-    balance.setBounds(500, 30, 200, 40);
+    distanceToSimulateSlider.setBounds(500, 40, 200, 40);
     
     speaker0xCoOrdSliderLabel.setBounds(750, 170, 200, 20);
     speaker0xCoOrdSlider.setBounds(750, 200, 200, 20);
@@ -222,12 +228,17 @@ void MainComponent::sliderValueChanged(Slider* slider)
     //X Co-ordinate sliders
     else if(slider == &speaker0xCoOrdSlider || slider == &speaker0zCoOrdSlider)
     {
-        balance.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
+        attenuationCalculator.setSpeakerCoOrdinates(0, speaker0xCoOrdSlider.getValue(), speaker0zCoOrdSlider.getValue());
     }
     
     else if(slider == &speaker1xCoOrdSlider || slider == &speaker1zCoOrdSlider)
     {
-        balance.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1zCoOrdSlider.getValue());
+        attenuationCalculator.setSpeakerCoOrdinates(1, speaker1xCoOrdSlider.getValue(), speaker1zCoOrdSlider.getValue());
+    }
+    
+    else if(slider == &distanceToSimulateSlider)
+    {
+    attenuationCalculator.setDistanceToSimulate(distanceToSimulateSlider.getValue());
     }
 }
 
@@ -267,16 +278,14 @@ void MainComponent::timerCallback()
 void MainComponent::workOutDepthAtPosition()
 {
     userPosX = haarCascade.getPersonPointX();
-    //DBG(userPosX);
     
     depthAtUserPos = kinect.depthArray[haarCascade.getPersonPointY()][userPosX];
-    //DBG(haarCascade.getPersonPointY());
 }
 
 void MainComponent::repaintSliders()
 {
-    leftChannelGainSlider.setValue(balance.getLeftGain());
-    rightChannelGainSlider.setValue(balance.getRightGain());
+    leftChannelGainSlider.setValue(attenuationCalculator.getLeftGain());
+    rightChannelGainSlider.setValue(attenuationCalculator.getRightGain());
     
     leftChannelGainSlider.repaint();
     rightChannelGainSlider.repaint();
